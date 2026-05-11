@@ -1,0 +1,311 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 29% 6%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 29% 6%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 29% 6%;
+
+    --primary: 83 55% 54%; /* Lemon Green #99CB48 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 76 56% 71%; /* Light Green #C8DF8D */
+    --secondary-foreground: 220 29% 6%;
+
+    --accent: 27 92% 55%; /* Orange #F58323 */
+    --accent-foreground: 0 0% 100%;
+
+    --yellow: 47 100% 55%; /* Yellow #FFCD16 */
+    --sky-blue: 198 79% 49%; /* Sky Blue #1AA6E1 */
+    --light-blue: 197 81% 72%; /* Light Blue #7FD2F2 */
+    --dark-blue: 209 78% 39%; /* Dark Blue #1668B2 */
+    --lavender: 243 31% 80%; /* Lavender #BCBADF */
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8% 46%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 83 55% 54%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 220 29% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 220 29% 6%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 220 29% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 83 55% 54%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 76 56% 71%;
+    --secondary-foreground: 0 0% 98%;
+
+    --accent: 27 92% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 220 14% 15%;
+    --muted-foreground: 220 8% 65%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 14% 15%;
+    --input: 220 14% 15%;
+    --ring: 83 55% 54%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* Premium Shadows */
+.shadow-premium {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.dark .glass {
+  background: rgba(11, 14, 20, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* A4 Page Styles for PDF */
+/* A4 Page Styles for PDF - Premium Document System */
+.a4-page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 15mm 18mm; /* Professional executive margins */
+  margin: 0 auto;
+  background: white;
+  color: #0B0E14;
+  position: relative;
+  overflow: visible;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* Global Document Logic */
+.a4-page * {
+  min-height: 0;
+  flex-shrink: 1;
+  word-wrap: break-word;
+}
+
+/* High-Density Document Typography - Refined for breathing room */
+.a4-page h2 { 
+  font-size: 28px !important; 
+  font-weight: 900 !important; 
+  letter-spacing: -0.04em !important; 
+  text-transform: uppercase !important; 
+  line-height: 1.1 !important; 
+  margin-bottom: 1.5rem !important; 
+}
+.a4-page h3 { 
+  font-size: 18px !important; 
+  font-weight: 900 !important; 
+  letter-spacing: -0.02em !important; 
+  text-transform: uppercase !important; 
+  margin-bottom: 0.75rem !important; 
+}
+.a4-page p { 
+  font-size: 10px !important; 
+  line-height: 1.6 !important; /* Relaxed for readability */
+  color: #475569 !important; 
+}
+
+/* Premium Spacing Utilities - Raw values to avoid circularity */
+.a4-page .space-y-12 { margin-top: 40px !important; }
+.a4-page .space-y-12 > :not([hidden]) ~ :not([hidden]) { margin-top: 40px !important; }
+
+.a4-page .space-y-10 { margin-top: 32px !important; }
+.a4-page .space-y-10 > :not([hidden]) ~ :not([hidden]) { margin-top: 32px !important; }
+
+.a4-page .space-y-8 { margin-top: 24px !important; }
+.a4-page .space-y-8 > :not([hidden]) ~ :not([hidden]) { margin-top: 24px !important; }
+
+.a4-page .space-y-6 { margin-top: 20px !important; }
+.a4-page .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 20px !important; }
+
+.a4-page .p-10 { padding: 32px !important; }
+.a4-page .p-8 { padding: 24px !important; }
+.a4-page .p-6 { padding: 20px !important; }
+
+.a4-page .gap-10 { gap: 24px !important; }
+.a4-page .gap-8 { gap: 20px !important; }
+
+/* Component Overrides for A4 Fit - Restored scale */
+.a4-page .text-5xl { font-size: 32px !important; line-height: 1 !important; }
+.a4-page .text-4xl { font-size: 28px !important; line-height: 1 !important; }
+.a4-page .text-3xl { font-size: 22px !important; }
+.a4-page .text-2xl { font-size: 18px !important; }
+
+/* Content fitting containers - Proportional balance */
+.content-fit {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem; /* Generous gap between blocks */
+  min-height: 0;
+  padding-bottom: 5mm;
+}
+
+/* Content fitting containers */
+.content-fit {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Start from top to avoid weird gaps */
+  gap: 1.5rem; /* Standardized gap */
+  min-height: 0;
+}
+
+/* Ensure images and grids don't break page */
+.a4-page img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.a4-page .grid {
+  min-height: 0;
+}
+
+/* Force text to wrap and not overflow */
+.a4-page p, .a4-page span, .a4-page div {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.cover-gradient {
+  background: linear-gradient(135deg, #0B0E14 0%, #1A1F2B 100%);
+  color: white;
+}
+
+.watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  font-size: 150px;
+  font-weight: 900;
+  color: rgba(0, 0, 0, 0.02);
+  pointer-events: none;
+  white-space: nowrap;
+  text-transform: uppercase;
+  z-index: 0;
+}
+
+.cover-gradient .watermark {
+  color: rgba(255, 255, 255, 0.03);
+}
+
+.page-number {
+  position: absolute;
+  bottom: 15mm;
+  right: 20mm;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0 !important;
+  }
+  
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide everything except the PDF container during print */
+  #root > :not(.pdf-container),
+  .no-print {
+    display: none !important;
+  }
+
+  .pdf-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 210mm;
+  }
+
+  .a4-page {
+    margin: 0 !important;
+    padding: 15mm 18mm !important;
+    box-shadow: none !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    break-after: page !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    overflow: hidden !important;
+    background-color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .cover-gradient {
+    background: linear-gradient(135deg, #1668B2 0%, #0B0E14 100%) !important;
+    color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure all gradients and colors are forced */
+  .bg-primary { background-color: #99CB48 !important; }
+  .text-primary { color: #99CB48 !important; }
+  .bg-slate-900 { background-color: #0F172A !important; }
+}
+
+/* Screen View Adjustments for Preview */
+.pdf-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: #F1F5F9;
+  padding: 2rem 0;
+  min-height: 100vh;
+}

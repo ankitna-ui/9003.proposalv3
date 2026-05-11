@@ -1,0 +1,136 @@
+export interface ClientDetails {
+  companyName: string;
+  contactPerson: string;
+  clientName?: string; // Specific name for "Name: Valued Client"
+  industry: string;
+  industryTitle?: string; // For "Business Automation" heading
+  meetingDate: string;
+  proposalTitle: string;
+  tagline?: string; // For "We Automate Businesses"
+  preparedBy: string;
+  referenceId: string;
+  status: 'Draft' | 'Sent' | 'Accepted' | 'Declined';
+  subTitle?: string;
+  industryDomain?: string;
+  releaseProtocol?: string;
+  protocolTitle?: string; // For "Confidential" label
+  filingDate?: string;
+  executiveSummary?: string;
+  websiteUrl?: string;
+}
+
+export interface BusinessSituation {
+  currentWorkflow: string;
+  existingSoftware: string;
+  challenges: string[];
+  revenueLeakage: string;
+  inefficiencies: string;
+  limitations: string;
+  meetingNotes: string;
+}
+
+export interface Module {
+  id: string;
+  name: string;
+  features: string[];
+  isCustom?: boolean;
+}
+
+export interface SolutionDetails {
+  overview: string;
+  approach: string;
+  approachPoints: string[];
+  selectedModules: Module[];
+  customModules: Module[];
+  demoLinks: string[];
+  timeline: string;
+  integrations: string[];
+  userRoles: string[];
+}
+
+export interface ROIMetrics {
+  revenueIncrease: string;
+  costReduction: string;
+  timeSaving: string;
+  productivityIncrease: string;
+  expectedROI: string;
+  profitImpact: string; // New field for "In numbers how much money/profit"
+  impactSummary: string;
+}
+
+export interface PricingDetail {
+  range: string;
+  coreValuation?: string;
+  discountPercentage?: string;
+  taxRate?: string;
+  milestones: { name: string; percentage: number; description: string }[];
+  hostingCost: string;
+  maintenanceCost: string;
+  supportCost: string;
+  taxes: string;
+  roiLogic?: string;
+}
+
+export interface Policies {
+  support: string;
+  security: string;
+  backup: string;
+  sla: string;
+  timeline: string;
+}
+
+export interface ProblemStatement {
+  heading: string;
+  description: string;
+  pointers: string[];
+}
+
+export interface ExperiencePortfolio {
+  yearsOfExperience: string;
+  projectsCompleted: string;
+  industriesServed: string[];
+  testimonials: { client: string; text: string }[];
+  portfolioLinks: string[];
+  strategicSummary?: string;
+}
+
+export interface TechnicalArchitecture {
+  frontendStack: string[];
+  backendStack: string[];
+  database: string;
+  hosting: string;
+  securityFeatures: string[];
+}
+
+export interface ClosingCTA {
+  meetingLink: string;
+  nextSteps: string[];
+  contactEmail: string;
+  contactPhone: string;
+  ctaMessage?: string;
+  qrCodeLink?: string;
+}
+
+export interface Proposal {
+  id?: string;
+  userId: string;
+  client: ClientDetails;
+  problemStatement: ProblemStatement;
+  situation: BusinessSituation;
+  solution: SolutionDetails;
+  techArchitecture: TechnicalArchitecture;
+  roi: ROIMetrics;
+  experience: ExperiencePortfolio;
+  pricing: PricingDetail;
+  policies: Policies;
+  closing: ClosingCTA;
+  aiGeneratedContent?: {
+    problemStatement: string;
+    proposedSolution: string;
+    businessImpact: string;
+    whyWeblozy: string;
+    roiExplanation?: string;
+  };
+  createdAt: number;
+  updatedAt: number;
+}
