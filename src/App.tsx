@@ -9,6 +9,7 @@ import EditProposal from '@/pages/Proposal/EditProposal';
 import SavedProposals from '@/pages/Proposal/SavedProposals';
 import ProposalPreview from '@/pages/Proposal/ProposalPreview';
 import GlobalHomeButton from '@/components/Navigation/GlobalHomeButton';
+import LoadingScreen from '@/components/ui/LoadingScreen';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -23,11 +24,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (

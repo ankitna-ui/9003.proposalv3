@@ -228,6 +228,8 @@ const SAMPLE_PROPOSALS: (Proposal & { id: string })[] = [
   }
 ];
 
+import LoadingScreen from '@/components/ui/LoadingScreen';
+
 export default function Dashboard() {
   const [proposals, setProposals] = useState<(Proposal & { id: string })[]>([]);
   const [loading, setLoading] = useState(true);
@@ -246,7 +248,11 @@ export default function Dashboard() {
 
   const fetchProposals = async (uid: string) => {
     try {
-      const data = await getProposals(uid);
+      // Force a minimum 2.5s delay to let the beautiful loading animation reach 100%
+      const [data] = await Promise.all([
+        getProposals(uid),
+        new Promise(resolve => setTimeout(resolve, 2500))
+      ]);
       setProposals(data as (Proposal & { id: string })[]);
     } catch (error) {
       console.error(error);
@@ -281,6 +287,10 @@ export default function Dashboard() {
   ], [displayProposals]);
 
   const isShowcase = proposals.length === 0;
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-[#0B0E14] text-white overflow-x-hidden font-sans">
