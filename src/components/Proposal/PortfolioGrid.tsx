@@ -27,7 +27,7 @@ export default function PortfolioGrid({ links }: PortfolioGridProps) {
   return (
     <div className="grid grid-cols-2 gap-4">
       {links.slice(0, 4).map((link, i) => (
-         <div key={i} className="group relative bg-slate-900 rounded-[1.5rem] overflow-hidden border border-slate-800 shadow-2xl h-[140px]">
+         <a key={i} href={link} target="_blank" rel="noopener noreferrer" className="group relative bg-slate-900 rounded-[1.5rem] overflow-hidden border border-slate-800 shadow-2xl h-[140px] block cursor-pointer">
           {/* Actual Website Preview Background */}
           <div className="absolute inset-0 opacity-60 group-hover:opacity-80 transition-opacity duration-500 overflow-hidden bg-slate-800">
              <img 
@@ -50,18 +50,18 @@ export default function PortfolioGrid({ links }: PortfolioGridProps) {
                 <div className="w-1.5 h-1.5 rounded-full bg-[#99CB48]" />
                 <span className="text-[8px] font-black uppercase tracking-widest text-[#99CB48]">{subLabels[i] || "Client Showcase"}</span>
              </div>
-             <h5 className="text-base font-black text-white uppercase tracking-tighter mb-1 leading-none">{labels[i] || "Enterprise Solution"}</h5>
+             <h5 className="text-base font-black text-white uppercase tracking-tighter mb-1 leading-none group-hover:text-[#99CB48] transition-colors">{labels[i] || "Enterprise Solution"}</h5>
              <div className="flex items-center justify-between gap-3 mt-1">
                 <div className="flex items-center gap-1.5 overflow-hidden">
                    <ExternalLink size={8} className="text-white/40 shrink-0" />
                    <span className="text-[7px] font-bold text-slate-400 truncate tracking-tight">{link.replace('https://', '')}</span>
                 </div>
                 <div className="px-2 py-0.5 bg-white/10 rounded-full border border-white/10 backdrop-blur-md shrink-0">
-                   <span className="text-[7px] font-black text-white uppercase tracking-widest">LIVE</span>
+                   <span className="text-[7px] font-black text-white uppercase tracking-widest">LIVE URL</span>
                 </div>
              </div>
           </div>
-        </div>
+        </a>
       ))}
     </div>
   );

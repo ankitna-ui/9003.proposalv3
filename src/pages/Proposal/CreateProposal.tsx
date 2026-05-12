@@ -151,14 +151,25 @@ export default function CreateProposal() {
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="proposalTitle">Main Proposal Title</Label>
-              <Input 
-                id="proposalTitle" 
-                placeholder="e.g. Digital Transformation Roadmap" 
-                value={proposal.client.proposalTitle}
-                onChange={(e: any) => updateClient({ proposalTitle: e.target.value })}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="proposalTitle">Main Proposal Title</Label>
+                <Input 
+                  id="proposalTitle" 
+                  placeholder="e.g. Digital Transformation Roadmap" 
+                  value={proposal.client.proposalTitle}
+                  onChange={(e: any) => updateClient({ proposalTitle: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="referenceId">Reference Protocol (ID)</Label>
+                <Input 
+                  id="referenceId" 
+                  placeholder="e.g. WBZ-2026-7043" 
+                  value={proposal.client.referenceId}
+                  onChange={(e: any) => updateClient({ referenceId: e.target.value })}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

@@ -98,17 +98,18 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* A4 Page Styles for PDF */
 /* A4 Page Styles for PDF - Premium Document System */
 .a4-page {
   width: 210mm;
+  height: 297mm;
   min-height: 297mm;
-  padding: 15mm 18mm; /* Professional executive margins */
+  max-height: 297mm;
+  padding: 12mm 15mm 14mm 15mm;
   margin: 0 auto;
   background: white;
   color: #0B0E14;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -123,74 +124,53 @@
   word-wrap: break-word;
 }
 
-/* High-Density Document Typography - Refined for breathing room */
+/* Typography - Professional & Readable */
 .a4-page h2 { 
-  font-size: 28px !important; 
+  font-size: 26px !important; 
   font-weight: 900 !important; 
-  letter-spacing: -0.04em !important; 
+  letter-spacing: -0.03em !important; 
   text-transform: uppercase !important; 
-  line-height: 1.1 !important; 
-  margin-bottom: 1.5rem !important; 
+  line-height: 1.2 !important; 
+  margin-bottom: 0.5rem !important; 
 }
 .a4-page h3 { 
   font-size: 18px !important; 
-  font-weight: 900 !important; 
-  letter-spacing: -0.02em !important; 
+  font-weight: 800 !important; 
+  letter-spacing: -0.01em !important; 
   text-transform: uppercase !important; 
-  margin-bottom: 0.75rem !important; 
+  margin-bottom: 0.25rem !important; 
 }
 .a4-page p { 
-  font-size: 10px !important; 
-  line-height: 1.6 !important; /* Relaxed for readability */
+  font-size: 11px !important; 
+  line-height: 1.6 !important;
   color: #475569 !important; 
 }
 
-/* Premium Spacing Utilities - Raw values to avoid circularity */
-.a4-page .space-y-12 { margin-top: 40px !important; }
-.a4-page .space-y-12 > :not([hidden]) ~ :not([hidden]) { margin-top: 40px !important; }
+/* Font size scaling for A4 */
+.a4-page .text-8xl { font-size: 48px !important; line-height: 0.9 !important; }
+.a4-page .text-7xl { font-size: 40px !important; line-height: 0.9 !important; }
+.a4-page .text-6xl { font-size: 32px !important; line-height: 1 !important; }
+.a4-page .text-5xl { font-size: 28px !important; line-height: 1.1 !important; }
+.a4-page .text-4xl { font-size: 24px !important; line-height: 1.1 !important; }
+.a4-page .text-3xl { font-size: 20px !important; }
+.a4-page .text-2xl { font-size: 16px !important; }
+.a4-page .text-xl { font-size: 14px !important; }
 
-.a4-page .space-y-10 { margin-top: 32px !important; }
-.a4-page .space-y-10 > :not([hidden]) ~ :not([hidden]) { margin-top: 32px !important; }
-
-.a4-page .space-y-8 { margin-top: 24px !important; }
-.a4-page .space-y-8 > :not([hidden]) ~ :not([hidden]) { margin-top: 24px !important; }
-
-.a4-page .space-y-6 { margin-top: 20px !important; }
-.a4-page .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top: 20px !important; }
-
-.a4-page .p-10 { padding: 32px !important; }
-.a4-page .p-8 { padding: 24px !important; }
-.a4-page .p-6 { padding: 20px !important; }
-
-.a4-page .gap-10 { gap: 24px !important; }
-.a4-page .gap-8 { gap: 20px !important; }
-
-/* Component Overrides for A4 Fit - Restored scale */
-.a4-page .text-5xl { font-size: 32px !important; line-height: 1 !important; }
-.a4-page .text-4xl { font-size: 28px !important; line-height: 1 !important; }
-.a4-page .text-3xl { font-size: 22px !important; }
-.a4-page .text-2xl { font-size: 18px !important; }
-
-/* Content fitting containers - Proportional balance */
+/* 
+  Let Tailwind's native spacing handle internal padding/margins.
+  We only override the content-fit container to ensure a natural flow.
+  flex-start ensures elements stack naturally from top to bottom without huge gaps.
+*/
 .content-fit {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1.5rem; /* Generous gap between blocks */
+  justify-content: flex-start;
+  gap: 1.5rem; /* Natural spacing between sections */
   min-height: 0;
-  padding-bottom: 5mm;
+  overflow: hidden;
 }
 
-/* Content fitting containers */
-.content-fit {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start; /* Start from top to avoid weird gaps */
-  gap: 1.5rem; /* Standardized gap */
-  min-height: 0;
-}
 
 /* Ensure images and grids don't break page */
 .a4-page img {
@@ -271,20 +251,28 @@
   }
 
   .a4-page {
-    margin: 0 !important;
-    padding: 15mm 18mm !important;
-    box-shadow: none !important;
+    width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    margin: 0 auto !important;
+    padding: 12mm 15mm 14mm 15mm !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: white !important;
     page-break-after: always !important;
     page-break-inside: avoid !important;
     break-after: page !important;
-    display: flex !important;
-    flex-direction: column !important;
-    width: 210mm !important;
-    height: 297mm !important;
-    overflow: hidden !important;
-    background-color: white !important;
+    box-sizing: border-box !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  .proposal-card, .soft-card, .navy-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .cover-gradient {
@@ -304,8 +292,15 @@
 .pdf-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  align-items: center;
+  gap: 0; /* CRITICAL: zero gap so html2canvas page math is exact */
   background: #F1F5F9;
   padding: 2rem 0;
   min-height: 100vh;
+}
+
+/* Visual spacing between pages in preview (not captured by html2canvas) */
+.pdf-container .a4-page {
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.1);
 }

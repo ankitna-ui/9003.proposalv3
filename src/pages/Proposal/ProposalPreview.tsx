@@ -2,7 +2,6 @@ import { useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Download, ChevronLeft, Printer } from "lucide-react";
-import html2pdf from "html2pdf.js";
 import { Proposal } from "@/types/proposal";
 import ProposalPDF from "@/components/Proposal/ProposalPDF";
 
@@ -24,23 +23,49 @@ export default function ProposalPreview() {
     );
   }
 
-  const exportPDF = () => {
+  const exportPDF = async () => {
     const element = proposalRef.current;
     if (!element) return;
-    
-    const opt = {
-      margin: 0,
-      filename: `${(proposal?.client?.companyName || "Weblozy")}_Proposal.pdf`,
-      image: { type: 'jpeg', quality: 1.0 },
-      html2canvas: { 
-        scale: 3, 
-        useCORS: true, 
-        letterRendering: true,
-        backgroundColor: '#FFFFFF'
-      },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true }
-    };
-    (html2pdf() as any).set(opt).from(element).save();
+
+    // Dynamic imports
+    const html2canvas = (await import('html2canvas')).default;
+    const { jsPDF } = await import('jspdf');
+
+    const pages = element.querySelectorAll('.a4-page');
+    if (pages.length === 0) return;
+
+    // A4 dimensions in mm
+    const PDF_W = 210;
+    const PDF_H = 297;
+    // Capture scale for sharp text
+    const SCALE = 2;
+    // A4 width in pixels at 96dpi
+    const PAGE_PX_W = 794;
+    const PAGE_PX_H = Math.round(PAGE_PX_W * (PDF_H / PDF_W));
+
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i] as HTMLElement;
+
+      const canvas = await html2canvas(page, {
+        scale: SCALE,
+        useCORS: true,
+        backgroundColor: null, // let page's own bg show (for gradients)
+        width: PAGE_PX_W,
+        height: PAGE_PX_H,
+        windowWidth: PAGE_PX_W,
+        scrollX: 0,
+        scrollY: 0,
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, 0, PDF_W, PDF_H);
+    }
+
+    pdf.save(`${(proposal?.client?.companyName || "Weblozy")}_Proposal.pdf`);
   };
 
   const handlePrint = () => {
