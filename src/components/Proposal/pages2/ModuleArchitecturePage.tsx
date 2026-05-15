@@ -3,6 +3,8 @@ import { Proposal, Module } from "@/types/proposal";
 import PageWrapper from "./PageWrapper";
 import { CheckCircle2, IndianRupee } from "lucide-react";
 
+import { MAX_WEIGHT_PER_PAGE, MODULE_HEADER_WEIGHT, FEATURE_WEIGHT, FIRST_PAGE_REDUCTION } from "@/utils/proposal/weights";
+
 interface PageProps {
   proposal: Proposal;
   pageNum: number;
@@ -16,17 +18,15 @@ const ModuleArchitecturePage: React.FC<PageProps> = ({ proposal, pageNum }) => {
       ];
 
   // Refined High-Density Adjustment Logic
-  const MAX_WEIGHT_PER_PAGE = 32; // Increased from 24 to allow much more content
   const pages: Module[][] = [];
   let currentPage: Module[] = [];
   let currentWeight = 0;
 
   allModules.forEach((module) => {
     const isFirstPage = pages.length === 0;
-    // Tighter weight calculation: Header = 1.5, Feature = 0.8
-    const headerWeight = 1.5;
-    const moduleWeight = headerWeight + (module.features.length * 0.8);
-    const availableWeight = isFirstPage ? MAX_WEIGHT_PER_PAGE - 5 : MAX_WEIGHT_PER_PAGE;
+    // Tighter weight calculation using shared constants
+    const moduleWeight = MODULE_HEADER_WEIGHT + (module.features.length * FEATURE_WEIGHT);
+    const availableWeight = isFirstPage ? MAX_WEIGHT_PER_PAGE - FIRST_PAGE_REDUCTION : MAX_WEIGHT_PER_PAGE;
 
     if (currentWeight + moduleWeight > availableWeight && currentPage.length > 0) {
       pages.push(currentPage);
@@ -41,6 +41,7 @@ const ModuleArchitecturePage: React.FC<PageProps> = ({ proposal, pageNum }) => {
   if (currentPage.length > 0) {
     pages.push(currentPage);
   }
+
 
   return (
     <>

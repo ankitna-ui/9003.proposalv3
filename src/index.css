@@ -297,6 +297,8 @@
   background: #F1F5F9;
   padding: 2rem 0;
   min-height: 100vh;
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
 }
 
 /* Visual spacing between pages in preview (not captured by html2canvas) */

@@ -25,12 +25,16 @@ import {
   CreditCard,
   Monitor,
   Send,
-  Sparkles
+  Sparkles,
+  ImagePlus,
+  CheckCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProposalForm } from "@/hooks/useProposalForm";
+import { useTokens } from "@/hooks/useTokens";
 import ModuleSelector from "@/components/Proposal/ModuleSelector";
-import { generateProposalContent } from "@/lib/gemini";
+import TokenAnalyticsBar from "@/components/Proposal/TokenAnalyticsBar";
+import { generateProposalContent, generateModuleFeatures, extractModulesFromContext } from "@/lib/gemini";
 import { getProposal, updateProposal } from "@/lib/firestore";
 import { auth } from "@/lib/firebase";
 import { Module } from "@/types/proposal";
@@ -57,6 +61,10 @@ export default function EditProposal() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [singleModuleName, setSingleModuleName] = useState("");
+  const [bulkContext, setBulkContext] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [previewModule, setPreviewModule] = useState<Module | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const { 
@@ -72,6 +80,9 @@ export default function EditProposal() {
     setAIContent,
     setProposal
   } = useProposalForm();
+  
+  const { consumeTokens } = useTokens();
+  const [isPreviewZoomed, setIsPreviewZoomed] = useState(false);
 
   useEffect(() => {
     async function loadProposal() {
@@ -112,13 +123,14 @@ export default function EditProposal() {
     }
     setIsGenerating(true);
     try {
-      const content = await generateProposalContent(
+      const { content, tokens } = await generateProposalContent(
         proposal.situation.meetingNotes,
         proposal.client.companyName,
         proposal.solution.selectedModules.map(m => m.name)
       );
       setAIContent(content);
-      alert("AI Content Refreshed!");
+      consumeTokens(tokens);
+      alert("AI Intelligence Synchronized!");
     } catch (error) {
       console.error(error);
       alert("AI Generation failed. Check console for details.");
@@ -130,16 +142,13 @@ export default function EditProposal() {
   const validateStep = () => {
     switch (currentStep) {
       case 0:
-        if (!proposal.client.companyName || !proposal.client.proposalTitle) {
-          alert("Company Name and Proposal Title are required.");
+        if (!proposal.client.proposalTitle) {
+          alert("Proposal Title is required.");
           return false;
         }
         break;
       case 2:
-        if (!proposal.situation.currentWorkflow) {
-          alert("Operational Narrative is required.");
-          return false;
-        }
+        // No longer required
         break;
       case 5:
         if (proposal.solution.selectedModules.length === 0) {
@@ -212,149 +221,521 @@ export default function EditProposal() {
         return (
           <div className="space-y-8">
             <SectionHeader title="Brand Configuration" subtitle="Define the strategic identity of this proposal" />
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <LabelPremium>Strategic Ally (Company)</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.client.companyName} onChange={(e) => updateClient({ companyName: e.target.value })} />
-              </div>
-              <div className="space-y-1">
-                <LabelPremium>Valued Client Name</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.client.clientName} onChange={(e) => updateClient({ clientName: e.target.value })} />
+            
+            <div className="space-y-1">
+              <LabelPremium>Proposal ID</LabelPremium>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-black">#</span>
+                <Input className="bg-white border-slate-200 pl-8 font-black" value={proposal.client.referenceId} onChange={(e) => updateClient({ referenceId: e.target.value })} />
               </div>
             </div>
+
             <div className="space-y-1">
               <LabelPremium>Main Proposal Title</LabelPremium>
               <Input className="bg-white border-slate-200 font-bold" value={proposal.client.proposalTitle} onChange={(e) => updateClient({ proposalTitle: e.target.value })} />
             </div>
+
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-1">
-                <LabelPremium>Industry Focus</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.client.industryTitle} onChange={(e) => updateClient({ industryTitle: e.target.value })} />
+                <LabelPremium>Framework Title (Top Badge)</LabelPremium>
+                <Input className="bg-white border-slate-200" value={proposal.client.frameworkTitle} onChange={(e) => updateClient({ frameworkTitle: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <LabelPremium>Industry Domain</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.client.industryDomain} onChange={(e) => updateClient({ industryDomain: e.target.value })} />
+                <LabelPremium>Tagline (Under Logo)</LabelPremium>
+                <Input className="bg-white border-slate-200" value={proposal.client.tagline} onChange={(e) => updateClient({ tagline: e.target.value })} />
               </div>
             </div>
+
+            <div className="grid grid-cols-1 gap-6">
+              <div className="space-y-1">
+                <LabelPremium>Strategic Domain (Industry)</LabelPremium>
+                <Input className="bg-white border-slate-200" value={proposal.client.industryTitle} onChange={(e) => updateClient({ industryTitle: e.target.value })} />
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-1">
-                <LabelPremium>Security Label</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.client.protocolTitle} onChange={(e) => updateClient({ protocolTitle: e.target.value })} />
+                <LabelPremium>Proposal Date</LabelPremium>
+                <Input className="bg-white border-slate-200" value={proposal.client.filingDate} onChange={(e) => updateClient({ filingDate: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <LabelPremium>Framework Title</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.client.frameworkTitle} onChange={(e) => updateClient({ frameworkTitle: e.target.value })} />
+                <LabelPremium>Footer Copyright Message</LabelPremium>
+                <Input className="bg-white border-slate-200" value={proposal.client.footerMessage} placeholder="© Weblozy we automate solution" onChange={(e) => updateClient({ footerMessage: e.target.value })} />
               </div>
             </div>
           </div>
         );
+
       case 1: // Corporate Legacy
         return (
           <div className="space-y-8">
             <SectionHeader title="Operational Authority" subtitle="Display your track record and experience" />
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-1">
-                <LabelPremium>Years of Experience</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.experience.yearsOfExperience} onChange={(e) => updateExperience({ yearsOfExperience: e.target.value })} />
+                <LabelPremium>Years of Experience (Precision)</LabelPremium>
+                <Input className="bg-white border-slate-200" placeholder="15+" value={proposal.experience.yearsOfExperience} onChange={(e) => updateExperience({ yearsOfExperience: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <LabelPremium>Projects Completed</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.experience.projectsCompleted} onChange={(e) => updateExperience({ projectsCompleted: e.target.value })} />
+                <LabelPremium>Projects Built</LabelPremium>
+                <Input className="bg-white border-slate-200" placeholder="250+" value={proposal.experience.projectsCompleted} onChange={(e) => updateExperience({ projectsCompleted: e.target.value })} />
               </div>
             </div>
             <div className="space-y-1">
-              <LabelPremium>Partner Status</LabelPremium>
-              <Input className="bg-white border-slate-200" value={proposal.experience.partnerStatus} onChange={(e) => updateExperience({ partnerStatus: e.target.value })} />
-            </div>
-            <div className="space-y-1">
-              <LabelPremium>Strategic Summary</LabelPremium>
-              <Textarea className="bg-white border-slate-200 min-h-[100px]" value={proposal.experience.strategicSummary} onChange={(e) => updateExperience({ strategicSummary: e.target.value })} />
+              <LabelPremium>Industries Served</LabelPremium>
+              <Input className="bg-white border-slate-200" placeholder="E-commerce, SaaS, Logistics" value={Array.isArray(proposal.experience.industriesServed) ? proposal.experience.industriesServed.join(", ") : ""} onChange={(e) => updateExperience({ industriesServed: e.target.value.split(",").map(s => s.trim()) })} />
             </div>
           </div>
         );
+
       case 2: // Operational Audit
         return (
           <div className="space-y-8">
-            <SectionHeader title="Operational Diagnosis" subtitle="Identify pain points and optimization opportunities" />
+            <SectionHeader title="Operational Audit Diagnosis" subtitle="Identify core bottlenecks and systemic friction" />
+            
             <div className="space-y-1">
-              <LabelPremium>Current Workflow Audit</LabelPremium>
-              <Textarea className="min-h-[120px] bg-white border-slate-200" value={proposal.situation.currentWorkflow} onChange={(e) => updateSituation({ currentWorkflow: e.target.value })} />
+              <LabelPremium>Audit Narrative (Situational Analysis)</LabelPremium>
+              <Textarea className="min-h-[100px] bg-white border-slate-200" placeholder="Describe the current state of operations..." value={proposal.situation.currentWorkflow} onChange={(e) => updateSituation({ currentWorkflow: e.target.value })} />
             </div>
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-1">
-                <LabelPremium>Revenue Leakage</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.situation.revenueLeakage} onChange={(e) => updateSituation({ revenueLeakage: e.target.value })} />
+                <LabelPremium>Financial Leakage (e.g. ₹10k+ / Mo)</LabelPremium>
+                <Input className="bg-white border-slate-200" placeholder="₹10k+ / Mo" value={proposal.situation.revenueLeakage} onChange={(e) => updateSituation({ revenueLeakage: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <LabelPremium>Efficiency Gaps</LabelPremium>
-                <Input className="bg-white border-slate-200" value={proposal.situation.inefficiencies} onChange={(e) => updateSituation({ inefficiencies: e.target.value })} />
+                <LabelPremium>Operational Drag (e.g. High Manual Overhead)</LabelPremium>
+                <Input className="bg-white border-slate-200" placeholder="High Manual Overhead" value={proposal.situation.inefficiencies} onChange={(e) => updateSituation({ inefficiencies: e.target.value })} />
               </div>
             </div>
-            <div className="space-y-1">
-              <div className="flex justify-between items-center mb-2">
-                <LabelPremium className="mb-0">Raw Meeting Notes (AI Intelligence)</LabelPremium>
-                <Button size="xs" variant="ghost" onClick={handleAIAction} disabled={isGenerating} className="h-6 px-2 text-[8px] uppercase font-black tracking-widest text-primary hover:bg-primary/10">
-                  <Sparkles size={10} className="mr-1" /> Auto-Sync
-                </Button>
-              </div>
-              <Textarea className="min-h-[150px] bg-slate-900 text-white border-none font-mono text-[11px] p-4" placeholder="Paste your discovery notes here for AI processing..." value={proposal.situation.meetingNotes} onChange={(e) => updateSituation({ meetingNotes: e.target.value })} />
-            </div>
-          </div>
-        );
-      case 3: // Strategic Ecosystem
-        return (
-          <div className="space-y-8">
-            <SectionHeader title="Solution Ecosystem" subtitle="Define the strategic approach and core pillars" />
-            <div className="space-y-1">
-              <LabelPremium>Strategic Approach</LabelPremium>
-              <Textarea className="min-h-[100px] bg-white border-slate-200" value={proposal.solution.approach} onChange={(e) => updateSolution({ approach: e.target.value })} />
-            </div>
+
             <div className="space-y-4">
-              <LabelPremium>Core Implementation Pillars</LabelPremium>
-              <div className="grid gap-3">
-                {(proposal.solution.approachPoints || []).map((point, i) => (
-                  <div key={i} className="flex gap-2 group">
-                    <div className="w-8 h-10 bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-300 rounded-lg group-hover:bg-slate-100 transition-colors">0{i+1}</div>
-                    <Input className="bg-white border-slate-200" value={point} onChange={(e) => {
-                      const newPoints = [...proposal.solution.approachPoints];
-                      newPoints[i] = e.target.value;
-                      updateSolution({ approachPoints: newPoints });
+              <div className="flex justify-between items-center">
+                <LabelPremium>Critical Friction Points</LabelPremium>
+                <button type="button" onClick={() => updateSituation({ challenges: [...proposal.situation.challenges, ""] })} className="text-[10px] font-black uppercase text-[#1AA6E1] hover:underline">
+                  + Add Point
+                </button>
+              </div>
+              <div className="space-y-3">
+                {proposal.situation.challenges.map((challenge, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input className="bg-white border-slate-200" placeholder={`Friction Point #${i + 1}`} value={challenge} onChange={(e) => {
+                      const newChallenges = [...proposal.situation.challenges];
+                      newChallenges[i] = e.target.value;
+                      updateSituation({ challenges: newChallenges });
                     }} />
-                    <Button variant="ghost" size="icon" className="text-slate-300 hover:text-red-500" onClick={() => updateSolution({ approachPoints: proposal.solution.approachPoints.filter((_, idx) => idx !== i) })}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <button type="button" onClick={() => {
+                      const newChallenges = proposal.situation.challenges.filter((_, index) => index !== i);
+                      updateSituation({ challenges: newChallenges });
+                    }} className="px-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors font-black">
+                      ×
+                    </button>
                   </div>
                 ))}
-                <Button variant="outline" size="sm" className="w-full border-dashed border-slate-300 text-slate-400 hover:text-primary hover:border-primary transition-all text-[9px] font-black uppercase tracking-widest" onClick={() => updateSolution({ approachPoints: [...proposal.solution.approachPoints, ""] })}>
-                  <Plus className="w-3 h-3 mr-2" /> Add Strategic Pillar
-                </Button>
+                {proposal.situation.challenges.length === 0 && (
+                  <div className="text-[10px] text-slate-400 italic text-center py-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                    No friction points added. Click "+ Add Point" to begin.
+                  </div>
+                )}
               </div>
             </div>
           </div>
         );
-      case 4: // Operational Logic
+
+      case 3: // Strategic Ecosystem
+        return (
+          <div className="space-y-8 pb-10">
+            <SectionHeader title="Strategic Solution Architecture" subtitle="Define pillars, connectivity, and hierarchy" />
+            
+            <div className="space-y-1">
+              <LabelPremium>Strategic Approach (Narrative)</LabelPremium>
+              <Textarea className="min-h-[80px] bg-white border-slate-200" placeholder="Describe the overall strategy..." value={proposal.solution.approach} onChange={(e) => updateSolution({ approach: e.target.value })} />
+            </div>
+
+            {/* Pillars */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <LabelPremium>Implementation Pillars</LabelPremium>
+                <button type="button" onClick={() => updateSolution({ approachPoints: [...(proposal.solution.approachPoints || []), ""] })} className="text-[10px] font-black uppercase text-[#3ABEF9] hover:underline">
+                  + Add Pillar
+                </button>
+              </div>
+              <div className="space-y-2">
+                {(proposal.solution.approachPoints || []).map((point, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input className="bg-white border-slate-200" placeholder={`Pillar #${i + 1}`} value={point} onChange={(e) => {
+                      const next = [...(proposal.solution.approachPoints || [])];
+                      next[i] = e.target.value;
+                      updateSolution({ approachPoints: next });
+                    }} />
+                    <button type="button" onClick={() => updateSolution({ approachPoints: proposal.solution.approachPoints.filter((_, idx) => idx !== i) })} className="px-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors font-black">×</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Connectivity Hub */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <LabelPremium>Connectivity Hub (Integrations)</LabelPremium>
+                <button type="button" onClick={() => updateSolution({ integrations: [...(proposal.solution.integrations || []), ""] })} className="text-[10px] font-black uppercase text-[#3ABEF9] hover:underline">
+                  + Add Integration
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {(proposal.solution.integrations || []).map((item, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input className="bg-white border-slate-200" placeholder="e.g. CRM, Payment Gateway" value={item} onChange={(e) => {
+                      const next = [...(proposal.solution.integrations || [])];
+                      next[i] = e.target.value;
+                      updateSolution({ integrations: next });
+                    }} />
+                    <button type="button" onClick={() => updateSolution({ integrations: proposal.solution.integrations.filter((_, idx) => idx !== i) })} className="px-2 text-red-500 hover:bg-red-50 rounded-lg font-black">×</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* User Hierarchy */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <LabelPremium>User Hierarchy (Roles)</LabelPremium>
+                <button type="button" onClick={() => updateSolution({ userRoles: [...(proposal.solution.userRoles || []), ""] })} className="text-[10px] font-black uppercase text-[#3ABEF9] hover:underline">
+                  + Add Role
+                </button>
+              </div>
+              <div className="space-y-2">
+                {(proposal.solution.userRoles || []).map((role, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input className="bg-white border-slate-200" placeholder={`Role #${i + 1} (e.g. Admin)`} value={typeof role === 'string' ? role : (role as any).role} onChange={(e) => {
+                      const next = [...(proposal.solution.userRoles || [])];
+                      next[i] = e.target.value;
+                      updateSolution({ userRoles: next });
+                    }} />
+                    <button type="button" onClick={() => updateSolution({ userRoles: proposal.solution.userRoles.filter((_, idx) => idx !== i) })} className="px-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors font-black">×</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      case 4: // Operational Flowchart
         return (
           <div className="space-y-8">
-            <SectionHeader title="Logic Architecture" subtitle="Visualize the system flow and operational logic" />
-            <div className="space-y-1">
-              <LabelPremium>Flowchart Image URL</LabelPremium>
-              <Input className="bg-white border-slate-200" placeholder="Direct image link (e.g. Cloudinary/S3)" value={proposal.solution.flowchartImageUrl} onChange={(e) => updateSolution({ flowchartImageUrl: e.target.value })} />
-            </div>
-            <div className="space-y-1">
-              <LabelPremium>Live System Demo Link</LabelPremium>
-              <Input className="bg-white border-slate-200" placeholder="https://..." value={proposal.solution.demoLink} onChange={(e) => updateSolution({ demoLink: e.target.value })} />
-            </div>
-            <div className="space-y-1">
-              <LabelPremium>System Narrative</LabelPremium>
-              <Textarea className="bg-white border-slate-200" value={proposal.solution.overview} onChange={(e) => updateSolution({ overview: e.target.value })} />
+            <SectionHeader title="System Logic Architecture" subtitle="Upload the operational flowchart and define demo access" />
+            
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <LabelPremium>Flowchart Logic Map (Image)</LabelPremium>
+                <div className="mt-2 space-y-4">
+                  {proposal.solution.flowchartImageUrl ? (
+                    <div className="relative group rounded-[2rem] overflow-hidden border-2 border-[#99CB48]/20 bg-slate-50 aspect-video">
+                      <img src={proposal.solution.flowchartImageUrl} alt="Flowchart" className="w-full h-full object-contain p-4" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                        <button onClick={() => updateSolution({ flowchartImageUrl: "" })} className="p-3 bg-white rounded-2xl text-red-500 hover:scale-110 transition-transform">
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="relative group">
+                        <input type="file" accept="image/*" onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => updateSolution({ flowchartImageUrl: reader.result as string });
+                            reader.readAsDataURL(file);
+                          }
+                        }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                        <div className="h-[200px] border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center gap-4 group-hover:border-[#99CB48] group-hover:bg-[#99CB48]/5 transition-all">
+                          <div className="w-14 h-14 rounded-3xl bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-[#99CB48]">
+                            <ImagePlus size={28} />
+                          </div>
+                          <div className="text-center">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Upload Logic Flowchart</p>
+                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tight mt-1">Select from local system</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t border-slate-200" />
+                        </div>
+                        <div className="relative flex justify-center text-[8px] font-black uppercase tracking-[0.4em] text-slate-400">
+                          <span className="bg-white px-4">Or use Image URL</span>
+                        </div>
+                      </div>
+                      <Input 
+                        className="bg-white border-slate-200 text-[10px]" 
+                        placeholder="https://imgur.com/your-flowchart.png" 
+                        value={proposal.solution.flowchartImageUrl} 
+                        onChange={(e) => updateSolution({ flowchartImageUrl: e.target.value })} 
+                      />
+                    </>
+                  )}
+                </div>
+
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <div className="space-y-1">
+                  <LabelPremium>System Demo Link (Optional)</LabelPremium>
+                  <Input className="bg-white border-slate-200" placeholder="https://demo.weblozy.com" value={proposal.solution.demoLink} onChange={(e) => updateSolution({ demoLink: e.target.value })} />
+                </div>
+              </div>
             </div>
           </div>
         );
       case 5: // Solution Modules
+        const handleAddSingleModule = async () => {
+          if (!singleModuleName) return;
+          setIsAiLoading(true);
+          try {
+            const { features, tokens } = await generateModuleFeatures(singleModuleName);
+            consumeTokens(tokens);
+            const newModule: Module = {
+              id: Math.random().toString(36).substr(2, 9),
+              name: singleModuleName,
+              features: features.map((f: string) => ({ name: f, price: "" })),
+              price: "TBD", // Suggested placeholder
+              isCustom: true
+            };
+            setPreviewModule(newModule); // Show in selection phase
+          } catch (error) {
+            console.error("AI Feature generation failed");
+          } finally {
+            setIsAiLoading(false);
+          }
+        };
+
+        const confirmPreviewModule = () => {
+          if (!previewModule) return;
+          updateSolution({ selectedModules: [...proposal.solution.selectedModules, previewModule] });
+          setPreviewModule(null);
+          setSingleModuleName("");
+        };
+
+        const handleBulkExtract = async () => {
+          if (!bulkContext) return;
+          setIsAiLoading(true);
+          try {
+            const { modules: extracted, tokens } = await extractModulesFromContext(bulkContext);
+            consumeTokens(tokens);
+            const newModules = extracted.map((m: any) => ({
+              id: Math.random().toString(36).substr(2, 9),
+              name: m.name,
+              description: m.description,
+              features: m.features.map((f: string) => ({ name: f, price: "" })),
+              price: "",
+              isCustom: true
+            }));
+            updateSolution({ selectedModules: [...proposal.solution.selectedModules, ...newModules] });
+            setBulkContext("");
+          } catch (error) {
+            console.error("AI Bulk extraction failed");
+          } finally {
+            setIsAiLoading(false);
+          }
+        };
+
+        const handleAddManualModule = () => {
+          const newModule: Module = {
+            id: Math.random().toString(36).substr(2, 9),
+            name: "New Module",
+            features: [],
+            price: "",
+            isCustom: true
+          };
+          updateSolution({ selectedModules: [...proposal.solution.selectedModules, newModule] });
+        };
+
         return (
-          <div className="space-y-8">
-            <SectionHeader title="Functional Blueprint" subtitle="Select the core modules to be implemented" />
-            <ModuleSelector selectedModules={proposal.solution.selectedModules} onChange={(m) => updateSolution({ selectedModules: m })} />
+          <div className="space-y-8 pb-20">
+            <TokenAnalyticsBar />
+            <SectionHeader title="Functional Blueprint" subtitle="Define system modules via AI or Manual entry" />
+            
+            {/* AI Individual */}
+            <div className="p-6 bg-blue-50/50 rounded-[2rem] border border-blue-100 space-y-4">
+              <div className="flex items-center gap-2 text-blue-600">
+                <Sparkles size={16} />
+                <span className="text-[10px] font-black uppercase tracking-widest">AI Module Generator</span>
+              </div>
+              <div className="flex gap-2">
+                <Input 
+                  className="bg-white border-blue-200" 
+                  placeholder="Module Name (e.g. Smart Logistics)" 
+                  value={singleModuleName}
+                  onChange={(e) => setSingleModuleName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAddSingleModule()}
+                />
+                <Button onClick={handleAddSingleModule} disabled={isAiLoading} className="bg-blue-600 hover:bg-blue-700 rounded-xl px-6">
+                  {isAiLoading ? <Loader2 size={16} className="animate-spin" /> : "Generate Details"}
+                </Button>
+              </div>
+            </div>
+
+            {/* Selection Preview Phase */}
+            {previewModule && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="p-8 bg-slate-900 rounded-[2.5rem] border border-[#3ABEF9]/30 shadow-2xl space-y-6"
+              >
+                <div className="flex justify-between items-start">
+                   <div className="space-y-1">
+                      <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#3ABEF9]">Selection Phase: AI Generated</div>
+                      <h4 className="text-2xl font-black uppercase text-white">{previewModule.name}</h4>
+                   </div>
+                   <button onClick={() => setPreviewModule(null)} className="text-white/40 hover:text-white">
+                      <X size={20} />
+                   </button>
+                </div>
+
+                <div className="space-y-3">
+                   <div className="text-[9px] font-black uppercase tracking-widest text-white/20">Proposed Core Features</div>
+                   <div className="grid grid-cols-1 gap-2">
+                      {previewModule.features.map((f: any, i: number) => (
+                         <div key={i} className="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
+                            <CheckCircle size={14} className="text-[#3ABEF9]" />
+                            <span className="text-[11px] font-bold text-white/70 uppercase">{f.name}</span>
+                         </div>
+                      ))}
+                   </div>
+                </div>
+
+                <div className="pt-4 flex gap-4">
+                   <Button onClick={confirmPreviewModule} className="flex-1 bg-[#3ABEF9] hover:bg-[#3ABEF9]/90 text-slate-900 font-black uppercase tracking-widest rounded-2xl py-6">
+                      Finalize & Add to Proposal Sheet
+                   </Button>
+                   <Button onClick={() => setPreviewModule(null)} variant="outline" className="border-white/10 text-white hover:bg-white/5 rounded-2xl px-8">
+                      Discard
+                   </Button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* AI Bulk */}
+            <div className="p-6 bg-purple-50/50 rounded-[2rem] border border-purple-100 space-y-4">
+              <div className="flex items-center gap-2 text-purple-600">
+                <Wand2 size={16} />
+                <span className="text-[10px] font-black uppercase tracking-widest">Bulk AI Extraction</span>
+              </div>
+              <Textarea 
+                className="bg-white border-purple-200 min-h-[100px]" 
+                placeholder="Paste system requirements or workflow paragraphs here..." 
+                value={bulkContext}
+                onChange={(e) => setBulkContext(e.target.value)}
+              />
+              <Button onClick={handleBulkExtract} disabled={isAiLoading || !bulkContext} className="w-full bg-purple-600 hover:bg-purple-700 rounded-xl">
+                {isAiLoading ? <Loader2 size={16} className="animate-spin" /> : "Extract All Modules & Features"}
+              </Button>
+            </div>
+
+            {/* Selected Modules List */}
+            <div className="space-y-6">
+              <div className="flex justify-between items-center px-2">
+                <LabelPremium>System Architecture Modules</LabelPremium>
+                <Button onClick={handleAddManualModule} variant="ghost" className="text-[10px] font-black uppercase text-blue-600 hover:underline">
+                  + Add Manual Module
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {proposal.solution.selectedModules.map((module, mIdx) => (
+                  <Card key={module.id} className="border-slate-200 overflow-hidden rounded-[2rem] shadow-sm">
+                    <div className="p-5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                      <div className="flex-1 flex gap-4 items-center">
+                        <Input 
+                          className="bg-transparent border-none font-black uppercase text-slate-800 focus-visible:ring-0 p-0 h-auto" 
+                          value={module.name} 
+                          onChange={(e) => {
+                            const next = [...proposal.solution.selectedModules];
+                            next[mIdx].name = e.target.value;
+                            updateSolution({ selectedModules: next });
+                          }}
+                        />
+                        <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-slate-200">
+                          <span className="text-[8px] font-black text-slate-400">₹</span>
+                          <input 
+                            type="text"
+                            placeholder="Price"
+                            className="w-16 bg-transparent border-none text-[10px] font-bold focus:outline-none"
+                            value={module.price || ""}
+                            onChange={(e) => {
+                              const next = [...proposal.solution.selectedModules];
+                              next[mIdx].price = e.target.value;
+                              updateSolution({ selectedModules: next });
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <button onClick={() => {
+                        const next = proposal.solution.selectedModules.filter((_, i) => i !== mIdx);
+                        updateSolution({ selectedModules: next });
+                      }} className="text-slate-300 hover:text-red-500">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                    <CardContent className="p-6 space-y-4">
+                      <div className="grid gap-3">
+                        {module.features.map((feature, fIdx) => {
+                          const fName = typeof feature === 'string' ? feature : feature.name;
+                          const fPrice = typeof feature === 'string' ? "" : (feature.price || "");
+                          
+                          return (
+                            <div key={fIdx} className="flex items-center gap-4 group">
+                              <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                              <Input 
+                                className="flex-1 bg-transparent border-none p-0 h-auto text-[11px] font-bold text-slate-600 focus-visible:ring-0" 
+                                value={fName}
+                                onChange={(e) => {
+                                  const next = [...proposal.solution.selectedModules];
+                                  next[mIdx].features[fIdx] = { name: e.target.value, price: fPrice };
+                                  updateSolution({ selectedModules: next });
+                                }}
+                              />
+                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <span className="text-[8px] font-black text-slate-300">₹</span>
+                                <input 
+                                  type="text"
+                                  placeholder="Add-on"
+                                  className="w-14 bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 text-[9px] font-bold focus:outline-none"
+                                  value={fPrice}
+                                  onChange={(e) => {
+                                    const next = [...proposal.solution.selectedModules];
+                                    next[mIdx].features[fIdx] = { name: fName, price: e.target.value };
+                                    updateSolution({ selectedModules: next });
+                                  }}
+                                />
+                              </div>
+                              <button onClick={() => {
+                                const next = [...proposal.solution.selectedModules];
+                                next[mIdx].features = next[mIdx].features.filter((_, i) => i !== fIdx);
+                                updateSolution({ selectedModules: next });
+                              }} className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500">
+                                <X size={14} />
+                              </button>
+                            </div>
+                          );
+                        })}
+                        <button onClick={() => {
+                          const next = [...proposal.solution.selectedModules];
+                          next[mIdx].features.push({ name: "New Feature", price: "" });
+                          updateSolution({ selectedModules: next });
+                        }} className="text-[9px] font-black uppercase text-slate-400 hover:text-blue-600 text-left pl-5 mt-2">
+                          + Add Feature
+                        </button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {proposal.solution.selectedModules.length === 0 && (
+                  <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
+                    <Box size={40} className="mx-auto text-slate-200 mb-4" />
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">No modules added yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         );
       case 6: // Technical Stack
@@ -617,21 +998,32 @@ export default function EditProposal() {
         </div>
 
         {/* Right Preview Panel: High-End Staging Area */}
-        <div className="hidden md:flex flex-1 bg-slate-100 items-start justify-center overflow-y-auto p-12 custom-scrollbar relative">
-           {/* Mockup Frame */}
-           <div className="w-full max-w-5xl relative z-10 flex justify-center py-20">
-              <div className="transform scale-[0.6] lg:scale-[0.8] xl:scale-[0.9] 2xl:scale-100 origin-top shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] transition-all duration-500">
-                 <ProposalPDF proposal={proposal} />
-              </div>
-           </div>
+        <div className="hidden md:flex flex-1 bg-slate-100 items-start justify-center overflow-y-auto p-12 custom-scrollbar relative scroll-smooth">
+            <div className="w-full max-w-5xl relative z-10 flex justify-center py-20">
+               <div className={`transition-all duration-500 origin-top shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] ${
+                 isPreviewZoomed 
+                   ? "scale-100" 
+                   : "scale-[0.6] lg:scale-[0.8] xl:scale-[0.9] 2xl:scale-100"
+               }`}>
+                  <ProposalPDF proposal={proposal} activeStep={currentStep} />
+               </div>
+            </div>
 
            {/* Preview Floating Indicators */}
            <div className="absolute top-8 left-8 flex items-center gap-4">
-              <div className="px-4 py-2 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-xl shadow-black/5">
-                 <div className="flex items-center gap-3">
+              <div className="px-4 py-2 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-xl shadow-black/5 flex items-center gap-3">
+                 <div className="flex items-center gap-3 border-r pr-3 border-slate-200">
                     <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-900">Live Strategic Engine</span>
                  </div>
+                 <Button 
+                   variant="ghost" 
+                   size="xs" 
+                   onClick={() => setIsPreviewZoomed(!isPreviewZoomed)}
+                   className="h-6 px-2 text-[8px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors"
+                 >
+                   {isPreviewZoomed ? "Exit Focus" : "Focus Mode"}
+                 </Button>
               </div>
            </div>
 

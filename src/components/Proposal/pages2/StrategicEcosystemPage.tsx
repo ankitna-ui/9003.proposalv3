@@ -9,109 +9,144 @@ interface PageProps {
 }
 
 const StrategicEcosystemPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
+  const pillars = proposal?.solution?.approachPoints || ["Agile Development Cycle", "Seamless API Orchestration", "End-to-End Encryption"];
+  const integrations = proposal?.solution?.integrations || ["Custom CRM", "ERP Sync", "Cloud DB", "Payment Gateway"];
+  const roles = proposal?.solution?.userRoles || ["Super Admin", "Department Head"];
+
+  // Logic for Pillars
+  const pillarCount = pillars.length;
+  const pillarStyle = pillarCount > 10 ? { p: 'p-1.5', text: 'text-[6px]', icon: 8, gap: 'gap-2', rounded: 'rounded-lg' } :
+                     pillarCount > 7 ? { p: 'p-2', text: 'text-[7px]', icon: 10, gap: 'gap-3', rounded: 'rounded-xl' } :
+                     pillarCount > 4 ? { p: 'p-3', text: 'text-[8px]', icon: 14, gap: 'gap-4', rounded: 'rounded-2xl' } :
+                     { p: 'p-4', text: 'text-[10px]', icon: 16, gap: 'gap-5', rounded: 'rounded-3xl' };
+
+  // Logic for Integrations
+  const intCount = integrations.length;
+  const intText = intCount > 12 ? 'text-[5px]' : intCount > 8 ? 'text-[6px]' : 'text-[8px]';
+  const intPad = intCount > 8 ? 'px-2 py-1' : 'px-3 py-2';
+
+  // Logic for Roles
+  const roleCount = roles.length;
+  const useGrid = roleCount > 3;
+  const roleStyle = roleCount > 8 ? { p: 'p-1.5', title: 'text-[6.5px]', sub: 'text-[4.5px]', box: 'w-7 h-7', icon: 0 } :
+                    roleCount > 5 ? { p: 'p-2', title: 'text-[7px]', sub: 'text-[5px]', box: 'w-8 h-8', icon: 0 } :
+                    roleCount > 3 ? { p: 'p-2.5', title: 'text-[8px]', sub: 'text-[6px]', box: 'w-9 h-9', icon: 10 } :
+                    { p: 'p-4', title: 'text-[10px]', sub: 'text-[8px]', box: 'w-10 h-10', icon: 14 };
+
   return (
     <PageWrapper pageNum={pageNum} title="Strategic Solution">
-       <div className="mb-10 relative">
-          <div className="flex items-center gap-2 mb-3">
-             <div className="w-8 h-[2px] bg-[#3ABEF9]" />
-             <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#3ABEF9]">Phase 02: Architecture</span>
-          </div>
-          <h2 className="text-5xl font-black uppercase tracking-tighter text-[#0B0E14] leading-none mb-2">
-             Strategic <span className="text-[#3ABEF9]">Ecosystem.</span>
-          </h2>
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Engineering Scalable Solutions for Digital Excellence</div>
-       </div>
-
-       <div className="space-y-10 flex-1">
-          {/* Approach Card */}
-          <div className="bg-[#F8FAFC] p-10 rounded-[3rem] border border-slate-100 relative overflow-hidden group shadow-sm">
-             <div className="absolute top-0 right-0 p-8 opacity-[0.05]">
-                <Layout size={160} className="text-[#3ABEF9]" />
+       <div className="flex flex-col h-full space-y-4">
+          {/* Header Section */}
+          <div className="mb-2 shrink-0">
+             <div className="flex items-center gap-2 mb-1">
+                <div className="w-8 h-[2px] bg-[#3ABEF9]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-[#3ABEF9]">Phase 02: Architecture</span>
              </div>
-             <div className="relative z-10 space-y-6">
-                <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#3ABEF9]/60">Solution Blueprint</div>
-                <p className="text-[13px] font-black uppercase text-slate-700 leading-relaxed max-w-[95%]">
-                   {proposal?.solution?.approach || "We propose building a custom automation system tailored to your specific business workflow, ensuring seamless data flow and operational transparency across all departments."}
-                </p>
-             </div>
+             <h2 className="text-5xl font-black uppercase tracking-tighter text-[#0B0E14] leading-none mb-1">
+                Strategic <span className="text-[#3ABEF9]">Ecosystem.</span>
+             </h2>
+             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Engineering Scalable Solutions for Digital Excellence</div>
           </div>
 
-          <div className="grid grid-cols-2 gap-10">
-             {/* Implementation Pillars */}
-             <div className="space-y-8">
-                <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Implementation Pillars</div>
-                <div className="space-y-4">
-                   {(proposal?.solution?.approachPoints || ["Agile Development Cycle", "Seamless API Orchestration", "End-to-End Encryption"]).map((point, i) => (
-                      <div key={i} className="flex items-center gap-5 p-5 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md transition-all group">
-                         <div className="w-10 h-10 rounded-2xl bg-[#3ABEF9]/10 flex items-center justify-center text-[#3ABEF9] group-hover:bg-[#3ABEF9] group-hover:text-white transition-colors">
-                            <CheckCircle2 size={18} strokeWidth={2.5} />
-                         </div>
-                         <span className="text-[11px] font-black uppercase tracking-tight text-slate-800">{point}</span>
-                      </div>
-                   ))}
+          {/* Main Content Area */}
+          <div className="flex-1 min-h-0 flex flex-col space-y-4">
+             {/* Approach Card */}
+             <div className="bg-[#F8FAFC] p-6 rounded-[2.5rem] border border-slate-100 relative overflow-hidden shrink-0">
+                <div className="absolute top-0 right-0 p-4 opacity-[0.05]">
+                   <Layout size={100} className="text-[#3ABEF9]" />
+                </div>
+                <div className="relative z-10 space-y-3">
+                   <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#3ABEF9]/60">Solution Blueprint</div>
+                   <p className="text-[11px] font-bold uppercase text-slate-700 leading-relaxed max-w-[95%]">
+                      {proposal?.solution?.approach || "We propose building a custom automation system tailored to your specific business workflow, ensuring seamless data flow and operational transparency across all departments."}
+                   </p>
                 </div>
              </div>
 
-             <div className="space-y-10">
-                {/* System Connectivity */}
-                <div className="space-y-6">
-                   <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Connectivity Hub</div>
-                   <div className="flex flex-wrap gap-3">
-                      {(proposal?.solution?.integrations || ["Custom CRM", "ERP Sync", "Cloud DB", "Payment Gateway"]).map((item, i) => (
-                         <div key={i} className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 rounded-xl border border-slate-800 group shadow-lg">
-                            <Globe size={12} className="text-[#3ABEF9]" />
-                            <span className="text-[9px] font-black uppercase tracking-widest text-white/80">{item}</span>
-                         </div>
-                      ))}
-                   </div>
-                </div>
-
-                {/* User Architecture */}
-                <div className="space-y-6">
-                   <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">User Hierarchy</div>
-                   <div className="grid grid-cols-1 gap-3">
-                      {(proposal?.solution?.userRoles || [
-                         { role: "Super Admin", access: "Full System Control", count: "1" },
-                         { role: "Department Head", access: "Operational Oversight", count: "5" }
-                      ]).map((roleObj: any, i) => (
-                         <div key={i} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-[#3ABEF9]/20 transition-all">
-                            <div className="flex items-center gap-4">
-                               <div className="w-10 h-10 rounded-xl bg-slate-50 flex flex-col items-center justify-center text-[#3ABEF9] border border-slate-100">
-                                  <div className="text-[12px] font-black leading-none">{roleObj.role ? roleObj.count : "1"}</div>
-                                  <div className="text-[5px] font-black uppercase tracking-widest opacity-50">Users</div>
-                               </div>
-                               <div className="space-y-0.5">
-                                  <div className="text-[10px] font-black uppercase text-slate-900 tracking-tight">
-                                     {typeof roleObj === 'string' ? roleObj : (roleObj?.role || "New Role")}
-                                  </div>
-                                  <div className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
-                                     {typeof roleObj === 'string' ? "Strategic Access" : (roleObj?.access || "Strategic Access")}
-                                  </div>
-                               </div>
+             {/* Grid Content */}
+             <div className="grid grid-cols-2 gap-6 flex-1 min-h-0">
+                {/* Left Column: Pillars */}
+                <div className="flex flex-col min-h-0">
+                   <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-3 shrink-0">Implementation Pillars</div>
+                   <div className="space-y-2 flex-1 min-h-0 overflow-hidden">
+                      {pillars.map((point, i) => (
+                         <div key={i} className={`flex items-center ${pillarStyle.gap} bg-white border border-slate-100 ${pillarStyle.rounded} shadow-sm transition-all ${pillarStyle.p}`}>
+                            <div className={`rounded-xl bg-[#3ABEF9]/10 flex items-center justify-center text-[#3ABEF9] shrink-0`} style={{ width: pillarCount > 10 ? '20px' : pillarCount > 7 ? '28px' : '36px', height: pillarCount > 10 ? '20px' : pillarCount > 7 ? '28px' : '36px' }}>
+                               <CheckCircle2 size={pillarStyle.icon} strokeWidth={2.5} />
                             </div>
-                            <UserCheck size={14} className="text-[#3ABEF9]/30" />
+                            <span className={`font-black uppercase tracking-tight text-slate-800 leading-none ${pillarStyle.text}`}>
+                               {point}
+                            </span>
                          </div>
                       ))}
                    </div>
                 </div>
+
+                {/* Right Column: Connectivity & Hierarchy */}
+                <div className="flex flex-col space-y-4 min-h-0">
+                   {/* System Connectivity */}
+                   <div className="shrink-0">
+                      <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-3">Connectivity Hub</div>
+                      <div className="flex flex-wrap gap-1.5">
+                         {integrations.map((item, i) => (
+                            <div key={i} className={`flex items-center gap-1.5 bg-slate-900 rounded-lg border border-slate-800 shadow-lg ${intPad}`}>
+                               <Globe size={intCount > 12 ? 6 : 8} className="text-[#3ABEF9]" />
+                               <span className={`font-black uppercase tracking-widest text-white/80 ${intText}`}>{item}</span>
+                            </div>
+                         ))}
+                      </div>
+                   </div>
+
+                   {/* User Architecture */}
+                   <div className="flex flex-col flex-1 min-h-0">
+                      <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-3 shrink-0">User Hierarchy</div>
+                      <div className={`grid gap-1.5 flex-1 min-h-0 overflow-hidden ${useGrid ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                         {roles.map((role, i) => {
+                            const roleName = typeof role === 'string' ? role : (role as any).role;
+                            const roleCount = typeof role === 'string' ? "1" : ((role as any).count || "1");
+                            const roleAccess = typeof role === 'string' ? "Strategic Access" : ((role as any).access || "Strategic Access");
+                            
+                            return (
+                               <div key={i} className={`flex items-center justify-between bg-white rounded-xl border border-slate-100 shadow-sm transition-all ${roleStyle.p}`}>
+                                  <div className="flex items-center gap-2 min-w-0">
+                                     <div className={`${roleStyle.box} rounded-lg bg-slate-50 flex flex-col items-center justify-center text-[#3ABEF9] border border-slate-100 shrink-0`}>
+                                        <div className={`${roleCount.length > 2 ? 'text-[7px]' : 'text-[9px]'} font-black leading-none`}>{roleCount}</div>
+                                        <div className="text-[4px] font-black uppercase tracking-widest opacity-40">User</div>
+                                     </div>
+                                     <div className="space-y-0.5 min-w-0">
+                                        <div className={`${roleStyle.title} font-black uppercase text-slate-900 tracking-tight leading-none truncate`}>
+                                           {roleName}
+                                        </div>
+                                        <div className={`${roleStyle.sub} font-bold text-slate-400 uppercase tracking-widest leading-none truncate`}>
+                                           {roleAccess}
+                                        </div>
+                                     </div>
+                                  </div>
+                                  {roleStyle.icon > 0 && <UserCheck size={roleStyle.icon} className="text-[#3ABEF9]/20 shrink-0" />}
+                               </div>
+                            );
+                         })}
+                      </div>
+                   </div>
+                </div>
              </div>
           </div>
-       </div>
 
-       {/* Trust Section */}
-       <div className="mt-10 p-10 bg-slate-900 rounded-[3rem] relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#3ABEF9]/20 to-transparent" />
-          <div className="relative z-10 flex items-center justify-between">
-             <div className="space-y-2">
-                <div className="text-[#3ABEF9] text-[10px] font-black uppercase tracking-[0.5em]">Scalability Protocol</div>
-                <h4 className="text-white text-xl font-black uppercase tracking-tight">Built for Future Expansion.</h4>
-             </div>
-             <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#3ABEF9]">
-                   <Cpu size={24} />
+          {/* Trust Section Footer - ABSOLUTE STABILITY */}
+          <div className="p-6 bg-slate-900 rounded-[2.5rem] relative overflow-hidden shrink-0 border border-slate-800">
+             <div className="absolute inset-0 bg-gradient-to-r from-[#3ABEF9]/20 to-transparent" />
+             <div className="relative z-10 flex items-center justify-between">
+                <div className="space-y-1">
+                   <div className="text-[#3ABEF9] text-[9px] font-black uppercase tracking-[0.5em]">Scalability Protocol</div>
+                   <h4 className="text-white text-lg font-black uppercase tracking-tight">Built for Future Expansion.</h4>
                 </div>
-                <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#3ABEF9]">
-                   <Shield size={24} />
+                <div className="flex gap-3">
+                   <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#3ABEF9]">
+                      <Cpu size={20} />
+                   </div>
+                   <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#3ABEF9]">
+                      <Shield size={20} />
+                   </div>
                 </div>
              </div>
           </div>
