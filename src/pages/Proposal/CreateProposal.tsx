@@ -183,53 +183,62 @@ export default function CreateProposal() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-white">
       <div className="flex h-screen overflow-hidden">
-        {/* Input Panel */}
-        <div className="w-full md:w-1/2 lg:w-[42%] xl:w-[40%] flex flex-col border-r bg-white shadow-2xl z-30 overflow-hidden">
-          <div className="px-10 py-8 border-b bg-white flex justify-between items-center">
+        {/* Modernized Input Panel */}
+        <div className="w-full md:w-1/2 lg:w-[42%] xl:w-[40%] flex flex-col border-r border-slate-100 bg-[#F8FAFC] shadow-[20px_0_40px_-15px_rgba(0,0,0,0.03)] z-30 overflow-hidden relative">
+          
+          {/* Header */}
+          <div className="px-10 py-8 border-b border-slate-100 bg-white/80 backdrop-blur-md flex justify-between items-center sticky top-0 z-10">
             <div className="flex items-center gap-5">
-              <div className="w-12 h-12 bg-[#0B0E14] rounded-2xl flex items-center justify-center text-white shadow-2xl">
+              <div className="w-12 h-12 bg-[#0B0E14] rounded-2xl flex items-center justify-center text-white shadow-xl rotate-3 hover:rotate-0 transition-transform duration-500">
                 <img src="/asset/logo.png" alt="W" className="w-8 h-8 object-contain brightness-0 invert" />
               </div>
               <div>
-                <h1 className="text-2xl font-black uppercase tracking-tighter text-[#0B0E14]">Proposal <span className="text-primary">OS.</span></h1>
+                <h1 className="text-2xl font-black uppercase tracking-tighter text-[#0B0E14]">Proposal <span className="text-primary italic">OS.</span></h1>
                 <div className="flex items-center gap-2 mt-1">
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Strategic Initiative</p>
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#99CB48]" />
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Strategic Editor V3</p>
                 </div>
               </div>
             </div>
-            <button onClick={() => navigate("/dashboard")} className="p-3 bg-slate-50 rounded-2xl text-slate-400 hover:text-red-500 transition-all hover:bg-red-50"><X size={24} /></button>
+            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 flex items-center justify-center bg-slate-100/50 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all border border-transparent hover:border-red-100">
+              <X size={20} />
+            </button>
           </div>
 
-          <div className="px-10 py-4 bg-slate-50/50 border-b flex gap-3 overflow-x-auto no-scrollbar">
+          {/* Premium Step Navigation */}
+          <div className="px-8 py-5 bg-white/40 border-b border-slate-100 flex gap-2.5 overflow-x-auto no-scrollbar scroll-smooth">
             {steps.map((step, i) => {
               const StepIcon = step.icon;
+              const isActive = currentStep === i;
               return (
                 <button 
                   key={i} 
                   onClick={() => setCurrentStep(i)} 
-                  className={`flex-shrink-0 flex items-center gap-3 px-5 py-3 rounded-2xl transition-all ${
-                    currentStep === i 
-                      ? "bg-[#0B0E14] text-white shadow-xl shadow-black/10" 
-                      : "bg-white border border-slate-100 text-slate-400 hover:border-slate-200"
+                  className={`flex-shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-300 ${
+                    isActive 
+                      ? "bg-[#0B0E14] text-white shadow-xl shadow-black/10 scale-105" 
+                      : "bg-white/80 border border-slate-100 text-slate-400 hover:border-primary/30 hover:text-slate-600"
                   }`}
                 >
-                  <StepIcon size={14} className={currentStep === i ? "text-primary" : "text-slate-300"} />
-                  <span className="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">{step.name}</span>
+                  <div className={`p-1.5 rounded-lg ${isActive ? "bg-primary/20 text-primary" : "bg-slate-100 text-slate-300"}`}>
+                    <StepIcon size={12} />
+                  </div>
+                  <span className="text-[9px] font-black uppercase tracking-widest whitespace-nowrap">{step.name}</span>
                 </button>
               );
             })}
           </div>
 
-          <div className="flex-1 overflow-y-auto p-12 custom-scrollbar bg-white">
+          {/* Form Content Area */}
+          <div className="flex-1 overflow-y-auto p-12 custom-scrollbar bg-white/30">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={currentStep} 
-                initial={{ opacity: 0, y: 20 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                exit={{ opacity: 0, y: -20 }} 
+                initial={{ opacity: 0, x: -10 }} 
+                animate={{ opacity: 1, x: 0 }} 
+                exit={{ opacity: 0, x: 10 }} 
                 transition={{ duration: 0.3 }}
                 className="max-w-2xl mx-auto"
               >
@@ -238,40 +247,54 @@ export default function CreateProposal() {
             </AnimatePresence>
           </div>
 
-          <div className="p-10 border-t bg-slate-50/80 backdrop-blur-sm flex justify-between items-center">
-            <Button variant="outline" onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))} disabled={currentStep === 0} className="h-14 px-8 rounded-2xl border-slate-200 text-xs font-black uppercase tracking-widest bg-white">
-              <ChevronLeft size={20} className="mr-2" /> Previous
+          {/* Modernized Footer Controls */}
+          <div className="p-10 border-t border-slate-100 bg-white/90 backdrop-blur-xl flex justify-between items-center sticky bottom-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))} 
+              disabled={currentStep === 0} 
+              className="h-14 px-8 rounded-2xl border-slate-200 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-slate-50 transition-all disabled:opacity-30"
+            >
+              <ChevronLeft size={18} className="mr-2" /> Back
             </Button>
-            {currentStep < steps.length - 1 ? (
-              <Button onClick={nextStep} className="h-14 px-10 rounded-2xl bg-[#0B0E14] hover:bg-black text-white shadow-2xl shadow-black/10 text-xs font-black uppercase tracking-widest">
-                Next Sequence <ChevronRight size={20} className="text-primary ml-2" />
-              </Button>
-            ) : (
-              <Button onClick={handleSave} disabled={isSaving} className="h-14 px-10 rounded-2xl bg-primary hover:bg-[#88B540] text-white shadow-2xl shadow-primary/20 text-xs font-black uppercase tracking-widest">
-                {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} className="mr-2" />} Finalize Protocol
-              </Button>
-            )}
+            
+            <div className="flex gap-2 items-center">
+              <div className="hidden lg:flex flex-col items-end mr-4">
+                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Progress</span>
+                <span className="text-[10px] font-black text-slate-900">{Math.round(((currentStep + 1) / steps.length) * 100)}% Complete</span>
+              </div>
+              {currentStep < steps.length - 1 ? (
+                <Button onClick={nextStep} className="h-14 px-10 rounded-2xl bg-[#0B0E14] hover:bg-black text-white shadow-xl shadow-black/10 text-[10px] font-black uppercase tracking-[0.2em] group">
+                  Next Sequence <ChevronRight size={18} className="text-primary ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              ) : (
+                <Button onClick={handleSave} disabled={isSaving} className="h-14 px-10 rounded-2xl bg-primary hover:bg-[#88B540] text-white shadow-xl shadow-primary/20 text-[10px] font-black uppercase tracking-[0.2em]">
+                  {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} className="mr-2" />} Finalize Protocol
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Preview Panel */}
-        <div className="hidden md:flex flex-1 bg-slate-100 items-start justify-center overflow-y-auto p-16 custom-scrollbar relative">
-           <div className="w-full max-w-5xl py-20 relative z-10">
-              <div className="transform scale-[0.6] lg:scale-[0.8] xl:scale-[0.9] 2xl:scale-105 origin-top shadow-[0_60px_150px_-30px_rgba(0,0,0,0.4)] transition-all duration-700">
+        {/* Cleaned Preview Panel (Removed background as requested) */}
+        <div className="hidden md:flex flex-1 bg-slate-50 items-start justify-center overflow-y-auto p-12 custom-scrollbar relative">
+           <div className="w-full max-w-5xl py-12 relative z-10 flex justify-center">
+              <div className="origin-top shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 transform scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-[0.95]">
                  <ProposalPDF proposal={proposal} />
               </div>
            </div>
            
-           <div className="absolute top-10 left-10 flex items-center gap-4">
-              <div className="px-6 py-3 bg-white/90 backdrop-blur-xl border border-white rounded-[2rem] shadow-2xl">
-                 <div className="flex items-center gap-4">
-                    <div className="w-3 h-3 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(153,203,72,0.8)]" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-900">Live Strategic Engine</span>
+           <div className="absolute top-8 left-8 flex items-center gap-4">
+              <div className="px-6 py-3 bg-white border border-slate-100 rounded-[2rem] shadow-xl">
+                 <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Real-time Visualization</span>
                  </div>
               </div>
            </div>
         </div>
       </div>
     </div>
+
   );
 }
