@@ -765,28 +765,150 @@ export default function EditProposal() {
           </div>
         );
       case 7: // Strategic ROI
+        const pCost = parseFloat(proposal.roi.projectCost) || 0;
+        const mCost = parseFloat(proposal.roi.monthlyCost) || 0;
+        const curRev = parseFloat(proposal.roi.currentRevenue) || 0;
+        const curOps = parseFloat(proposal.roi.currentOpsCost) || 0;
+        const manHrs = parseFloat(proposal.roi.manualHoursPerMonth) || 0;
+        const hRate = parseFloat(proposal.roi.hourlyRate) || 0;
+        const revPct = parseFloat(proposal.roi.revenueIncrease) || 0;
+        const costPct = parseFloat(proposal.roi.costReduction) || 0;
+        const timePct = parseFloat(proposal.roi.productivityIncrease) || 0;
+
+        const mRevGain = curRev * (revPct / 100);
+        const mCostSave = curOps * (costPct / 100);
+        const hrsSaved = manHrs * (timePct / 100);
+        const mTimeSave = hrsSaved * hRate;
+        const totalMBenefit = mRevGain + mCostSave + mTimeSave;
+        const annualBenefit = totalMBenefit * 12;
+        const totalInvest = pCost + (mCost * 12);
+        const roiPct = totalInvest > 0 ? Math.round(((annualBenefit - totalInvest) / totalInvest) * 100) : 0;
+        const netMBenefit = totalMBenefit - mCost;
+        const breakEvenM = netMBenefit > 0 ? Math.ceil(pCost / netMBenefit) : 0;
+        const gFactor = totalInvest > 0 ? (annualBenefit / totalInvest).toFixed(1) : "0";
+        const fmtINR = (v: number) => `₹${v.toLocaleString("en-IN")}`;
+
         return (
-          <div className="space-y-8">
-            <SectionHeader title="Economic Impact" subtitle="Quantify the expected returns and efficiency gains" />
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <LabelPremium>Revenue Increase (%)</LabelPremium>
-                <Input type="number" className="bg-white border-slate-200" value={proposal.roi.revenueIncrease} onChange={(e) => updateROI({ revenueIncrease: e.target.value })} />
+          <div className="space-y-8 pb-10">
+            <SectionHeader title="Strategic ROI Engine" subtitle="Real financial projections based on actual metrics" />
+
+            {/* Investment */}
+            <div className="p-6 bg-red-50/30 rounded-[2rem] border border-red-100/60 space-y-4">
+              <div className="flex items-center gap-2 text-red-500">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em]">💰 Investment Parameters</span>
               </div>
-              <div className="space-y-1">
-                <LabelPremium>Productivity Gain (%)</LabelPremium>
-                <Input type="number" className="bg-white border-slate-200" value={proposal.roi.productivityIncrease} onChange={(e) => updateROI({ productivityIncrease: e.target.value })} />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <LabelPremium>Project Cost (One-time ₹)</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-red-100 rounded-2xl font-black" placeholder="500000" value={proposal.roi.projectCost || ""} onChange={(e) => updateROI({ projectCost: e.target.value })} />
+                </div>
+                <div className="space-y-1">
+                  <LabelPremium>Monthly Maintenance (₹)</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-red-100 rounded-2xl" placeholder="15000" value={proposal.roi.monthlyCost || ""} onChange={(e) => updateROI({ monthlyCost: e.target.value })} />
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-6 p-6 bg-slate-900 rounded-[2rem] text-white">
-              <div className="space-y-1">
-                <LabelPremium className="text-white/40">Calculated System ROI</LabelPremium>
-                <div className="text-4xl font-black text-primary tracking-tighter">{proposal.roi.expectedROI}%</div>
+
+            {/* Baseline */}
+            <div className="p-6 bg-amber-50/30 rounded-[2rem] border border-amber-100/60 space-y-4">
+              <div className="flex items-center gap-2 text-amber-600">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em]">📊 Current State Baseline</span>
               </div>
-              <div className="space-y-1 border-l border-white/10 pl-6">
-                <LabelPremium className="text-white/40">Profit Impact (est.)</LabelPremium>
-                <Input className="bg-transparent border-none p-0 h-auto text-2xl font-black text-white focus-visible:ring-0" placeholder="e.g. $15k/mo" value={proposal.roi.profitImpact} onChange={(e) => updateROI({ profitImpact: e.target.value })} />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <LabelPremium>Monthly Revenue (₹)</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-amber-100 rounded-2xl" placeholder="1000000" value={proposal.roi.currentRevenue || ""} onChange={(e) => updateROI({ currentRevenue: e.target.value })} />
+                </div>
+                <div className="space-y-1">
+                  <LabelPremium>Monthly Ops Cost (₹)</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-amber-100 rounded-2xl" placeholder="300000" value={proposal.roi.currentOpsCost || ""} onChange={(e) => updateROI({ currentOpsCost: e.target.value })} />
+                </div>
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <LabelPremium>Manual Hours / Month</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-amber-100 rounded-2xl" placeholder="400" value={proposal.roi.manualHoursPerMonth || ""} onChange={(e) => updateROI({ manualHoursPerMonth: e.target.value })} />
+                </div>
+                <div className="space-y-1">
+                  <LabelPremium>Hourly Rate (₹)</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-amber-100 rounded-2xl" placeholder="300" value={proposal.roi.hourlyRate || ""} onChange={(e) => updateROI({ hourlyRate: e.target.value })} />
+                </div>
+              </div>
+            </div>
+
+            {/* Projected */}
+            <div className="p-6 bg-emerald-50/30 rounded-[2rem] border border-emerald-100/60 space-y-4">
+              <div className="flex items-center gap-2 text-emerald-600">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em]">📈 Projected Impact (%)</span>
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-1">
+                  <LabelPremium>Revenue ↑ %</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-emerald-100 rounded-2xl font-black text-center" placeholder="20" value={proposal.roi.revenueIncrease} onChange={(e) => updateROI({ revenueIncrease: e.target.value })} />
+                </div>
+                <div className="space-y-1">
+                  <LabelPremium>Cost ↓ %</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-emerald-100 rounded-2xl font-black text-center" placeholder="15" value={proposal.roi.costReduction} onChange={(e) => updateROI({ costReduction: e.target.value })} />
+                </div>
+                <div className="space-y-1">
+                  <LabelPremium>Time Saved %</LabelPremium>
+                  <Input type="number" className="h-12 bg-white border-emerald-100 rounded-2xl font-black text-center" placeholder="40" value={proposal.roi.productivityIncrease} onChange={(e) => updateROI({ productivityIncrease: e.target.value })} />
+                </div>
+              </div>
+            </div>
+
+            {/* LIVE DASHBOARD */}
+            <div className="p-8 bg-slate-900 rounded-[2.5rem] shadow-2xl space-y-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-6 opacity-5">
+                <svg width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="#99CB48" strokeWidth="1"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-2 h-2 rounded-full bg-[#99CB48] animate-pulse" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[#99CB48]">Live Calculation Engine</span>
+                </div>
+
+                <div className="flex items-end justify-between mb-8">
+                  <div className="space-y-1">
+                    <div className="text-[9px] font-black text-white/30 uppercase tracking-widest">Calculated ROI</div>
+                    <div className="text-6xl font-black text-white tracking-tighter">{roiPct}<span className="text-[#99CB48]">%</span></div>
+                  </div>
+                  <div className="text-right space-y-1">
+                    <div className="text-[9px] font-black text-white/30 uppercase tracking-widest">Monthly Surplus</div>
+                    <div className="text-3xl font-black text-[#99CB48] tracking-tighter">{fmtINR(Math.round(totalMBenefit))}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2">Revenue Gain</div>
+                    <div className="text-lg font-black text-white">{fmtINR(Math.round(mRevGain))}</div>
+                    <div className="text-[8px] text-white/15 font-bold">/month</div>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2">Cost Saved</div>
+                    <div className="text-lg font-black text-white">{fmtINR(Math.round(mCostSave))}</div>
+                    <div className="text-[8px] text-white/15 font-bold">/month</div>
+                  </div>
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/5">
+                    <div className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2">Time Saved</div>
+                    <div className="text-lg font-black text-white">{Math.round(hrsSaved)} <span className="text-xs text-white/30">hrs</span></div>
+                    <div className="text-[8px] text-white/15 font-bold">= {fmtINR(Math.round(mTimeSave))}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                  <div><div className="text-[8px] font-black text-white/25 uppercase">Break-even</div><div className="text-sm font-black text-white">{breakEvenM > 0 ? `${breakEvenM} Mo` : "—"}</div></div>
+                  <div className="text-center"><div className="text-[8px] font-black text-white/25 uppercase">Annual</div><div className="text-sm font-black text-[#99CB48]">{fmtINR(Math.round(annualBenefit))}</div></div>
+                  <div className="text-right"><div className="text-[8px] font-black text-white/25 uppercase">Growth</div><div className="text-sm font-black text-white">{gFactor}x</div></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="space-y-1">
+              <LabelPremium>Impact Summary (for PDF)</LabelPremium>
+              <Textarea className="min-h-[80px] bg-white border-slate-200 rounded-3xl p-5" placeholder="This transformation framework..." value={proposal.roi.impactSummary} onChange={(e) => updateROI({ impactSummary: e.target.value })} />
             </div>
           </div>
         );
