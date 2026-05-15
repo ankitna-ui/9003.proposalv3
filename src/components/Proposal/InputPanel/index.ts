@@ -9,4 +9,5 @@ export { default as StrategicROIPanel } from "./StrategicROIPanel";
 export { default as CommercialFrameworkPanel } from "./CommercialFrameworkPanel";
 export { default as PortfolioProtocolPanel } from "./PortfolioProtocolPanel";
 export { default as CTAClosingPanel } from "./CTAClosingPanel";
-export { InputPanelProps, LabelPremium, SectionHeader } from "./shared";
+export type { InputPanelProps } from "./shared";
+export { LabelPremium, SectionHeader } from "./shared";

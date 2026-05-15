@@ -26,27 +26,22 @@ const CommercialFrameworkPage: React.FC<PageProps> = ({ proposal, pageNum }) => 
     const discountAmount = base * (discountPct / 100);
     const subtotal = base - discountAmount;
     
-    // 3. Tax (GST)
-    const taxPctStr = String(proposal?.pricing?.taxRate || "0").replace(/[^0-9.]/g, "");
-    const taxPct = parseFloat(taxPctStr) || 0;
-    const taxAmount = subtotal * (taxPct / 100);
-    
-    // 4. Grand Total
-    const grandTotal = subtotal + taxAmount;
+    // 3. Final Price (As per user request: GST is EXTRA, not included in total)
+    const finalPrice = subtotal;
+    const taxPct = proposal?.pricing?.taxRate || "18";
     
     return {
       base,
       discountPct,
       discountAmount,
       subtotal,
-      taxPct,
-      taxAmount,
-      grandTotal
+      finalPrice,
+      taxPct
     };
   };
 
   const f = calculateFinancials();
-  const formatCurrency = (val: number) => `₹${Math.round(val).toLocaleString()}`;
+  const formatCurrency = (val: number) => `₹${Math.round(val).toLocaleString("en-IN")}`;
 
   return (
     <PageWrapper pageNum={pageNum} title="Commercial Framework">
@@ -92,15 +87,15 @@ const CommercialFrameworkPage: React.FC<PageProps> = ({ proposal, pageNum }) => 
                           <div className="flex flex-col">
                              <div className="text-[9px] font-black text-[#99CB48] uppercase tracking-[0.4em] mb-1">Total Valuation</div>
                              <div className="text-6xl font-black text-white tracking-tighter leading-none flex items-baseline gap-1">
-                                <span className="text-[#99CB48]">{formatCurrency(f.subtotal).substring(0, 1)}</span>
-                                {formatCurrency(f.subtotal).substring(1)}
+                                <span className="text-[#99CB48]">{formatCurrency(f.finalPrice).substring(0, 1)}</span>
+                                {formatCurrency(f.finalPrice).substring(1)}
                              </div>
                           </div>
                           
                           <div className="pt-6 border-t border-white/5 flex flex-col gap-3">
                              <div className="flex justify-between items-center">
-                                <div className="text-[9px] font-black uppercase tracking-widest text-white/40">Taxation</div>
-                                <div className="text-[9px] font-black text-[#99CB48]">GST @ {f.taxPct}% Extra</div>
+                                <div className="text-[10px] font-black uppercase tracking-widest text-white/40 italic">Exclusive of Taxation</div>
+                                <div className="text-[10px] font-black text-[#99CB48] uppercase tracking-widest">+{f.taxPct}% GST Extra</div>
                              </div>
                           </div>
                        </div>
@@ -112,7 +107,7 @@ const CommercialFrameworkPage: React.FC<PageProps> = ({ proposal, pageNum }) => 
                           </div>
                           <div className="space-y-1">
                              <div className="text-[8px] font-black uppercase tracking-widest text-white/20">Quote Life</div>
-                             <div className="text-[10px] font-black uppercase tracking-tight text-[#99CB48]">15 Days</div>
+                             <div className="text-[10px] font-black uppercase tracking-tight text-[#99CB48]">30 Days</div>
                           </div>
                        </div>
                     </div>
@@ -126,7 +121,7 @@ const CommercialFrameworkPage: React.FC<PageProps> = ({ proposal, pageNum }) => 
                        <div className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">ROI Justification</div>
                     </div>
                     <p className="text-[11px] font-bold text-slate-800 leading-relaxed uppercase italic">
-                       "{proposal?.pricing?.roiLogic || "The investment is optimized for high-yield operational efficiency, with a projected systemic ROI realized through automated cost reduction and data-driven scaling."}"
+                       "{proposal?.pricing?.roiLogic || "The investment is optimized for high-yield operational efficiency, with a projected systemic ROI realized through automated cost reduction."}"
                     </p>
                  </div>
               </div>
@@ -142,14 +137,14 @@ const CommercialFrameworkPage: React.FC<PageProps> = ({ proposal, pageNum }) => 
                        <div className="text-[10px] font-black text-[#99CB48] uppercase tracking-widest bg-[#99CB48]/10 px-3 py-1 rounded-full">Payment Schedule</div>
                     </div>
                     
-                    <div className="space-y-2">
-                       {(proposal?.pricing?.milestones || [
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                       {(proposal?.pricing?.milestones?.length > 0 ? proposal.pricing.milestones : [
                           { name: "Initiation Protocol", percentage: 40, description: "System blueprint & environment setup" },
                           { name: "Core Architecture", percentage: 40, description: "Backend logic & primary UI modules" },
                           { name: "Final Deployment", percentage: 20, description: "UAT, optimization & handoff" }
                        ]).map((m, i) => {
                           const mCount = proposal?.pricing?.milestones?.length || 3;
-                          const isDense = mCount > 8;
+                          const isDense = mCount > 6;
                           return (
                              <div key={i} className={`flex items-center justify-between bg-white border-2 border-slate-50 rounded-[2.5rem] shadow-sm ${isDense ? 'p-2 px-4' : 'p-4 px-6'}`}>
                                 <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -161,13 +156,13 @@ const CommercialFrameworkPage: React.FC<PageProps> = ({ proposal, pageNum }) => 
                                    </div>
                                    <div className="min-w-0 flex-1">
                                       <div className={`${isDense ? 'text-[8px]' : 'text-[10px]'} font-black uppercase text-slate-900 tracking-tight leading-tight`}>{m.name}</div>
-                                      {!isDense && mCount <= 6 && (
+                                      {!isDense && (
                                          <div className="text-[7px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 leading-tight">{m.description}</div>
                                       )}
                                    </div>
                                 </div>
                                 <div className="flex flex-col items-end shrink-0 ml-4">
-                                   <div className={`${isDense ? 'text-[8px]' : 'text-[11px]'} font-black text-slate-900`}>{formatCurrency(f.subtotal * (m.percentage/100))}</div>
+                                   <div className={`${isDense ? 'text-[8px]' : 'text-[11px]'} font-black text-slate-900`}>{formatCurrency(f.finalPrice * (parseFloat(String(m.percentage))/100))}</div>
                                    {!isDense && (
                                       <div className="text-[6px] font-black text-slate-300 uppercase tracking-tighter">Value</div>
                                    )}
@@ -184,7 +179,6 @@ const CommercialFrameworkPage: React.FC<PageProps> = ({ proposal, pageNum }) => 
                           <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#99CB48]">Service Protocol</div>
                           <h3 className="text-xl font-black uppercase tracking-tighter leading-none">Maintenance & Infrastructure</h3>
                        </div>
-                       <ShieldCheck size={20} className="text-[#99CB48]" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                        <div className="p-4 bg-white/5 rounded-3xl border border-white/5 space-y-1">
