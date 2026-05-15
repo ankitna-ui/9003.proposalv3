@@ -5,14 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Save, 
-  Wand2, 
-  Plus, 
-  X, 
-  Loader2, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Save,
+  Wand2,
+  Plus,
+  X,
+  Loader2,
   Trash2,
   Layout,
   Award,
@@ -67,20 +67,20 @@ export default function EditProposal() {
   const [previewModule, setPreviewModule] = useState<Module | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { 
-    proposal, 
-    updateClient, 
-    updateSituation, 
-    updateSolution, 
+  const {
+    proposal,
+    updateClient,
+    updateSituation,
+    updateSolution,
     updateTechArchitecture,
-    updateROI, 
+    updateROI,
     updateExperience,
-    updatePricing, 
+    updatePricing,
     updateClosing,
     setAIContent,
     setProposal
   } = useProposalForm();
-  
+
   const { consumeTokens } = useTokens();
   const [isPreviewZoomed, setIsPreviewZoomed] = useState(false);
 
@@ -169,7 +169,7 @@ export default function EditProposal() {
   const handleSave = async () => {
     const user = auth.currentUser;
     if (!user || !id) return;
-    
+
     if (proposal.userId !== user.uid) {
       alert("Permission denied. You do not own this strategic asset.");
       return;
@@ -221,7 +221,7 @@ export default function EditProposal() {
         return (
           <div className="space-y-8">
             <SectionHeader title="Brand Configuration" subtitle="Define the strategic identity of this proposal" />
-            
+
             <div className="space-y-1">
               <LabelPremium>Proposal ID</LabelPremium>
               <div className="relative">
@@ -291,7 +291,7 @@ export default function EditProposal() {
         return (
           <div className="space-y-8">
             <SectionHeader title="Operational Audit Diagnosis" subtitle="Identify core bottlenecks and systemic friction" />
-            
+
             <div className="space-y-1">
               <LabelPremium>Audit Narrative (Situational Analysis)</LabelPremium>
               <Textarea className="min-h-[100px] bg-white border-slate-200" placeholder="Describe the current state of operations..." value={proposal.situation.currentWorkflow} onChange={(e) => updateSituation({ currentWorkflow: e.target.value })} />
@@ -344,7 +344,7 @@ export default function EditProposal() {
         return (
           <div className="space-y-8 pb-10">
             <SectionHeader title="Strategic Solution Architecture" subtitle="Define pillars, connectivity, and hierarchy" />
-            
+
             <div className="space-y-1">
               <LabelPremium>Strategic Approach (Narrative)</LabelPremium>
               <Textarea className="min-h-[80px] bg-white border-slate-200" placeholder="Describe the overall strategy..." value={proposal.solution.approach} onChange={(e) => updateSolution({ approach: e.target.value })} />
@@ -421,7 +421,7 @@ export default function EditProposal() {
         return (
           <div className="space-y-8">
             <SectionHeader title="System Logic Architecture" subtitle="Upload the operational flowchart and define demo access" />
-            
+
             <div className="space-y-6">
               <div className="space-y-1">
                 <LabelPremium>Flowchart Logic Map (Image)</LabelPremium>
@@ -464,11 +464,11 @@ export default function EditProposal() {
                           <span className="bg-white px-4">Or use Image URL</span>
                         </div>
                       </div>
-                      <Input 
-                        className="bg-white border-slate-200 text-[10px]" 
-                        placeholder="https://imgur.com/your-flowchart.png" 
-                        value={proposal.solution.flowchartImageUrl} 
-                        onChange={(e) => updateSolution({ flowchartImageUrl: e.target.value })} 
+                      <Input
+                        className="bg-white border-slate-200 text-[10px]"
+                        placeholder="https://imgur.com/your-flowchart.png"
+                        value={proposal.solution.flowchartImageUrl}
+                        onChange={(e) => updateSolution({ flowchartImageUrl: e.target.value })}
                       />
                     </>
                   )}
@@ -552,7 +552,7 @@ export default function EditProposal() {
           <div className="space-y-8 pb-20">
             <TokenAnalyticsBar />
             <SectionHeader title="Functional Blueprint" subtitle="Define system modules via AI or Manual entry" />
-            
+
             {/* AI Individual */}
             <div className="p-6 bg-blue-50/50 rounded-[2rem] border border-blue-100 space-y-4">
               <div className="flex items-center gap-2 text-blue-600">
@@ -560,9 +560,9 @@ export default function EditProposal() {
                 <span className="text-[10px] font-black uppercase tracking-widest">AI Module Generator</span>
               </div>
               <div className="flex gap-2">
-                <Input 
-                  className="bg-white border-blue-200" 
-                  placeholder="Module Name (e.g. Smart Logistics)" 
+                <Input
+                  className="bg-white border-blue-200"
+                  placeholder="Module Name (e.g. Smart Logistics)"
                   value={singleModuleName}
                   onChange={(e) => setSingleModuleName(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddSingleModule()}
@@ -575,40 +575,40 @@ export default function EditProposal() {
 
             {/* Selection Preview Phase */}
             {previewModule && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="p-8 bg-slate-900 rounded-[2.5rem] border border-[#3ABEF9]/30 shadow-2xl space-y-6"
               >
                 <div className="flex justify-between items-start">
-                   <div className="space-y-1">
-                      <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#3ABEF9]">Selection Phase: AI Generated</div>
-                      <h4 className="text-2xl font-black uppercase text-white">{previewModule.name}</h4>
-                   </div>
-                   <button onClick={() => setPreviewModule(null)} className="text-white/40 hover:text-white">
-                      <X size={20} />
-                   </button>
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-black uppercase tracking-[0.4em] text-[#3ABEF9]">Selection Phase: AI Generated</div>
+                    <h4 className="text-2xl font-black uppercase text-white">{previewModule.name}</h4>
+                  </div>
+                  <button onClick={() => setPreviewModule(null)} className="text-white/40 hover:text-white">
+                    <X size={20} />
+                  </button>
                 </div>
 
                 <div className="space-y-3">
-                   <div className="text-[9px] font-black uppercase tracking-widest text-white/20">Proposed Core Features</div>
-                   <div className="grid grid-cols-1 gap-2">
-                      {previewModule.features.map((f: any, i: number) => (
-                         <div key={i} className="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
-                            <CheckCircle size={14} className="text-[#3ABEF9]" />
-                            <span className="text-[11px] font-bold text-white/70 uppercase">{f.name}</span>
-                         </div>
-                      ))}
-                   </div>
+                  <div className="text-[9px] font-black uppercase tracking-widest text-white/20">Proposed Core Features</div>
+                  <div className="grid grid-cols-1 gap-2">
+                    {previewModule.features.map((f: any, i: number) => (
+                      <div key={i} className="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl">
+                        <CheckCircle size={14} className="text-[#3ABEF9]" />
+                        <span className="text-[11px] font-bold text-white/70 uppercase">{f.name}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="pt-4 flex gap-4">
-                   <Button onClick={confirmPreviewModule} className="flex-1 bg-[#3ABEF9] hover:bg-[#3ABEF9]/90 text-slate-900 font-black uppercase tracking-widest rounded-2xl py-6">
-                      Finalize & Add to Proposal Sheet
-                   </Button>
-                   <Button onClick={() => setPreviewModule(null)} variant="outline" className="border-white/10 text-white hover:bg-white/5 rounded-2xl px-8">
-                      Discard
-                   </Button>
+                  <Button onClick={confirmPreviewModule} className="flex-1 bg-[#3ABEF9] hover:bg-[#3ABEF9]/90 text-slate-900 font-black uppercase tracking-widest rounded-2xl py-6">
+                    Finalize & Add to Proposal Sheet
+                  </Button>
+                  <Button onClick={() => setPreviewModule(null)} variant="outline" className="border-white/10 text-white hover:bg-white/5 rounded-2xl px-8">
+                    Discard
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -619,9 +619,9 @@ export default function EditProposal() {
                 <Wand2 size={16} />
                 <span className="text-[10px] font-black uppercase tracking-widest">Bulk AI Extraction</span>
               </div>
-              <Textarea 
-                className="bg-white border-purple-200 min-h-[100px]" 
-                placeholder="Paste system requirements or workflow paragraphs here..." 
+              <Textarea
+                className="bg-white border-purple-200 min-h-[100px]"
+                placeholder="Paste system requirements or workflow paragraphs here..."
                 value={bulkContext}
                 onChange={(e) => setBulkContext(e.target.value)}
               />
@@ -644,9 +644,9 @@ export default function EditProposal() {
                   <Card key={module.id} className="border-slate-200 overflow-hidden rounded-[2rem] shadow-sm">
                     <div className="p-5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
                       <div className="flex-1 flex gap-4 items-center">
-                        <Input 
-                          className="bg-transparent border-none font-black uppercase text-slate-800 focus-visible:ring-0 p-0 h-auto" 
-                          value={module.name} 
+                        <Input
+                          className="bg-transparent border-none font-black uppercase text-slate-800 focus-visible:ring-0 p-0 h-auto"
+                          value={module.name}
                           onChange={(e) => {
                             const next = [...proposal.solution.selectedModules];
                             next[mIdx].name = e.target.value;
@@ -655,7 +655,7 @@ export default function EditProposal() {
                         />
                         <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-slate-200">
                           <span className="text-[8px] font-black text-slate-400">₹</span>
-                          <input 
+                          <input
                             type="text"
                             placeholder="Price"
                             className="w-16 bg-transparent border-none text-[10px] font-bold focus:outline-none"
@@ -680,12 +680,12 @@ export default function EditProposal() {
                         {module.features.map((feature, fIdx) => {
                           const fName = typeof feature === 'string' ? feature : feature.name;
                           const fPrice = typeof feature === 'string' ? "" : (feature.price || "");
-                          
+
                           return (
                             <div key={fIdx} className="flex items-center gap-4 group">
                               <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
-                              <Input 
-                                className="flex-1 bg-transparent border-none p-0 h-auto text-[11px] font-bold text-slate-600 focus-visible:ring-0" 
+                              <Input
+                                className="flex-1 bg-transparent border-none p-0 h-auto text-[11px] font-bold text-slate-600 focus-visible:ring-0"
                                 value={fName}
                                 onChange={(e) => {
                                   const next = [...proposal.solution.selectedModules];
@@ -695,7 +695,7 @@ export default function EditProposal() {
                               />
                               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <span className="text-[8px] font-black text-slate-300">₹</span>
-                                <input 
+                                <input
                                   type="text"
                                   placeholder="Add-on"
                                   className="w-14 bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 text-[9px] font-bold focus:outline-none"
@@ -840,7 +840,7 @@ export default function EditProposal() {
               {[0, 1, 2, 3].map((idx) => (
                 <div key={idx} className="space-y-1">
                   <LabelPremium>Live Project {idx + 1}</LabelPremium>
-                  <Input 
+                  <Input
                     className="bg-white border-slate-200"
                     placeholder="Project Title|https://deployment-link.com"
                     value={proposal.experience.portfolioLinks[idx] || ""}
@@ -909,9 +909,9 @@ export default function EditProposal() {
               </div>
             </div>
             <div className="flex gap-2">
-               <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-full hover:bg-red-50 hover:text-red-500 transition-colors">
-                 <X size={20} />
-               </Button>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-full hover:bg-red-50 hover:text-red-500 transition-colors">
+                <X size={20} />
+              </Button>
             </div>
           </div>
 
@@ -920,14 +920,13 @@ export default function EditProposal() {
             {steps.map((step, i) => {
               const StepIcon = step.icon;
               return (
-                <button 
-                  key={i} 
-                  onClick={() => setCurrentStep(i)} 
-                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
-                    currentStep === i 
-                      ? "bg-[#0B0E14] text-white shadow-lg shadow-black/10" 
-                      : "bg-white border border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600"
-                  }`}
+                <button
+                  key={i}
+                  onClick={() => setCurrentStep(i)}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${currentStep === i
+                    ? "bg-[#0B0E14] text-white shadow-lg shadow-black/10"
+                    : "bg-white border border-slate-100 text-slate-400 hover:border-slate-200 hover:text-slate-600"
+                    }`}
                 >
                   <StepIcon size={12} className={currentStep === i ? "text-primary" : "text-slate-300"} />
                   <span className="text-[9px] font-black uppercase tracking-widest whitespace-nowrap">{step.name}</span>
@@ -938,22 +937,22 @@ export default function EditProposal() {
 
           {/* Step Progress */}
           <div className="h-1 w-full bg-slate-100 flex">
-             <motion.div 
-               className="h-full bg-primary" 
-               initial={{ width: 0 }} 
-               animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }} 
-               transition={{ duration: 0.3 }}
-             />
+            <motion.div
+              className="h-full bg-primary"
+              initial={{ width: 0 }}
+              animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
           </div>
 
           {/* Form Content */}
           <div className="flex-1 overflow-y-auto p-10 custom-scrollbar bg-white">
             <AnimatePresence mode="wait">
-              <motion.div 
-                key={currentStep} 
-                initial={{ opacity: 0, y: 10 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                exit={{ opacity: 0, y: -10 }} 
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
                 className="max-w-2xl mx-auto"
               >
@@ -969,26 +968,26 @@ export default function EditProposal() {
 
           {/* Footer Controls */}
           <div className="p-8 border-t bg-slate-50 flex justify-between items-center">
-            <Button 
-              variant="outline" 
-              onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))} 
-              disabled={currentStep === 0} 
+            <Button
+              variant="outline"
+              onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+              disabled={currentStep === 0}
               className="h-12 px-6 rounded-2xl border-slate-200 text-xs font-black uppercase tracking-widest gap-2 bg-white hover:bg-slate-50"
             >
               <ChevronLeft size={16} /> Previous
             </Button>
-            
+
             {currentStep < steps.length - 1 ? (
-              <Button 
-                onClick={nextStep} 
+              <Button
+                onClick={nextStep}
                 className="h-12 px-8 rounded-2xl bg-[#0B0E14] hover:bg-black text-white shadow-xl shadow-black/10 text-xs font-black uppercase tracking-widest gap-2"
               >
                 Next Sequence <ChevronRight size={16} className="text-primary" />
               </Button>
             ) : (
-              <Button 
-                onClick={handleSave} 
-                disabled={isSaving} 
+              <Button
+                onClick={handleSave}
+                disabled={isSaving}
                 className="h-12 px-8 rounded-2xl bg-primary hover:bg-[#88B540] text-white shadow-xl shadow-primary/20 text-xs font-black uppercase tracking-widest gap-2"
               >
                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Finalize Protocol
@@ -999,49 +998,48 @@ export default function EditProposal() {
 
         {/* Right Preview Panel: High-End Staging Area */}
         <div className="hidden md:flex flex-1 bg-slate-100 items-start justify-center overflow-y-auto p-12 custom-scrollbar relative scroll-smooth">
-            <div className="w-full max-w-5xl relative z-10 flex justify-center py-20">
-               <div className={`transition-all duration-500 origin-top shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] ${
-                 isPreviewZoomed 
-                   ? "scale-100" 
-                   : "scale-[0.6] lg:scale-[0.8] xl:scale-[0.9] 2xl:scale-100"
-               }`}>
-                  <ProposalPDF proposal={proposal} activeStep={currentStep} />
-               </div>
+          <div className="w-full max-w-5xl relative z-10 flex justify-center py-20">
+            <div className={`transition-all duration-500 origin-top shadow-[0_40px_100px_-20px_rgba(0,0,0,0.3)] ${isPreviewZoomed
+              ? "scale-100"
+              : "scale-[0.6] lg:scale-[0.8] xl:scale-[0.9] 2xl:scale-100"
+              }`}>
+              <ProposalPDF proposal={proposal} activeStep={currentStep} />
             </div>
+          </div>
 
-           {/* Preview Floating Indicators */}
-           <div className="absolute top-8 left-8 flex items-center gap-4">
-              <div className="px-4 py-2 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-xl shadow-black/5 flex items-center gap-3">
-                 <div className="flex items-center gap-3 border-r pr-3 border-slate-200">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-900">Live Strategic Engine</span>
-                 </div>
-                 <Button 
-                   variant="ghost" 
-                   size="xs" 
-                   onClick={() => setIsPreviewZoomed(!isPreviewZoomed)}
-                   className="h-6 px-2 text-[8px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors"
-                 >
-                   {isPreviewZoomed ? "Exit Focus" : "Focus Mode"}
-                 </Button>
+          {/* Preview Floating Indicators */}
+          <div className="absolute top-8 left-8 flex items-center gap-4">
+            <div className="px-4 py-2 bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-xl shadow-black/5 flex items-center gap-3">
+              <div className="flex items-center gap-3 border-r pr-3 border-slate-200">
+                <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-900">Live Strategic Engine</span>
               </div>
-           </div>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => setIsPreviewZoomed(!isPreviewZoomed)}
+                className="h-6 px-2 text-[8px] font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors"
+              >
+                {isPreviewZoomed ? "Exit Focus" : "Focus Mode"}
+              </Button>
+            </div>
+          </div>
 
-           <div className="absolute bottom-8 right-8 flex flex-col gap-3">
-              <div className="px-5 py-3 bg-[#0B0E14] text-white rounded-3xl shadow-2xl flex items-center gap-4 border border-white/10">
-                 <div className="flex flex-col">
-                    <span className="text-[7px] font-black text-white/40 uppercase tracking-widest mb-1">A4 Export Context</span>
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">210mm × 297mm • Print Ready</span>
-                 </div>
-                 <div className="w-[1px] h-8 bg-white/10" />
-                 <Monitor size={16} className="text-primary" />
+          <div className="absolute bottom-8 right-8 flex flex-col gap-3">
+            <div className="px-5 py-3 bg-[#0B0E14] text-white rounded-3xl shadow-2xl flex items-center gap-4 border border-white/10">
+              <div className="flex flex-col">
+                <span className="text-[7px] font-black text-white/40 uppercase tracking-widest mb-1">A4 Export Context</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">210mm × 297mm • Print Ready</span>
               </div>
-           </div>
+              <div className="w-[1px] h-8 bg-white/10" />
+              <Monitor size={16} className="text-primary" />
+            </div>
+          </div>
 
-           {/* Atmospheric Overlays */}
-           <div className="absolute inset-0 pointer-events-none opacity-[0.03] select-none flex items-center justify-center">
-              <div className="text-[20vw] font-black uppercase tracking-tighter -rotate-12">STAGING</div>
-           </div>
+          {/* Atmospheric Overlays */}
+          <div className="absolute inset-0 pointer-events-none opacity-[0.03] select-none flex items-center justify-center">
+            <div className="text-[20vw] font-black uppercase tracking-tighter -rotate-12">STAGING</div>
+          </div>
         </div>
       </div>
     </div>

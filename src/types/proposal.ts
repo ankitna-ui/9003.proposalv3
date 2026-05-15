@@ -65,6 +65,13 @@ export interface ROIMetrics {
   impactSummary: string;
   breakEven?: string;
   growthFactor?: string;
+  // Real calculation inputs
+  projectCost?: string;
+  monthlyCost?: string;
+  currentRevenue?: string;
+  currentOpsCost?: string;
+  manualHoursPerMonth?: string;
+  hourlyRate?: string;
 }
 
 export interface PricingDetail {

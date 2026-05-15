@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -77,16 +77,7 @@ export default function CreateProposal() {
     setAIContent
   } = useProposalForm();
 
-  // Auto-calculate ROI
-  useEffect(() => {
-    const rev = parseFloat(proposal.roi.revenueIncrease) || 0;
-    const cost = parseFloat(proposal.roi.costReduction) || 0;
-    const prod = parseFloat(proposal.roi.productivityIncrease) || 0;
-    if (rev > 0 || cost > 0 || prod > 0) {
-      const calculatedROI = (rev + cost + (prod * 0.5)) * 1.5;
-      updateROI({ expectedROI: calculatedROI.toFixed(0) });
-    }
-  }, [proposal.roi.revenueIncrease, proposal.roi.costReduction, proposal.roi.productivityIncrease]);
+
 
   const handleAIAction = async () => {
     if (!proposal.situation.meetingNotes) {
