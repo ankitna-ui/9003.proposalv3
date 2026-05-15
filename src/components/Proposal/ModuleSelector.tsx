@@ -74,7 +74,7 @@ export default function ModuleSelector({ selectedModules, onChange }: ModuleSele
               <div className="flex flex-wrap gap-1">
                 {module.features.slice(0, 3).map((f, i) => (
                   <span key={i} className="text-[9px] text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded border border-muted-foreground/10">
-                    {f}
+                    {typeof f === 'string' ? f : f.name}
                   </span>
                 ))}
               </div>
@@ -104,7 +104,7 @@ export default function ModuleSelector({ selectedModules, onChange }: ModuleSele
               )}
               {module.features.slice(0, 3).map((f, i) => (
                 <span key={i} className="text-[9px] text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
-                  {f}
+                  {typeof f === 'string' ? f : f.name}
                 </span>
               ))}
             </div>

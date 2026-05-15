@@ -23,15 +23,15 @@ const CorporateIdentityPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
              </div>
              <div className="flex gap-4">
                 <div className="w-[120px] h-[90px] bg-[#0B0E14] rounded-3xl flex flex-col items-center justify-center text-white p-4 shadow-xl">
-                   <div className="text-3xl font-black tracking-tighter leading-none mb-1">{proposal?.about?.yearsExperience || "10+"}</div>
+                   <div className="text-3xl font-black tracking-tighter leading-none mb-1">{proposal?.experience?.yearsOfExperience || "10+"}</div>
                    <div className="text-[7px] font-black uppercase tracking-widest opacity-80">Years Precision</div>
                 </div>
                 <div className="w-[120px] h-[90px] bg-[#99CB48] rounded-3xl flex flex-col items-center justify-center text-[#0B0E14] p-4 shadow-xl">
-                   <div className="text-3xl font-black tracking-tighter leading-none mb-1">{proposal?.about?.projectsCompleted || "250+"}</div>
+                   <div className="text-3xl font-black tracking-tighter leading-none mb-1">{proposal?.experience?.projectsCompleted || "250+"}</div>
                    <div className="text-[7px] font-black uppercase tracking-widest opacity-80">Projects Built</div>
                 </div>
                 <div className="w-[120px] h-[90px] bg-[#1AA6E1] rounded-3xl flex flex-col items-center justify-center text-white p-4 shadow-xl">
-                   <div className="text-3xl font-black tracking-tighter leading-none mb-1">{proposal?.about?.industries || "15+"}</div>
+                   <div className="text-3xl font-black tracking-tighter leading-none mb-1">{proposal?.experience?.industriesServed?.length || "15+"}</div>
                    <div className="text-[7px] font-black uppercase tracking-widest opacity-80">Industries</div>
                 </div>
              </div>
@@ -124,7 +124,7 @@ const CorporateIdentityPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
              </div>
              <div className="text-right space-y-1 relative z-10">
                 <div className="text-[8px] font-black uppercase tracking-[0.4em] text-white/20">Fiscal Status</div>
-                <div className="text-[#1AA6E1] text-[10px] font-black uppercase tracking-widest">{proposal?.about?.partnerStatus || "Active Partner"}</div>
+                <div className="text-[#1AA6E1] text-[10px] font-black uppercase tracking-widest">{proposal?.experience?.partnerStatus || "Active Partner"}</div>
              </div>
           </div>
        </div>

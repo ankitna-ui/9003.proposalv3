@@ -34,7 +34,7 @@ export interface BusinessSituation {
 export interface Module {
   id: string;
   name: string;
-  features: string[];
+  features: (string | { name: string; price?: string })[];
   price?: string | number;
   description?: string;
   icon?: string;
@@ -61,8 +61,10 @@ export interface ROIMetrics {
   timeSaving: string;
   productivityIncrease: string;
   expectedROI: string;
-  profitImpact: string; // New field for "In numbers how much money/profit"
+  profitImpact: string;
   impactSummary: string;
+  breakEven?: string;
+  growthFactor?: string;
 }
 
 export interface PricingDetail {

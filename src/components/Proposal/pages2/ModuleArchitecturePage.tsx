@@ -12,7 +12,7 @@ const ModuleArchitecturePage: React.FC<PageProps> = ({ proposal, pageNum }) => {
   const allModules = proposal?.solution?.selectedModules?.length > 0 
     ? proposal.solution.selectedModules 
     : [
-        { name: "Industrial Product Management", features: [{ name: "Product dependency management", price: "₹2,500" }, { name: "Variant & SKU workflows", price: "₹1,500" }, { name: "Category management" }], price: "₹25,000" },
+        { id: "sample-mod-1", name: "Industrial Product Management", features: [{ name: "Product dependency management", price: "₹2,500" }, { name: "Variant & SKU workflows", price: "₹1,500" }, { name: "Category management" }], price: "₹25,000" },
       ];
 
   // Refined High-Density Adjustment Logic

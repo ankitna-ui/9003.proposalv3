@@ -37,8 +37,8 @@ const SAMPLE_PROPOSALS: (Proposal & { id: string })[] = [
       preparedBy: "Weblozy Labs"
     },
     problemStatement: { heading: "Operational Inefficiency", description: "Manual order management is causing leakage.", pointers: [] },
-    situation: { currentWorkflow: "Manual overhead", meetingNotes: "" },
-    solution: { approach: "Automation", approachPoints: [], selectedModules: [], customModules: [], demoLinks: [], integrations: [], userRoles: [], timeline: "" },
+    situation: { currentWorkflow: "Manual overhead", meetingNotes: "", existingSoftware: "None", challenges: [], revenueLeakage: "High", inefficiencies: "Manual", limitations: "Scale" },
+    solution: { overview: "Systemic transformation", approach: "Automation", approachPoints: [], selectedModules: [], customModules: [], demoLinks: [], integrations: [], userRoles: [], timeline: "" },
     techArchitecture: { frontendStack: [], backendStack: [], database: "", hosting: "", securityFeatures: [] },
     roi: { revenueIncrease: "35", productivityIncrease: "50", costReduction: "20", timeSaving: "150", expectedROI: "320", impactSummary: "", profitImpact: "₹4.2L / Month" },
     pricing: { range: "", coreValuation: "55000", discountPercentage: "10", taxRate: "18", milestones: [], roiLogic: "", hostingCost: "", maintenanceCost: "", supportCost: "", taxes: "" },
@@ -97,7 +97,7 @@ export default function Dashboard() {
   };
 
   const filteredProposals = useMemo(() => {
-    const list = proposals.length > 0 ? proposals : SAMPLE_PROPOSALS;
+    const list: (Proposal & { id: string })[] = proposals.length > 0 ? proposals : SAMPLE_PROPOSALS;
     if (!searchQuery) return list;
     return list.filter(p => 
       p.client?.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
