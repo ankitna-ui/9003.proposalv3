@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Download, ChevronLeft, Printer } from "lucide-react";
 import { Proposal } from "@/types/proposal";
-import ProposalPDF from "@/components/Proposal/ProposalPDF";
+import ProposalPDF from "@/components/Proposal/pages2";
 
 export default function ProposalPreview() {
   const location = useLocation();
@@ -37,13 +37,19 @@ export default function ProposalPreview() {
     // A4 dimensions in mm
     const PDF_W = 210;
     const PDF_H = 297;
-    // Capture scale for sharp text
-    const SCALE = 2;
+    // Capture scale for ultra-sharp text (3x for enterprise quality)
+    const SCALE = 3;
     // A4 width in pixels at 96dpi
     const PAGE_PX_W = 794;
     const PAGE_PX_H = Math.round(PAGE_PX_W * (PDF_H / PDF_W));
 
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+    const pdf = new jsPDF({ 
+      unit: 'mm', 
+      format: 'a4', 
+      orientation: 'portrait', 
+      compress: true,
+      precision: 16
+    });
 
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i] as HTMLElement;
@@ -51,21 +57,23 @@ export default function ProposalPreview() {
       const canvas = await html2canvas(page, {
         scale: SCALE,
         useCORS: true,
-        backgroundColor: null, // let page's own bg show (for gradients)
+        backgroundColor: null,
         width: PAGE_PX_W,
         height: PAGE_PX_H,
         windowWidth: PAGE_PX_W,
         scrollX: 0,
         scrollY: 0,
+        logging: false
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      const imgData = canvas.toDataURL('image/png', 1.0);
 
       if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, 0, PDF_W, PDF_H);
+      pdf.addImage(imgData, 'PNG', 0, 0, PDF_W, PDF_H, undefined, 'FAST');
     }
 
-    pdf.save(`${(proposal?.client?.companyName || "Weblozy")}_Proposal.pdf`);
+    const fileName = `${(proposal.client?.companyName || "Client")}_${(proposal.client?.proposalTitle || "Proposal")}_Weblozy.pdf`.replace(/\s+/g, '_');
+    pdf.save(fileName);
   };
 
   const handlePrint = () => {
@@ -84,7 +92,7 @@ export default function ProposalPreview() {
             <Printer className="w-4 h-4" />
             Print Master Copy
           </Button>
-          <Button onClick={exportPDF} className="gap-2 bg-primary text-white hover:bg-primary/90 shadow-xl shadow-primary/20">
+          <Button onClick={exportPDF} className="gap-2 bg-[#99CB48] text-black hover:bg-[#99CB48]/90 shadow-xl shadow-[#99CB48]/20 font-black uppercase text-[10px] tracking-widest px-6 h-11">
             <Download className="w-4 h-4" />
             Download Strategic PDF
           </Button>

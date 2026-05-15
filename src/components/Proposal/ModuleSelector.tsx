@@ -25,6 +25,7 @@ interface ModuleSelectorProps {
 export default function ModuleSelector({ selectedModules, onChange }: ModuleSelectorProps) {
   const [customName, setCustomName] = useState("");
   const [customFeatures, setCustomFeatures] = useState("");
+  const [customPrice, setCustomPrice] = useState("");
 
   const toggleModule = (module: Module) => {
     const isSelected = selectedModules.find(m => m.id === module.id);
@@ -41,12 +42,14 @@ export default function ModuleSelector({ selectedModules, onChange }: ModuleSele
       id: `custom-${Date.now()}`,
       name: customName.trim(),
       features: customFeatures.split(",").map(f => f.trim()).filter(f => f !== ""),
+      price: customPrice.trim(),
       description: "",
       icon: "settings"
     };
     onChange([...selectedModules, newModule]);
     setCustomName("");
     setCustomFeatures("");
+    setCustomPrice("");
   };
 
   return (
@@ -93,7 +96,12 @@ export default function ModuleSelector({ selectedModules, onChange }: ModuleSele
                 <X size={12} />
               </button>
             </div>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1 items-center">
+              {module.price && (
+                <span className="text-[9px] font-black text-white bg-green-500 px-1.5 py-0.5 rounded border border-green-600 shadow-sm">
+                  ₹{Number(module.price).toLocaleString()}
+                </span>
+              )}
               {module.features.slice(0, 3).map((f, i) => (
                 <span key={i} className="text-[9px] text-primary/70 bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
                   {f}
@@ -122,6 +130,15 @@ export default function ModuleSelector({ selectedModules, onChange }: ModuleSele
               placeholder="e.g. SEO Analysis, Auto-Drafting, Plagiarism Check" 
               value={customFeatures}
               onChange={(e) => setCustomFeatures(e.target.value)}
+              className="bg-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-[10px] uppercase font-bold text-slate-500">Module Valuation (Price)</Label>
+            <Input 
+              placeholder="e.g. 50000" 
+              value={customPrice}
+              onChange={(e) => setCustomPrice(e.target.value)}
               className="bg-white"
             />
           </div>

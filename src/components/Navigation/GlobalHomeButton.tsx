@@ -18,7 +18,7 @@ export default function GlobalHomeButton() {
         animate={{ opacity: 1, scale: 1, x: 0 }}
         exit={{ opacity: 0, scale: 0.8, x: -20 }}
         onClick={() => navigate("/")}
-        className="fixed bottom-8 left-8 z-[100] group flex items-center gap-3 p-3 pl-4 bg-[#0B0E14]/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-primary/40 transition-all duration-300"
+        className="fixed bottom-8 right-8 z-[100] group flex items-center gap-3 p-3 pl-4 bg-[#0B0E14]/80 backdrop-blur-xl border border-white/10 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-primary/40 transition-all duration-300"
       >
         <div className="flex flex-col items-start leading-none pr-2">
           <span className="text-[7px] font-black text-gray-500 uppercase tracking-widest group-hover:text-primary transition-colors">Return to</span>

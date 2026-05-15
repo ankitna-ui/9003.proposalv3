@@ -64,6 +64,10 @@ export async function getProposals(userId: string) {
   }
 }
 
+/**
+ * Delete a proposal with security check.
+ * BOLA Protection: Enforced via firestore.rules
+ */
 export async function deleteProposal(id: string) {
   try {
     await deleteDoc(doc(db, PROPOSALS_COLLECTION, id));

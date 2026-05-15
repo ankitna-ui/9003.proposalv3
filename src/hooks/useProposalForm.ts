@@ -22,6 +22,8 @@ const initialProposal: Proposal = {
     filingDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }).toUpperCase(),
     executiveSummary: "In today's hyper-accelerated market, efficiency is the only competitive moat. This proposal outlines a comprehensive automation architecture designed specifically for your digital excellence.",
     websiteUrl: "WWW.WEBLOZY.COM",
+    frameworkTitle: "EXECUTIVE FRAMEWORK",
+    footerMessage: "© WEBLOZY SOLUTIONS • GLOBAL OPERATIONS"
   },
   problemStatement: {
     heading: "The Innovation Bottleneck",
@@ -51,6 +53,8 @@ const initialProposal: Proposal = {
     timeline: "",
     integrations: [],
     userRoles: [],
+    flowchartImageUrl: "",
+    demoLink: "",
   },
   techArchitecture: {
     frontendStack: ["React.js", "Next.js", "Tailwind CSS"],
@@ -69,17 +73,18 @@ const initialProposal: Proposal = {
     impactSummary: "",
   },
   experience: {
-    yearsOfExperience: "5+",
-    projectsCompleted: "150+",
+    yearsOfExperience: "10+",
+    projectsCompleted: "250+",
     industriesServed: ["E-commerce", "Fintech", "Manufacturing", "Logistics"],
     testimonials: [],
     portfolioLinks: [
-      "https://weblozydemocool.netlify.app/",
-      "https://weblozyhayat.vercel.app/",
-      "https://3071.weblozy.in/login",
-      "https://eclipsdemo.netlify.app/"
+      "Enterprise Ecosystem|https://weblozyenterprisedemo.netlify.app/",
+      "Precision Manufacturing|https://snow-wombat-148981.hostingersite.com/",
+      "AI Analytics|https://weblozyaianalyzer.vercel.app/",
+      "Modern UX|https://weblozydemocool.netlify.app/"
     ],
-    strategicSummary: "",
+    strategicSummary: "Weblozy specializes in high-performance automation ecosystems, bridging the gap between legacy operations and future-ready scalability.",
+    partnerStatus: "ACTIVE PARTNER",
   },
   pricing: {
     range: "",
@@ -87,25 +92,25 @@ const initialProposal: Proposal = {
     discountPercentage: "15",
     taxRate: "18",
     milestones: [
-      { name: "Commencement Advance", percentage: 50, description: "Strategic Planning & Architecture Setup" },
-      { name: "Progress Milestone", percentage: 30, description: "Core Development & Beta Testing" },
-      { name: "Final Delivery", percentage: 20, description: "UAT & Global Launch" }
+      { name: "Initiation Advance", percentage: 50, description: "Strategic Planning & Architecture Setup" },
+      { name: "Development Milestone", percentage: 30, description: "Core Development & Beta Testing" },
+      { name: "Final Deployment", percentage: 20, description: "UAT & Global Launch" }
     ],
     hostingCost: "Included",
     maintenanceCost: "Included",
     supportCost: "Included",
     taxes: "18% GST extra",
-    roiLogic: "",
+    roiLogic: "The investment is optimized for high-yield operational efficiency, with a projected systemic ROI realized through automated cost reduction.",
   },
   policies: {
-    support: "24/7 Priority Support",
-    security: "Enterprise-grade security with regular audits",
-    backup: "Daily automated cloud backups",
-    sla: "99.9% Uptime Guarantee",
-    timeline: "8-12 Weeks Implementation",
+    support: "24/7 Priority Support with Dedicated Manager",
+    security: "Enterprise-grade security with regular penetration testing",
+    backup: "Daily automated geo-redundant cloud backups",
+    sla: "99.99% Uptime Guarantee with SLA reporting",
+    timeline: "8-12 Weeks Implementation Lifecycle",
   },
   closing: {
-    meetingLink: "",
+    meetingLink: "https://calendly.com/weblozy",
     nextSteps: ["Initial Technical Discovery", "Logic Blueprint Approval", "Agile Development Sprint", "UAT & Deployment"],
     contactEmail: "HELLO@WEBLOZY.COM",
     contactPhone: "+91 98765 43210",

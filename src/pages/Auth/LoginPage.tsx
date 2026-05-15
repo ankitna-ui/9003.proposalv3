@@ -98,7 +98,10 @@ export default function LoginPage() {
       }
     } catch (error: any) {
       console.error(error);
-      setMessage({ type: "error", text: error.message || "Operation failed" });
+      const friendlyMessage = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' 
+        ? "Invalid credentials for this terminal ID." 
+        : "Authentication protocol failed. Please verify credentials.";
+      setMessage({ type: "error", text: friendlyMessage });
       setLoading(false);
     }
   };

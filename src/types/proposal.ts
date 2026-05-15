@@ -17,6 +17,8 @@ export interface ClientDetails {
   filingDate?: string;
   executiveSummary?: string;
   websiteUrl?: string;
+  frameworkTitle?: string;
+  footerMessage?: string;
 }
 
 export interface BusinessSituation {
@@ -33,6 +35,9 @@ export interface Module {
   id: string;
   name: string;
   features: string[];
+  price?: string | number;
+  description?: string;
+  icon?: string;
   isCustom?: boolean;
 }
 
@@ -46,6 +51,8 @@ export interface SolutionDetails {
   timeline: string;
   integrations: string[];
   userRoles: string[];
+  flowchartImageUrl?: string;
+  demoLink?: string;
 }
 
 export interface ROIMetrics {
@@ -92,6 +99,7 @@ export interface ExperiencePortfolio {
   testimonials: { client: string; text: string }[];
   portfolioLinks: string[];
   strategicSummary?: string;
+  partnerStatus?: string;
 }
 
 export interface TechnicalArchitecture {
