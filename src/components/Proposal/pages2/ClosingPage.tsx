@@ -26,7 +26,9 @@ const ClosingPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
        {/* ── Top Bar ── */}
        <div className="relative z-10 flex items-center justify-between mb-16">
           <div className="flex items-center gap-5">
-             <img src={banner2Logo} alt="Weblozy" style={{ height: '40px', width: 'auto', objectFit: 'contain' }} />
+             <a href="https://www.weblozy.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+               <img src={banner2Logo} alt="Weblozy" style={{ height: '40px', width: 'auto', objectFit: 'contain' }} />
+             </a>
              <div className="h-5 w-[1px] bg-white/10" />
              <span className="text-[8px] font-black uppercase tracking-[0.5em] text-white/30">Strategic Operations</span>
           </div>
@@ -77,8 +79,12 @@ const ClosingPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                 </div>
                 <div>
                    <div className="text-[7px] font-black uppercase tracking-[0.4em] text-white/25 mb-1.5">Voice Ports</div>
-                   <div className="text-[20px] font-black tracking-[-0.02em] text-white leading-none">{proposal?.closing?.contactPhone || "+91 96678 96604"}</div>
-                   <div className="text-[12px] font-bold text-white/20 tracking-wide mt-1">+1 320 433 0111</div>
+                   <a href={`tel:${(proposal?.closing?.contactPhone || "+919667896604").replace(/\s/g, '')}`} className="text-[20px] font-black tracking-[-0.02em] text-white leading-none hover:text-[#1AA6E1] transition-colors">
+                      {proposal?.closing?.contactPhone || "+91 96678 96604"}
+                   </a>
+                   <div className="text-[12px] font-bold text-white/20 tracking-wide mt-1">
+                      <a href="tel:+13204330111" className="hover:text-[#1AA6E1] transition-colors">+1 320 433 0111</a>
+                   </div>
                 </div>
              </div>
 
@@ -89,7 +95,9 @@ const ClosingPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                 </div>
                 <div>
                    <div className="text-[7px] font-black uppercase tracking-[0.4em] text-white/25 mb-1.5">Digital Core</div>
-                   <div className="text-[18px] font-black tracking-tight text-white leading-none">{proposal?.closing?.contactEmail || "info@weblozy.com"}</div>
+                   <a href={`mailto:${proposal?.closing?.contactEmail || "info@weblozy.com"}`} className="text-[18px] font-black tracking-tight text-white leading-none hover:text-[#99CB48] transition-colors">
+                      {proposal?.closing?.contactEmail || "info@weblozy.com"}
+                   </a>
                 </div>
              </div>
 

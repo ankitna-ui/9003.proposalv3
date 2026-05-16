@@ -16,7 +16,9 @@ const CoverPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
        {/* Top Branding Section */}
        <div className="relative z-10 flex justify-between items-start">
           <div className="space-y-4 max-w-[65%]">
-             <img src={banner2Logo} alt="Weblozy" style={{ height: '52px', width: 'auto', objectFit: 'contain' }} className="opacity-100" />
+             <a href="https://www.weblozy.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+               <img src={banner2Logo} alt="Weblozy" style={{ height: '52px', width: 'auto', objectFit: 'contain' }} className="opacity-100" />
+             </a>
              <div className="flex items-center gap-3">
                 <div className="h-[1px] w-8 bg-[#99CB48]" />
                 <div className="text-[10px] font-black tracking-[0.5em] text-white/60 uppercase truncate">{proposal?.client?.tagline || "We Automate Businesses"}</div>
@@ -107,9 +109,9 @@ const CoverPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
           
           <div className="flex justify-between items-center border-t border-white/5 pt-8 text-[9px] font-black text-white/20 uppercase tracking-[0.5em]">
              <div>{proposal?.client?.footerMessage || "© Weblozy we automate solution"}</div>
-             <div className="text-[#99CB48]/60 tracking-[0.6em] underline decoration-[#99CB48]/20 underline-offset-8">
+             <a href="https://www.weblozy.com" target="_blank" rel="noopener noreferrer" className="text-[#99CB48]/60 tracking-[0.6em] underline decoration-[#99CB48]/20 underline-offset-8 hover:text-[#99CB48] transition-colors">
                 {proposal?.client?.websiteUrl || "WWW.WEBLOZY.COM"}
-             </div>
+             </a>
           </div>
        </div>
     </section>

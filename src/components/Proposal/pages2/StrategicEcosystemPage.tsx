@@ -88,12 +88,24 @@ const StrategicEcosystemPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                    <div className="shrink-0">
                       <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-3">Connectivity Hub</div>
                       <div className="flex flex-wrap gap-1.5">
-                         {integrations.map((item, i) => (
-                            <div key={i} className={`flex items-center gap-1.5 bg-slate-900 rounded-lg border border-slate-800 shadow-lg ${intPad}`}>
-                               <Globe size={intCount > 12 ? 6 : 8} className="text-[#3ABEF9]" />
-                               <span className={`font-black uppercase tracking-widest text-white/80 ${intText}`}>{item}</span>
-                            </div>
-                         ))}
+                         {integrations.map((item, i) => {
+                            const [label, link] = item.includes('|') ? item.split('|') : [item, item];
+                            const isLink = link.startsWith('http') || link.includes('.');
+                            const href = link.startsWith('http') ? link : `https://${link}`;
+                            
+                            return (
+                               <a 
+                                  key={i} 
+                                  href={isLink ? href : undefined}
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className={`flex items-center gap-1.5 bg-slate-900 rounded-lg border border-slate-800 shadow-lg ${intPad} ${isLink ? 'hover:border-[#3ABEF9]/50 hover:bg-slate-800 transition-all cursor-pointer' : ''}`}
+                               >
+                                  <Globe size={intCount > 12 ? 6 : 8} className="text-[#3ABEF9]" />
+                                  <span className={`font-black uppercase tracking-widest text-white/80 ${intText}`}>{label}</span>
+                               </a>
+                            );
+                         })}
                       </div>
                    </div>
 
