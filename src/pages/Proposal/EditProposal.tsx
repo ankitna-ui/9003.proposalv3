@@ -199,51 +199,54 @@ export default function EditProposal() {
   return (
     <div className="min-h-screen bg-white">
       <div className="flex h-screen overflow-hidden">
-        {/* Modernized Input Panel */}
-        <div className="w-full md:w-1/2 lg:w-[42%] xl:w-[40%] flex flex-col border-r border-slate-100 bg-[#F8FAFC] shadow-[20px_0_40px_-15px_rgba(0,0,0,0.03)] z-30 overflow-hidden relative">
-          
-          {/* Header */}
-          <div className="px-10 py-8 border-b border-slate-100 bg-white/80 backdrop-blur-md flex justify-between items-center sticky top-0 z-10">
-            <div className="flex items-center gap-5">
-              <div className="w-12 h-12 bg-[#0B0E14] rounded-2xl flex items-center justify-center text-white shadow-xl rotate-3 hover:rotate-0 transition-transform duration-500">
-                <img src="/asset/logo.png" alt="W" className="w-8 h-8 object-contain brightness-0 invert" />
+        {/* Modernized Input Panel with Glassmorphism */}
+        <div className="w-full md:w-1/2 lg:w-[42%] xl:w-[40%] flex flex-col border-r border-slate-100 bg-white/40 backdrop-blur-3xl z-30 overflow-hidden relative shadow-[20px_0_60px_-15px_rgba(0,0,0,0.05)]">
+           
+           {/* High-End Header */}
+           <div className="px-10 py-10 border-b border-slate-100/50 bg-white/20 backdrop-blur-md flex justify-between items-center sticky top-0 z-40">
+              <div className="flex items-center gap-6">
+                 <div className="w-14 h-14 bg-[#0B0E14] rounded-[1.25rem] flex items-center justify-center text-white shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500 group">
+                    <img src="/asset/logo.png" alt="W" className="w-9 h-9 object-contain brightness-0 invert transition-transform group-hover:scale-110" />
+                 </div>
+                 <div>
+                    <h1 className="text-3xl font-black uppercase tracking-tighter text-[#0B0E14]">Strategic <span className="text-primary italic">OS.</span></h1>
+                    <div className="flex items-center gap-2.5 mt-1.5">
+                       <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_12px_#99CB48]" />
+                       <p className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400">Tactical Editor V4.0</p>
+                    </div>
+                 </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-black uppercase tracking-tighter text-[#0B0E14]">Edit <span className="text-primary italic">OS.</span></h1>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#99CB48]" />
-                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Strategic Editor V3</p>
-                </div>
-              </div>
-            </div>
-            <button onClick={() => navigate("/dashboard")} className="w-10 h-10 flex items-center justify-center bg-slate-100/50 hover:bg-red-50 rounded-xl text-slate-400 hover:text-red-500 transition-all border border-transparent hover:border-red-100">
-              <X size={20} />
-            </button>
-          </div>
+              <button onClick={() => navigate("/dashboard")} className="w-12 h-12 flex items-center justify-center bg-slate-100/80 hover:bg-red-500 rounded-2xl text-slate-400 hover:text-white transition-all duration-300 border border-transparent shadow-sm">
+                 <X size={22} />
+              </button>
+           </div>
 
-          {/* Premium Step Navigation */}
-          <div className="px-8 py-5 bg-white/40 border-b border-slate-100 flex gap-2.5 overflow-x-auto no-scrollbar scroll-smooth">
-            {steps.map((step, i) => {
-              const StepIcon = step.icon;
-              const isActive = currentStep === i;
-              return (
-                <button 
-                  key={i} 
-                  onClick={() => setCurrentStep(i)} 
-                  className={`flex-shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-xl transition-all duration-300 ${
-                    isActive 
-                      ? "bg-[#0B0E14] text-white shadow-xl shadow-black/10 scale-105" 
-                      : "bg-white/80 border border-slate-100 text-slate-400 hover:border-primary/30 hover:text-slate-600"
-                  }`}
-                >
-                  <div className={`p-1.5 rounded-lg ${isActive ? "bg-primary/20 text-primary" : "bg-slate-100 text-slate-300"}`}>
-                    <StepIcon size={12} />
-                  </div>
-                  <span className="text-[9px] font-black uppercase tracking-widest whitespace-nowrap">{step.name}</span>
-                </button>
-              );
-            })}
-          </div>
+           {/* Advanced Step Navigation */}
+           <div className="px-10 py-6 bg-slate-50/30 border-b border-slate-100/50 flex gap-4 overflow-x-auto no-scrollbar scroll-smooth">
+              {steps.map((step, i) => {
+                 const StepIcon = step.icon;
+                 const isActive = currentStep === i;
+                 return (
+                    <button 
+                       key={i} 
+                       onClick={() => setCurrentStep(i)} 
+                       className={`flex-shrink-0 flex items-center gap-3.5 px-6 py-3 rounded-2xl transition-all duration-500 relative group ${
+                          isActive 
+                             ? "bg-[#0B0E14] text-white shadow-2xl shadow-black/20 scale-105" 
+                             : "bg-white/60 border border-slate-100/50 text-slate-400 hover:border-primary/50 hover:text-slate-700"
+                       }`}
+                    >
+                       <div className={`p-2 rounded-xl transition-colors duration-500 ${isActive ? "bg-primary text-white shadow-[0_0_15px_#99CB48]" : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"}`}>
+                          <StepIcon size={14} />
+                       </div>
+                       <span className="text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">{step.name}</span>
+                       {isActive && (
+                          <motion.div layoutId="activeStep" className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full shadow-[0_0_10px_#99CB48]" />
+                       )}
+                    </button>
+                 );
+              })}
+           </div>
 
           {/* Form Content Area */}
           <div className="flex-1 overflow-y-auto p-12 custom-scrollbar bg-white/30">
@@ -261,33 +264,33 @@ export default function EditProposal() {
             </AnimatePresence>
           </div>
 
-          {/* Modernized Footer Controls */}
-          <div className="p-10 border-t border-slate-100 bg-white/90 backdrop-blur-xl flex justify-between items-center sticky bottom-0">
-            <Button 
-              variant="outline" 
-              onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))} 
-              disabled={currentStep === 0} 
-              className="h-14 px-8 rounded-2xl border-slate-200 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-slate-50 transition-all disabled:opacity-30"
-            >
-              <ChevronLeft size={18} className="mr-2" /> Back
-            </Button>
-            
-            <div className="flex gap-2 items-center">
-              <div className="hidden lg:flex flex-col items-end mr-4">
-                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Progress</span>
-                <span className="text-[10px] font-black text-slate-900">{Math.round(((currentStep + 1) / steps.length) * 100)}% Complete</span>
+           {/* Premium Control Footer */}
+           <div className="p-10 border-t border-slate-100/50 bg-white/80 backdrop-blur-2xl flex justify-between items-center sticky bottom-0 z-40">
+              <Button 
+                 variant="outline" 
+                 onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))} 
+                 disabled={currentStep === 0} 
+                 className="h-16 px-10 rounded-[1.25rem] border-slate-200 text-[11px] font-black uppercase tracking-[0.2em] bg-white hover:bg-slate-900 hover:text-white transition-all duration-500 disabled:opacity-20 shadow-sm"
+              >
+                 <ChevronLeft size={20} className="mr-3" /> Back Sequence
+              </Button>
+              
+              <div className="flex gap-4 items-center">
+                 <div className="hidden lg:flex flex-col items-end mr-6 border-r border-slate-100 pr-6">
+                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] mb-1">Architecture Progress</span>
+                    <span className="text-[12px] font-black text-[#0B0E14] tabular-nums tracking-tighter">{Math.round(((currentStep + 1) / steps.length) * 100)}% Synchronized</span>
+                 </div>
+                 {currentStep < steps.length - 1 ? (
+                    <Button onClick={() => setCurrentStep(prev => prev + 1)} className="h-16 px-12 rounded-[1.25rem] bg-[#0B0E14] hover:bg-primary hover:text-white shadow-2xl shadow-black/20 text-[11px] font-black uppercase tracking-[0.3em] group transition-all duration-500">
+                       Proceed <ChevronRight size={20} className="text-primary group-hover:text-white ml-3 group-hover:translate-x-2 transition-all" />
+                    </Button>
+                 ) : (
+                    <Button onClick={handleSave} disabled={isSaving} className="h-16 px-12 rounded-[1.25rem] bg-primary hover:bg-[#88B540] text-white shadow-2xl shadow-primary/30 text-[11px] font-black uppercase tracking-[0.3em] transition-all duration-500 scale-105 active:scale-95">
+                       {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} className="mr-3" />} Finalize Protocol
+                    </Button>
+                 )}
               </div>
-              {currentStep < steps.length - 1 ? (
-                <Button onClick={() => setCurrentStep(prev => prev + 1)} className="h-14 px-10 rounded-2xl bg-[#0B0E14] hover:bg-black text-white shadow-xl shadow-black/10 text-[10px] font-black uppercase tracking-[0.2em] group">
-                  Next Sequence <ChevronRight size={18} className="text-primary ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              ) : (
-                <Button onClick={handleSave} disabled={isSaving} className="h-14 px-10 rounded-2xl bg-primary hover:bg-[#88B540] text-white shadow-xl shadow-primary/20 text-[10px] font-black uppercase tracking-[0.2em]">
-                  {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} className="mr-2" />} Update Protocol
-                </Button>
-              )}
-            </div>
-          </div>
+           </div>
         </div>
 
         {/* Cleaned Preview Panel (Removed background as requested) */}

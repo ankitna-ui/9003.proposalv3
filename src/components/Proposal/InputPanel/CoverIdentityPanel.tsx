@@ -1,43 +1,47 @@
-import { Input } from "@/components/ui/input";
-import { InputPanelProps, LabelPremium, SectionHeader } from "./shared";
+import { InputPanelProps, LabelPremium, SectionHeader, ModernInput } from "./shared";
 
 export default function CoverIdentityPanel({ proposal, currentStep, updateClient }: InputPanelProps) {
   return (
-    <div className="space-y-8">
-      <SectionHeader title="Brand Configuration" subtitle="Define the strategic identity of this proposal" stepNumber={currentStep + 1} />
-      <div className="space-y-1">
+    <div className="space-y-10">
+      <SectionHeader title="Brand Identity" subtitle="Configure the high-level strategic markers for this document" stepNumber={currentStep + 1} />
+      
+      <div className="space-y-2">
         <LabelPremium>Proposal Reference ID</LabelPremium>
-        <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black">#</span>
-          <Input className="h-14 bg-white border-slate-200 pl-10 font-black rounded-2xl" placeholder="2024-001" value={proposal.client.referenceId} onChange={(e) => updateClient({ referenceId: e.target.value })} />
+        <div className="relative group">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black group-focus-within:text-primary transition-colors">#</span>
+          <ModernInput className="pl-10" placeholder="2024-001" value={proposal.client.referenceId} onChange={(e) => updateClient({ referenceId: e.target.value })} />
         </div>
       </div>
-      <div className="space-y-1">
+
+      <div className="space-y-2">
         <LabelPremium>Main Proposal Title</LabelPremium>
-        <Input className="h-14 bg-white border-slate-200 font-black text-lg rounded-2xl" value={proposal.client.proposalTitle} onChange={(e) => updateClient({ proposalTitle: e.target.value })} />
+        <ModernInput className="text-lg" placeholder="Strategic Digital Transformation" value={proposal.client.proposalTitle} onChange={(e) => updateClient({ proposalTitle: e.target.value })} />
       </div>
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-1">
+
+      <div className="grid grid-cols-2 gap-8">
+        <div className="space-y-2">
           <LabelPremium>Framework Title</LabelPremium>
-          <Input className="h-14 bg-white border-slate-200 rounded-2xl" value={proposal.client.frameworkTitle} onChange={(e) => updateClient({ frameworkTitle: e.target.value })} />
+          <ModernInput placeholder="Executive Protocol" value={proposal.client.frameworkTitle} onChange={(e) => updateClient({ frameworkTitle: e.target.value })} />
         </div>
-        <div className="space-y-1">
-          <LabelPremium>Tagline</LabelPremium>
-          <Input className="h-14 bg-white border-slate-200 rounded-2xl" value={proposal.client.tagline} onChange={(e) => updateClient({ tagline: e.target.value })} />
+        <div className="space-y-2">
+          <LabelPremium>Corporate Tagline</LabelPremium>
+          <ModernInput placeholder="Innovation at Scale" value={proposal.client.tagline} onChange={(e) => updateClient({ tagline: e.target.value })} />
         </div>
       </div>
-      <div className="space-y-1">
+
+      <div className="space-y-2">
         <LabelPremium>Strategic Domain (Industry)</LabelPremium>
-        <Input className="h-14 bg-white border-slate-200 rounded-2xl" value={proposal.client.industryTitle} onChange={(e) => updateClient({ industryTitle: e.target.value })} />
+        <ModernInput placeholder="E-Commerce & Logistics" value={proposal.client.industryTitle} onChange={(e) => updateClient({ industryTitle: e.target.value })} />
       </div>
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-1">
-          <LabelPremium>Proposal Date</LabelPremium>
-          <Input className="h-14 bg-white border-slate-200 rounded-2xl" value={proposal.client.filingDate} onChange={(e) => updateClient({ filingDate: e.target.value })} />
+
+      <div className="grid grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <LabelPremium>Filing Date</LabelPremium>
+          <ModernInput value={proposal.client.filingDate} onChange={(e) => updateClient({ filingDate: e.target.value })} />
         </div>
-        <div className="space-y-1">
-          <LabelPremium>Footer Message</LabelPremium>
-          <Input className="h-14 bg-white border-slate-200 rounded-2xl" value={proposal.client.footerMessage} placeholder="© Weblozy" onChange={(e) => updateClient({ footerMessage: e.target.value })} />
+        <div className="space-y-2">
+          <LabelPremium>Footer Protocol</LabelPremium>
+          <ModernInput placeholder="© Weblozy Strategic Operations" value={proposal.client.footerMessage} onChange={(e) => updateClient({ footerMessage: e.target.value })} />
         </div>
       </div>
     </div>

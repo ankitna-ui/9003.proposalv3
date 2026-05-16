@@ -1,13 +1,10 @@
 import { useMemo } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { CreditCard, Percent, Receipt, ShieldCheck, Plus, Trash2, Calculator, Server, BarChart3 } from "lucide-react";
+import { InputPanelProps, LabelPremium, SectionHeader, ModernInput, ModernTextArea } from "./shared";
 import { Button } from "@/components/ui/button";
-import { CreditCard, Percent, Receipt, ShieldCheck, Plus, Trash2, Calculator, Server } from "lucide-react";
-import { InputPanelProps, LabelPremium, SectionHeader } from "./shared";
 
 export default function CommercialFrameworkPanel({ proposal, currentStep, updatePricing }: InputPanelProps) {
   
-  // Real-time calculation for the dashboard (Updated as per user request)
   const stats = useMemo(() => {
     const base = parseFloat(proposal.pricing.coreValuation) || 0;
     const discPct = parseFloat(proposal.pricing.discountPercentage) || 0;
@@ -15,8 +12,6 @@ export default function CommercialFrameworkPanel({ proposal, currentStep, update
     
     const discAmt = base * (discPct / 100);
     const subtotal = base - discAmt;
-    
-    // Total is now same as subtotal because GST is EXTRA
     const total = subtotal; 
     
     return { base, discPct, discAmt, subtotal, taxPct, total };
@@ -43,169 +38,211 @@ export default function CommercialFrameworkPanel({ proposal, currentStep, update
   const formatINR = (v: number) => `₹${Math.round(v).toLocaleString("en-IN")}`;
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-12 pb-20">
       <SectionHeader 
-        title="Financial Alignment" 
-        subtitle="Configure the commercial framework and investment roadmap" 
+        title="Commercial Alignment" 
+        subtitle="Configure the investment framework and structured financial roadmap" 
         stepNumber={currentStep + 1} 
       />
 
-      {/* ──── CORE VALUATION & DISCOUNT ──── */}
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-1">
-          <LabelPremium>Base Valuation (₹)</LabelPremium>
+      {/* ──── VALUATION MATRIX ──── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-4 group">
+          <div className="flex items-center justify-between px-2">
+            <LabelPremium className="mb-0 text-slate-900">Project Valuation (Base)</LabelPremium>
+            <CreditCard size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
+          </div>
           <div className="relative">
-            <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <Input 
-              type="number" 
-              className="h-14 bg-white border-slate-200 pl-12 font-black rounded-2xl text-lg" 
-              value={proposal.pricing.coreValuation} 
-              onChange={(e) => updatePricing({ coreValuation: e.target.value })} 
-            />
+             <ModernInput 
+               type="number" 
+               className="pl-12 text-xl font-black text-slate-900" 
+               placeholder="₹ 0,00,000"
+               value={proposal.pricing.coreValuation} 
+               onChange={(e) => updatePricing({ coreValuation: e.target.value })} 
+             />
+             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
           </div>
         </div>
-        <div className="space-y-1">
-          <LabelPremium>Discount (%)</LabelPremium>
+
+        <div className="space-y-4 group">
+          <div className="flex items-center justify-between px-2">
+            <LabelPremium className="mb-0 text-slate-900">Strategic Discount</LabelPremium>
+            <Percent size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
+          </div>
           <div className="relative">
-            <Percent className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <Input 
-              type="number" 
-              className="h-14 bg-white border-slate-200 pl-12 font-black rounded-2xl" 
-              value={proposal.pricing.discountPercentage} 
-              onChange={(e) => updatePricing({ discountPercentage: e.target.value })} 
-            />
+             <ModernInput 
+               type="number" 
+               className="pr-12 font-black text-emerald-600" 
+               placeholder="0"
+               value={proposal.pricing.discountPercentage} 
+               onChange={(e) => updatePricing({ discountPercentage: e.target.value })} 
+             />
+             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400 font-black">%</span>
           </div>
         </div>
       </div>
 
-      {/* ──── LIVE CALCULATION DASHBOARD ──── */}
-      <div className="p-8 bg-slate-900 rounded-[2.5rem] text-white relative overflow-hidden shadow-2xl border-b-[6px] border-primary">
-         <div className="absolute top-0 right-0 p-6 opacity-5 -rotate-12">
-            <Calculator size={140} />
+      {/* ──── CALCULATION ENGINE (PREMIUM DARK) ──── */}
+      <div className="p-12 bg-[#0B0E14] rounded-[3.5rem] text-white relative overflow-hidden shadow-2xl">
+         <div className="absolute top-0 right-0 p-12 opacity-5 -rotate-12 scale-150">
+            <Calculator size={160} className="text-primary" />
          </div>
          
-         <div className="relative z-10 space-y-6">
-            <div className="flex justify-between items-center text-xs font-black uppercase tracking-widest text-white/40">
-               <span>Investment Protocol</span>
-               <span className="text-primary italic">GST Extra Mode</span>
-            </div>
-            
-            <div className="space-y-3">
-               <div className="flex justify-between items-center text-sm">
-                  <span className="text-white/60 font-bold">List Price</span>
-                  <span className="font-black">{formatINR(stats.base)}</span>
+         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div className="space-y-8">
+               <div className="flex items-center gap-3 text-primary">
+                  <div className="w-10 h-[2px] bg-primary" />
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em]">Investment Synthesis</span>
                </div>
-               {stats.discAmt > 0 && (
-                 <div className="flex justify-between items-center text-sm text-primary">
-                    <span className="font-bold">Discount Applied ({stats.discPct}%)</span>
-                    <span className="font-black">- {formatINR(stats.discAmt)}</span>
-                 </div>
-               )}
+               
+               <div className="space-y-4">
+                  <div className="flex justify-between items-center text-sm border-b border-white/5 pb-4">
+                     <span className="text-white/40 font-black uppercase tracking-widest text-[10px]">Gross Valuation</span>
+                     <span className="font-black text-white/90">{formatINR(stats.base)}</span>
+                  </div>
+                  {stats.discAmt > 0 && (
+                    <div className="flex justify-between items-center text-sm border-b border-white/5 pb-4">
+                       <span className="text-emerald-400/40 font-black uppercase tracking-widest text-[10px]">Strategic Relief ({stats.discPct}%)</span>
+                       <span className="font-black text-emerald-400">- {formatINR(stats.discAmt)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center">
+                     <span className="text-white/40 font-black uppercase tracking-widest text-[10px]">Current Tax (GST)</span>
+                     <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-black text-white/20">RATE</span>
+                        <input 
+                           type="number" 
+                           className="w-12 bg-white/5 border border-white/10 rounded-lg text-center text-[10px] font-black py-1 focus:outline-none focus:border-primary/40" 
+                           value={proposal.pricing.taxRate || 18} 
+                           onChange={(e) => updatePricing({ taxRate: e.target.value })}
+                        />
+                        <span className="text-[10px] font-black text-white/20">%</span>
+                     </div>
+                  </div>
+               </div>
             </div>
 
-            <div className="pt-6 border-t border-white/10">
-               <div className="flex justify-between items-end">
-                  <div>
-                     <div className="text-[10px] font-black uppercase tracking-[0.4em] text-primary mb-1">Net Strategic Investment</div>
-                     <div className="text-4xl font-black tracking-tighter">{formatINR(stats.total)}</div>
-                     <div className="text-[10px] font-black text-white/40 mt-2">*{stats.taxPct}% GST Extra Applicable</div>
+            <div className="flex flex-col justify-end">
+               <div className="p-8 bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-xl">
+                  <div className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-3">Net Capital Commitment</div>
+                  <div className="flex items-baseline gap-3">
+                     <div className="text-5xl font-black tracking-tighter text-white">{formatINR(stats.total)}</div>
+                     <div className="text-xs font-black text-white/30 uppercase tracking-widest">+ GST Extra</div>
                   </div>
-                  <div className="text-right">
-                     <div className="text-[8px] font-black uppercase tracking-widest text-white/20 mb-1">Tax Rate</div>
-                     <Input 
-                        type="number" 
-                        className="w-16 h-8 bg-white/5 border-white/10 rounded-lg text-center text-[10px] font-black p-0" 
-                        value={proposal.pricing.taxRate || 18} 
-                        onChange={(e) => updatePricing({ taxRate: e.target.value })}
-                     />
-                  </div>
+                  <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em] mt-6 leading-relaxed">
+                     * Final valuation subject to milestone alignment and service level specifications.
+                  </p>
                </div>
             </div>
          </div>
       </div>
 
-      {/* ──── INFRASTRUCTURE & SUPPORT ──── */}
-      <div className="grid grid-cols-2 gap-6">
-        <div className="space-y-3">
-          <LabelPremium>Cloud Infrastructure</LabelPremium>
-          <div className="relative">
-            <Server className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <Input 
-              className="h-12 bg-slate-50 border-slate-200 pl-10 rounded-xl text-xs font-bold" 
-              placeholder="e.g. At Actuals"
-              value={proposal.pricing.hostingCost} 
-              onChange={(e) => updatePricing({ hostingCost: e.target.value })} 
-            />
+      {/* ──── SUPPORTING OVERHEADS ──── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-4 group">
+          <div className="flex items-center justify-between px-2">
+            <LabelPremium className="mb-0 text-slate-900">Infrastructure (Cloud)</LabelPremium>
+            <Server size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
           </div>
+          <ModernInput 
+            className="font-bold text-slate-600" 
+            placeholder="e.g. Billed at Actuals / Monthly"
+            value={proposal.pricing.hostingCost} 
+            onChange={(e) => updatePricing({ hostingCost: e.target.value })} 
+          />
         </div>
-        <div className="space-y-3">
-          <LabelPremium>Maintenance / SLA</LabelPremium>
-          <div className="relative">
-            <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <Input 
-              className="h-12 bg-slate-50 border-slate-200 pl-10 rounded-xl text-xs font-bold" 
-              placeholder="e.g. SLA-1"
-              value={proposal.pricing.maintenanceCost} 
-              onChange={(e) => updatePricing({ maintenanceCost: e.target.value })} 
-            />
+        <div className="space-y-4 group">
+          <div className="flex items-center justify-between px-2">
+            <LabelPremium className="mb-0 text-slate-900">Maintenance Protocol</LabelPremium>
+            <ShieldCheck size={16} className="text-slate-300 group-hover:text-primary transition-colors" />
           </div>
+          <ModernInput 
+            className="font-bold text-slate-600" 
+            placeholder="e.g. 15% Annual Post-Warranty"
+            value={proposal.pricing.maintenanceCost} 
+            onChange={(e) => updatePricing({ maintenanceCost: e.target.value })} 
+          />
         </div>
       </div>
 
-      {/* ──── MILESTONE MANAGER ──── */}
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-           <LabelPremium>Payment Roadmap (Milestones)</LabelPremium>
-           <Button variant="ghost" onClick={addMilestone} className="text-[10px] font-black uppercase text-primary hover:bg-primary/5">
-             <Plus size={14} className="mr-1" /> Add Milestone
-           </Button>
+      {/* ──── MILESTONE ROADMAP ──── */}
+      <div className="space-y-8 bg-slate-50/50 p-12 rounded-[3.5rem] border border-slate-100 shadow-inner">
+        <div className="flex justify-between items-center px-4">
+           <div className="space-y-1">
+              <LabelPremium className="mb-0 text-slate-900">Investment Roadmap</LabelPremium>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Defined Payment Milestones & Deliverables</p>
+           </div>
+           <button 
+             onClick={addMilestone} 
+             className="text-[11px] font-black uppercase text-primary hover:text-white hover:bg-primary px-8 py-2.5 border border-primary/20 rounded-2xl transition-all shadow-sm hover:shadow-primary/20 bg-white"
+           >
+             + Add Milestone
+           </button>
         </div>
-        <div className="space-y-4">
+
+        <div className="grid grid-cols-1 gap-6">
            {proposal.pricing.milestones?.map((m: any, i: number) => (
-             <div key={i} className="p-6 bg-white border border-slate-100 rounded-[2rem] shadow-sm flex gap-4 items-start group">
-                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center font-black text-slate-400 shrink-0">
-                   {i + 1}
+             <div key={i} className="relative group bg-white p-8 rounded-[2.5rem] border border-slate-100 hover:border-primary/20 transition-all duration-500 shadow-sm hover:shadow-xl flex gap-8 items-start">
+                <div className="w-16 h-16 bg-[#0B0E14] rounded-2xl flex items-center justify-center font-black text-white text-xl italic shrink-0 shadow-lg -rotate-3 group-hover:rotate-0 transition-transform">
+                   {String(i + 1).padStart(2, '0')}
                 </div>
-                <div className="flex-1 grid grid-cols-12 gap-4">
-                   <div className="col-span-8">
-                      <Input 
-                        className="bg-transparent border-none p-0 h-auto font-black uppercase text-slate-800 focus-visible:ring-0" 
-                        value={m.name} 
-                        onChange={(e) => updateMilestone(i, { name: e.target.value })} 
-                      />
-                      <Input 
-                        className="bg-transparent border-none p-0 h-auto text-[10px] font-bold text-slate-400 focus-visible:ring-0 mt-1" 
-                        placeholder="Description..."
-                        value={m.description} 
-                        onChange={(e) => updateMilestone(i, { description: e.target.value })} 
-                      />
-                   </div>
-                   <div className="col-span-4 flex items-center gap-2">
-                      <div className="relative w-full">
-                         <Input 
-                           type="number"
-                           className="h-10 bg-slate-50 border-slate-200 pr-8 font-black rounded-xl text-right" 
-                           value={m.percentage} 
-                           onChange={(e) => updateMilestone(i, { percentage: e.target.value })} 
+                
+                <div className="flex-1 space-y-6">
+                   <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                      <div className="md:col-span-9 space-y-4">
+                         <div className="space-y-1">
+                            <p className="text-[9px] font-black uppercase text-slate-300 tracking-widest pl-1">Milestone Phase</p>
+                            <ModernInput 
+                              className="bg-slate-50/50 border-none font-black text-slate-900 p-0 h-auto text-lg focus:bg-white" 
+                              placeholder="e.g. System Blueprint & Initiation"
+                              value={m.name} 
+                              onChange={(e) => updateMilestone(i, { name: e.target.value })} 
+                            />
+                         </div>
+                         <ModernTextArea 
+                           className="bg-slate-50/50 border-none text-[13px] font-medium text-slate-500 p-4 min-h-[80px] focus:bg-white" 
+                           placeholder="Describe the scope and delivery logic for this phase..."
+                           value={m.description} 
+                           onChange={(e) => updateMilestone(i, { description: e.target.value })} 
                          />
-                         <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">%</span>
                       </div>
-                      <button onClick={() => removeMilestone(i)} className="p-2 text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
-                         <Trash2 size={16} />
-                      </button>
+                      <div className="md:col-span-3">
+                         <div className="space-y-1">
+                            <p className="text-[9px] font-black uppercase text-slate-300 tracking-widest pl-1">Allocation (%)</p>
+                            <div className="relative">
+                               <ModernInput 
+                                 type="number"
+                                 className="bg-slate-50/50 border-none font-black text-primary text-2xl text-center py-6 focus:bg-white" 
+                                 value={m.percentage} 
+                                 onChange={(e) => updateMilestone(i, { percentage: e.target.value })} 
+                               />
+                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 font-black">%</span>
+                            </div>
+                         </div>
+                      </div>
                    </div>
                 </div>
+
+                <button 
+                  onClick={() => removeMilestone(i)} 
+                  className="absolute top-8 right-8 p-2.5 bg-red-50 rounded-xl text-red-300 hover:text-red-500 hover:bg-red-100 transition-all opacity-0 group-hover:opacity-100 border border-red-100/50"
+                >
+                   <Trash2 size={18} />
+                </button>
              </div>
            ))}
         </div>
       </div>
 
-      {/* ──── SETTLEMENT NARRATIVE ──── */}
-      <div className="space-y-3">
-        <LabelPremium>ROI Settlement Protocol</LabelPremium>
-        <Textarea 
-          className="min-h-[100px] bg-slate-50 border-slate-200 rounded-[2rem] p-6 text-sm font-medium leading-relaxed" 
-          placeholder="Describe how the investment is settled..." 
+      {/* ──── ROI LOGIC ──── */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center px-6">
+           <LabelPremium className="mb-0 text-slate-900">ROI Settlement Protocol</LabelPremium>
+           <span className="text-[9px] font-black uppercase text-emerald-500 bg-emerald-50 px-4 py-1.5 rounded-full border border-emerald-100">Financial Logic</span>
+        </div>
+        <ModernTextArea 
+          className="min-h-[140px] p-10 text-base font-bold text-slate-600 leading-relaxed rounded-[3rem]" 
+          placeholder="Clarify the settlement logic. E.g., 'Payment for each phase is due upon successful deployment to the staging environment and client protocol sign-off...'" 
           value={proposal.pricing.roiLogic} 
           onChange={(e) => updatePricing({ roiLogic: e.target.value })} 
         />
