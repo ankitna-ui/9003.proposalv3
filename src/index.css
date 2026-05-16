@@ -295,8 +295,8 @@
   align-items: center;
   gap: 0; /* CRITICAL: zero gap so html2canvas page math is exact */
   background: #F1F5F9;
-  padding: 2rem 0;
-  min-height: 100vh;
+  padding: 1rem 0;
+  height: fit-content;
   scroll-behavior: smooth;
   scroll-padding-top: 2rem;
 }

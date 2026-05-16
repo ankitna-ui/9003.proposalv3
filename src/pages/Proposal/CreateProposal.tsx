@@ -292,8 +292,8 @@ export default function CreateProposal() {
 
         {/* Cleaned Preview Panel (Removed background as requested) */}
         <div className="hidden md:flex flex-1 bg-slate-50 items-start justify-center overflow-y-auto p-12 custom-scrollbar relative">
-           <div className="w-full max-w-5xl py-12 relative z-10 flex justify-center">
-              <div className="origin-top shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 transform scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-[0.95]">
+           <div className="w-full max-w-5xl py-2 relative z-10 flex justify-center h-fit">
+              <div className="origin-top shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 transform scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-[0.95] h-fit">
                  <ProposalPDF proposal={proposal} />
               </div>
            </div>
