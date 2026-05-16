@@ -90,7 +90,7 @@ const ProposalPDF = forwardRef<HTMLDivElement, ProposalPDFProps>(({ proposal, ac
   };
 
   return (
-    <div ref={setRefs} className="flex flex-col gap-0 items-center font-sans text-[#0B0E14] w-full h-fit">
+    <div ref={setRefs} className="flex flex-col gap-12 items-center font-sans text-[#0B0E14] w-full h-fit">
       <CoverPage proposal={proposal} pageNum={currentPageNum++} />
       <CorporateIdentityPage proposal={proposal} pageNum={currentPageNum++} />
       <OperationalAuditPage proposal={proposal} pageNum={currentPageNum++} />
