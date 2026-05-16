@@ -16,15 +16,32 @@ export default function StrategicEcosystemPanel({ proposal, currentStep, updateS
         </div>
         
         <div className="space-y-4">
-          <LabelPremium>System Demo Environment</LabelPremium>
+          <div className="flex justify-between items-center">
+            <LabelPremium>Connectivity Hub</LabelPremium>
+            <button type="button" onClick={() => updateSolution({ integrations: [...(proposal.solution.integrations || []), ""] })} className="text-[10px] font-black uppercase text-blue-600 hover:underline">+ Add Link / API</button>
+          </div>
           <div className="p-6 bg-blue-50/50 border border-blue-100 rounded-[2.5rem] space-y-3">
-            <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest">Live Experience Link</p>
-            <Input 
-              className="h-14 bg-white border-blue-200 rounded-2xl font-bold text-blue-600" 
-              placeholder="e.g. https://demo.weblozy.com" 
-              value={proposal.solution.demoLink || ""} 
-              onChange={(e) => updateSolution({ demoLink: e.target.value })} 
-            />
+            <p className="text-[10px] text-blue-600 font-black uppercase tracking-widest">Active System Nodes & Integrations</p>
+            <div className="space-y-2">
+              {(proposal.solution.integrations || []).map((link, i) => (
+                <div key={i} className="flex gap-2">
+                  <Input 
+                    className="h-12 bg-white border-blue-100 rounded-xl font-bold text-blue-600" 
+                    placeholder="e.g. CRM Integration | https://api.crm.com" 
+                    value={link} 
+                    onChange={(e) => {
+                      const next = [...(proposal.solution.integrations || [])];
+                      next[i] = e.target.value;
+                      updateSolution({ integrations: next });
+                    }} 
+                  />
+                  <button type="button" onClick={() => updateSolution({ integrations: proposal.solution.integrations.filter((_, idx) => idx !== i) })} className="px-3 text-red-400 font-black hover:text-red-600 transition-colors">×</button>
+                </div>
+              ))}
+              {(proposal.solution.integrations?.length === 0 || !proposal.solution.integrations) && (
+                <div className="text-[10px] text-blue-300 italic font-medium uppercase tracking-widest text-center py-4">No active connectivity nodes defined.</div>
+              )}
+            </div>
           </div>
         </div>
       </div>

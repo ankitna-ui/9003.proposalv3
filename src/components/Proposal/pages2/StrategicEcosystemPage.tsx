@@ -97,37 +97,36 @@ const StrategicEcosystemPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                       </div>
                    </div>
 
-                   {/* User Architecture */}
-                   <div className="flex flex-col flex-1 min-h-0">
-                      <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-3 shrink-0">User Hierarchy</div>
-                      <div className={`grid gap-1.5 flex-1 min-h-0 overflow-hidden ${useGrid ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                         {roles.map((role, i) => {
-                            const roleName = typeof role === 'string' ? role : (role as any).role;
-                            const roleCount = typeof role === 'string' ? "1" : ((role as any).count || "1");
-                            const roleAccess = typeof role === 'string' ? "Strategic Access" : ((role as any).access || "Strategic Access");
-                            
-                            return (
-                               <div key={i} className={`flex items-center justify-between bg-white rounded-xl border border-slate-100 shadow-sm transition-all ${roleStyle.p}`}>
-                                  <div className="flex items-center gap-2 min-w-0">
-                                     <div className={`${roleStyle.box} rounded-lg bg-slate-50 flex flex-col items-center justify-center text-[#3ABEF9] border border-slate-100 shrink-0`}>
-                                        <div className={`${roleCount.length > 2 ? 'text-[7px]' : 'text-[9px]'} font-black leading-none`}>{roleCount}</div>
-                                        <div className="text-[4px] font-black uppercase tracking-widest opacity-40">User</div>
-                                     </div>
-                                     <div className="space-y-0.5 min-w-0">
-                                        <div className={`${roleStyle.title} font-black uppercase text-slate-900 tracking-tight leading-none truncate`}>
-                                           {roleName}
-                                        </div>
-                                        <div className={`${roleStyle.sub} font-bold text-slate-400 uppercase tracking-widest leading-none truncate`}>
-                                           {roleAccess}
-                                        </div>
-                                     </div>
-                                  </div>
-                                  {roleStyle.icon > 0 && <UserCheck size={roleStyle.icon} className="text-[#3ABEF9]/20 shrink-0" />}
-                               </div>
-                            );
-                         })}
-                      </div>
-                   </div>
+                    {/* User Architecture */}
+                    <div className="flex flex-col flex-1 min-h-0">
+                       <div className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 mb-3 shrink-0">User Hierarchy</div>
+                       <div className={`grid gap-1.5 flex-1 min-h-0 overflow-hidden ${useGrid ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                          {roles.map((role, i) => {
+                             const roleStr = typeof role === 'string' ? role : "";
+                             const [roleName, roleAccess] = roleStr.includes('|') ? roleStr.split('|') : [roleStr, "Strategic Access"];
+                             
+                             return (
+                                <div key={i} className={`flex items-center justify-between bg-white rounded-xl border border-slate-100 shadow-sm transition-all ${roleStyle.p}`}>
+                                   <div className="flex items-center gap-2 min-w-0">
+                                      <div className={`${roleStyle.box} rounded-lg bg-slate-900 flex flex-col items-center justify-center text-[#99CB48] border border-slate-900 shrink-0`}>
+                                         <div className="text-[10px] font-black leading-none">0{i+1}</div>
+                                         <div className="text-[4px] font-black uppercase tracking-widest opacity-40">Node</div>
+                                      </div>
+                                      <div className="space-y-0.5 min-w-0">
+                                         <div className={`${roleStyle.title} font-black uppercase text-slate-900 tracking-tight leading-none truncate`}>
+                                            {roleName || "System Role"}
+                                         </div>
+                                         <div className={`${roleStyle.sub} font-bold text-slate-400 uppercase tracking-widest leading-none truncate`}>
+                                            {roleAccess || "Strategic Access"}
+                                         </div>
+                                      </div>
+                                   </div>
+                                   {roleStyle.icon > 0 && <UserCheck size={roleStyle.icon} className="text-[#3ABEF9]/20 shrink-0" />}
+                                </div>
+                             );
+                          })}
+                       </div>
+                    </div>
                 </div>
              </div>
           </div>
