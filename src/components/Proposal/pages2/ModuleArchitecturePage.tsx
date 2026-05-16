@@ -69,14 +69,14 @@ const ModuleArchitecturePage: React.FC<PageProps> = ({ proposal, pageNum }) => {
               {pageModules.map((module, mIdx) => (
                 <div key={mIdx} className="w-full border-[1px] border-slate-900 overflow-hidden rounded-lg shadow-sm">
                   {/* Compact Module Header */}
-                  <div className="bg-[#99CB48] py-1.5 px-4 border-b-[1px] border-slate-900 flex justify-between items-center">
-                    <h3 className="text-white italic font-black uppercase tracking-widest text-[10px]">
+                  <div className="bg-[#0B0E14] py-1.5 px-4 border-b-[1px] border-slate-900 flex justify-between items-center">
+                    <h3 className="text-[#99CB48] italic font-black uppercase tracking-widest text-[10px]">
                       {module.name}
                     </h3>
                     {module.price && (
-                      <div className="bg-white px-2 py-0.5 rounded border border-slate-900 shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1">
-                        <IndianRupee size={7} className="text-slate-900" strokeWidth={3} />
-                        <span className="text-[8px] font-black text-slate-900 uppercase italic">{module.price}</span>
+                      <div className="bg-[#99CB48] px-2 py-0.5 rounded border border-slate-900 shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] flex items-center gap-1">
+                        <IndianRupee size={7} className="text-[#0B0E14]" strokeWidth={3} />
+                        <span className="text-[8px] font-black text-[#0B0E14] uppercase italic">{module.price}</span>
                       </div>
                     )}
                   </div>
@@ -91,7 +91,7 @@ const ModuleArchitecturePage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                           <div className="w-1 h-1 rounded-full bg-[#99CB48] shrink-0" />
+                           <div className="w-1.5 h-1.5 rounded-full bg-[#0B0E14] shrink-0" />
                            <span className="text-[9px] font-black italic uppercase tracking-tight text-slate-800 leading-tight">
                              {typeof feature === 'string' ? feature : feature.name}
                            </span>
@@ -103,7 +103,7 @@ const ModuleArchitecturePage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                            </div>
                         )}
                         <div className="flex justify-end">
-                           <div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#99CB48] text-white shrink-0">
+                           <div className="flex items-center justify-center w-4 h-4 rounded-full bg-[#0B0E14] text-[#99CB48] shrink-0 shadow-sm">
                               <CheckCircle2 size={10} strokeWidth={3} />
                            </div>
                         </div>
@@ -112,13 +112,39 @@ const ModuleArchitecturePage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                   </div>
                 </div>
               ))}
+
+              {/* User Hierarchy Section (Only on the last page of this module) */}
+              {pageIdx === pages.length - 1 && proposal.solution.userRoles?.length > 0 && (
+                <div className="mt-6 space-y-3">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="px-3 py-1 bg-[#0B0E14] text-[#99CB48] text-[8px] font-black uppercase tracking-[0.3em] rounded-md">System Access Hierarchy</div>
+                    <div className="h-[1px] flex-1 bg-slate-200" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {proposal.solution.userRoles.map((roleStr, rIdx) => {
+                      const [title, desc] = roleStr.split("|");
+                      return (
+                        <div key={rIdx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 hover:bg-white hover:border-[#99CB48]/30 transition-all group">
+                          <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#99CB48]" />
+                            <h4 className="text-[10px] font-black uppercase tracking-tight text-slate-900 group-hover:text-[#1AA6E1] transition-colors">{title}</h4>
+                          </div>
+                          <p className="text-[8px] font-bold text-slate-400 uppercase leading-relaxed tracking-tight">
+                            {desc || "Defined access level for system synchronization."}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="mt-auto pt-3 flex items-center justify-between border-t border-slate-100">
               <div className="text-[7px] font-black uppercase tracking-[0.3em] text-slate-300 italic">
-                Proprietary Modular Framework // Weblozy Sequential logic
+                Proprietary Modular Framework // User Access Synchronization
               </div>
-              {pages.length > 1 && (
+              {pages.length > 1 && pageIdx < pages.length - 1 && (
                 <div className="text-[7px] font-bold uppercase text-slate-400 tracking-widest flex items-center gap-1">
                    <div className="w-1 h-1 rounded-full bg-[#99CB48] animate-pulse" />
                    Continued...

@@ -183,6 +183,57 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
           ))}
         </div>
       </div>
+
+      {/* User Hierarchy Section */}
+      <div className="space-y-6 border-t border-slate-100 pt-10">
+        <div className="flex justify-between items-center px-4">
+          <div className="space-y-1">
+            <LabelPremium>User Hierarchy & Access Roles</LabelPremium>
+            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Define system access levels and responsibilities</p>
+          </div>
+          <Button onClick={() => updateSolution({ userRoles: [...(proposal.solution.userRoles || []), "New Role|Access Description"] })} variant="outline" className="h-10 rounded-xl text-[9px] font-black uppercase tracking-widest">+ Add Role</Button>
+        </div>
+        
+        <div className="grid gap-4">
+          {(proposal.solution.userRoles || []).map((roleStr, rIdx) => {
+            const [title, desc] = (roleStr || "|").split("|");
+            return (
+              <div key={rIdx} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl space-y-4 relative group">
+                <div className="flex gap-4">
+                  <div className="flex-1 space-y-3">
+                    <Input 
+                      className="bg-transparent border-none font-black uppercase text-slate-900 focus-visible:ring-0 p-0 h-auto" 
+                      placeholder="Role Title (e.g. Master Admin)" 
+                      value={title} 
+                      onChange={(e) => {
+                        const next = [...proposal.solution.userRoles];
+                        next[rIdx] = `${e.target.value}|${desc}`;
+                        updateSolution({ userRoles: next });
+                      }}
+                    />
+                    <Textarea 
+                      className="bg-white/50 border-slate-200 rounded-xl text-[10px] font-bold text-slate-500 min-h-[60px]" 
+                      placeholder="Define access level and key responsibilities..." 
+                      value={desc} 
+                      onChange={(e) => {
+                        const next = [...proposal.solution.userRoles];
+                        next[rIdx] = `${title}|${e.target.value}`;
+                        updateSolution({ userRoles: next });
+                      }}
+                    />
+                  </div>
+                  <button 
+                    onClick={() => updateSolution({ userRoles: proposal.solution.userRoles.filter((_: string, i: number) => i !== rIdx) })} 
+                    className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all p-2"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
