@@ -21,6 +21,7 @@ import { getProposals, deleteProposal } from "@/lib/firestore";
 import { auth } from "@/lib/firebase";
 import { Proposal } from "@/types/proposal";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
 
 export default function SavedProposals() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -48,9 +49,10 @@ export default function SavedProposals() {
       try {
         await deleteProposal(id);
         setProposals(prev => prev.filter(p => p.id !== id));
+        toast.success("Proposal protocol successfully purged from archives.");
       } catch (error) {
         console.error(error);
-        alert("Deletion failed.");
+        toast.error("Deletion protocol failed. Access denied.");
       }
     }
   };

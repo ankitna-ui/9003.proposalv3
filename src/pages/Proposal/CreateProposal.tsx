@@ -21,6 +21,7 @@ import {
   Send
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
 import { useProposalForm } from "@/hooks/useProposalForm";
 import { useTokens } from "@/hooks/useTokens";
 import { generateProposalContent } from "@/lib/gemini";
@@ -81,22 +82,29 @@ export default function CreateProposal() {
 
   const handleAIAction = async () => {
     if (!proposal.situation.meetingNotes) {
-      alert("Please add meeting notes first to generate content.");
+      toast.warning("Protocol Error: Please add meeting notes first to synchronize AI.");
       return;
     }
+    
     setIsGenerating(true);
+    const aiPromise = generateProposalContent(
+      proposal.situation.meetingNotes,
+      proposal.client.companyName,
+      proposal.solution.selectedModules.map(m => m.name)
+    );
+
+    toast.promise(aiPromise, {
+      pending: 'Synchronizing Strategic AI Intelligence...',
+      success: 'AI Content Synchronized Successfully! ✨',
+      error: 'AI Synchronization Failed. Please verify connectivity.'
+    });
+
     try {
-      const { content, tokens } = await generateProposalContent(
-        proposal.situation.meetingNotes,
-        proposal.client.companyName,
-        proposal.solution.selectedModules.map(m => m.name)
-      );
+      const { content, tokens } = await aiPromise;
       setAIContent(content);
       consumeTokens(tokens);
-      alert("AI Intelligence Synchronized!");
     } catch (error) {
       console.error(error);
-      alert("AI Generation failed. Check console for details.");
     } finally {
       setIsGenerating(false);
     }
@@ -106,13 +114,13 @@ export default function CreateProposal() {
     switch (currentStep) {
       case 0:
         if (!proposal.client.proposalTitle) {
-          alert("Proposal Title is required.");
+          toast.error("Validation Error: Proposal Title is required.");
           return false;
         }
         break;
       case 5:
         if (proposal.solution.selectedModules.length === 0) {
-          alert("Add at least one module to continue.");
+          toast.error("Validation Error: Add at least one module to continue.");
           return false;
         }
         break;
@@ -129,23 +137,29 @@ export default function CreateProposal() {
   const handleSave = async () => {
     const user = auth.currentUser;
     if (!user) {
-      alert("Please login to initiate your strategic protocol.");
+      toast.error("Authentication Required: Please login to initiate your protocol.");
       return;
     }
 
     setIsSaving(true);
+    const savePromise = saveProposal({
+      ...proposal,
+      userId: user.uid,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    });
+
+    toast.promise(savePromise, {
+      pending: 'Initializing Strategic Protocol...',
+      success: 'Strategic Protocol Initialized Successfully! 🚀',
+      error: 'Failed to save protocol. Please try again.'
+    });
+
     try {
-      const id = await saveProposal({
-        ...proposal,
-        userId: user.uid,
-        createdAt: Date.now(),
-        updatedAt: Date.now()
-      });
-      alert("Strategic Protocol Initialized!");
+      const id = await savePromise;
       navigate(`/preview/${id}`, { state: { proposal: { ...proposal, id, userId: user.uid } } });
     } catch (error) {
       console.error(error);
-      alert("Failed to save protocol.");
     } finally {
       setIsSaving(false);
     }

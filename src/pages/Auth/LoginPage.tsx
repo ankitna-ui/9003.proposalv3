@@ -12,6 +12,7 @@ import {
 } from "firebase/auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ShieldCheck, Zap, ChevronRight, ArrowLeft, Mail, Lock, CheckCircle2, Cpu, Globe, Database } from "lucide-react";
+import { toast } from "react-toastify";
 import banner2Logo from "@/assets/banner2_logo.png";
 
 type AuthMode = "login" | "signup" | "forgot-password" | "reset-password" | "success" | "loading";
@@ -23,7 +24,6 @@ export default function LoginPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode>("login");
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingText, setLoadingText] = useState("Initializing System...");
   
@@ -73,26 +73,28 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
 
     try {
       if (authMode === "login") {
         await signInWithEmailAndPassword(auth, email, password);
+        toast.success("Identity Verified. Accessing Strategic Dashboard.");
         setAuthMode("loading");
       } else if (authMode === "signup") {
         await createUserWithEmailAndPassword(auth, email, password);
+        toast.success("Identity Established. Initializing Node.");
         setAuthMode("loading");
       } else if (authMode === "forgot-password") {
         await sendPasswordResetEmail(auth, email);
-        setMessage({ type: "success", text: "Reset link dispatched to your inbox." });
+        toast.success("Recovery Protocol Dispatched to your inbox.");
         setAuthMode("success");
       } else if (authMode === "reset-password") {
         if (newPassword !== confirmPassword) {
-          throw new Error("Security keys do not match.");
+          toast.error("Security keys do not match.");
+          return;
         }
         if (oobCode) {
           await confirmPasswordReset(auth, oobCode, newPassword);
-          setMessage({ type: "success", text: "Security key updated successfully." });
+          toast.success("Security Key Re-established successfully.");
           setAuthMode("success");
         }
       }
@@ -101,7 +103,7 @@ export default function LoginPage() {
       const friendlyMessage = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' 
         ? "Invalid credentials for this terminal ID." 
         : "Authentication protocol failed. Please verify credentials.";
-      setMessage({ type: "error", text: friendlyMessage });
+      toast.error(friendlyMessage);
       setLoading(false);
     }
   };
@@ -311,7 +313,7 @@ export default function LoginPage() {
                         )}
                       </Button>
                     ) : (
-                      <Button type="button" onClick={() => { setAuthMode("login"); setMessage(null); }} className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-white/5 border border-white/10 text-white rounded-[1.2rem]">Return Hub</Button>
+                      <Button type="button" onClick={() => { setAuthMode("login"); }} className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-white/5 border border-white/10 text-white rounded-[1.2rem]">Return Hub</Button>
                     )}
     
                     {(authMode === "login" || authMode === "signup") && (

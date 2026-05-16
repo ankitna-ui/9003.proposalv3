@@ -44,11 +44,12 @@ const CoverPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
                </div>
              </div>
              
-             <h1 className={`font-black tracking-[-0.04em] uppercase text-white drop-shadow-2xl transition-all duration-300 ${
-               (proposal?.client?.proposalTitle || "").length > 80 ? "text-[28px] leading-[1.1]" : 
-               (proposal?.client?.proposalTitle || "").length > 50 ? "text-[36px] leading-[1.05]" : 
-               (proposal?.client?.proposalTitle || "").length > 30 ? "text-[48px] leading-[1]" : 
-               "text-[64px] leading-[0.95]"
+             <h1 className={`font-black tracking-[-0.04em] uppercase text-white drop-shadow-2xl transition-all duration-500 ${
+               (proposal?.client?.proposalTitle || "").length > 80 ? "text-[26px] leading-[1.1]" : 
+               (proposal?.client?.proposalTitle || "").length > 55 ? "text-[32px] leading-[1.05]" : 
+               (proposal?.client?.proposalTitle || "").length > 35 ? "text-[42px] leading-[1]" : 
+               (proposal?.client?.proposalTitle || "").length > 20 ? "text-[52px] leading-[0.95]" :
+               "text-[58px] leading-[0.95]"
              }`}>
                {proposal?.client?.proposalTitle ? (
                  (proposal?.client?.proposalTitle || '').split(' ').map((word, i) => (

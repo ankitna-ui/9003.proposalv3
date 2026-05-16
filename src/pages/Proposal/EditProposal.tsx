@@ -20,6 +20,7 @@ import {
   Send
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-toastify";
 import { useProposalForm } from "@/hooks/useProposalForm";
 import { useTokens } from "@/hooks/useTokens";
 import { generateProposalContent } from "@/lib/gemini";
@@ -87,12 +88,12 @@ export default function EditProposal() {
         if (data) {
           setProposal(data);
         } else {
-          alert("Proposal not found");
+          toast.error("Protocol Error: Requested document not found in strategic archives.");
           navigate("/dashboard");
         }
       } catch (error) {
         console.error(error);
-        alert("Error loading proposal");
+        toast.error("System Error: Failed to retrieve protocol from secure storage.");
       } finally {
         setIsLoading(false);
       }
@@ -102,22 +103,29 @@ export default function EditProposal() {
 
   const handleAIAction = async () => {
     if (!proposal.situation.meetingNotes) {
-      alert("Please add meeting notes first to generate content.");
+      toast.warning("Protocol Error: Please add meeting notes first to synchronize AI.");
       return;
     }
+    
     setIsGenerating(true);
+    const aiPromise = generateProposalContent(
+      proposal.situation.meetingNotes,
+      proposal.client.companyName,
+      proposal.solution.selectedModules.map(m => m.name)
+    );
+
+    toast.promise(aiPromise, {
+      pending: 'Synchronizing Strategic AI Intelligence...',
+      success: 'AI Content Synchronized Successfully! ✨',
+      error: 'AI Synchronization Failed. Please verify connectivity.'
+    });
+
     try {
-      const { content, tokens } = await generateProposalContent(
-        proposal.situation.meetingNotes,
-        proposal.client.companyName,
-        proposal.solution.selectedModules.map(m => m.name)
-      );
+      const { content, tokens } = await aiPromise;
       setAIContent(content);
       consumeTokens(tokens);
-      alert("AI Intelligence Synchronized!");
     } catch (error) {
       console.error(error);
-      alert("AI Generation failed.");
     } finally {
       setIsGenerating(false);
     }
@@ -126,15 +134,22 @@ export default function EditProposal() {
   const handleSave = async () => {
     if (!id) return;
     setIsSaving(true);
+    
+    const updatePromise = updateProposal(id, {
+      ...proposal,
+      updatedAt: Date.now()
+    });
+
+    toast.promise(updatePromise, {
+      pending: 'Synchronizing Protocol Changes...',
+      success: 'Strategic Protocol Updated Successfully! 🚀',
+      error: 'Failed to update protocol. Please try again.'
+    });
+
     try {
-      await updateProposal(id, {
-        ...proposal,
-        updatedAt: Date.now()
-      });
-      alert("Strategic Protocol Updated!");
+      await updatePromise;
     } catch (error) {
       console.error(error);
-      alert("Failed to update protocol.");
     } finally {
       setIsSaving(false);
     }

@@ -11,6 +11,9 @@ import ProposalPreview from '@/pages/Proposal/ProposalPreview';
 import GlobalHomeButton from '@/components/Navigation/GlobalHomeButton';
 import LoadingScreen from '@/components/ui/LoadingScreen';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,6 +63,18 @@ function App() {
         
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </Router>
   );
 }

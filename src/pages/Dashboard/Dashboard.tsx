@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, FileText, Download, TrendingUp, Users, Clock, Eye, Trash2, LogOut, Pencil, LayoutGrid, Search, Bell, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { getProposals, deleteProposal } from "@/lib/firestore";
 import { auth } from "@/lib/firebase";
 import { Proposal } from "@/types/proposal";
@@ -89,9 +90,10 @@ export default function Dashboard() {
       try {
         await deleteProposal(id);
         setProposals(prev => prev.filter(p => p.id !== id));
+        toast.success("Strategic asset successfully decommissioned.");
       } catch (error) {
         console.error(error);
-        alert("Permission denied. You can only delete your own proposals.");
+        toast.error("Permission denied: You can only delete your own protocols.");
       }
     }
   };
