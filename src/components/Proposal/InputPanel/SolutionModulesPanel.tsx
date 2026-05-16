@@ -184,51 +184,70 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
         </div>
       </div>
 
-      {/* User Hierarchy Section */}
-      <div className="space-y-6 border-t border-slate-100 pt-10">
-        <div className="flex justify-between items-center px-4">
-          <div className="space-y-1">
-            <LabelPremium>User Hierarchy & Access Roles</LabelPremium>
-            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Define system access levels and responsibilities</p>
+      {/* User Hierarchy & Access Strategic Section */}
+      <div className="mt-12 space-y-8 border-t-2 border-slate-100 pt-12 pb-10">
+        <div className="flex justify-between items-end px-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-[2px] bg-blue-500" />
+              <span className="text-[11px] font-black uppercase tracking-[0.4em] text-blue-600">Strategic Infrastructure</span>
+            </div>
+            <h3 className="text-3xl font-black uppercase tracking-tighter text-slate-900">User Access Hierarchy</h3>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest max-w-md">Define the authority levels and system responsibilities for different organizational nodes.</p>
           </div>
-          <Button onClick={() => updateSolution({ userRoles: [...(proposal.solution.userRoles || []), "New Role|Access Description"] })} variant="outline" className="h-10 rounded-xl text-[9px] font-black uppercase tracking-widest">+ Add Role</Button>
+          <Button 
+            onClick={() => updateSolution({ userRoles: [...(proposal.solution.userRoles || []), "New Strategic Role|Define access permissions..."] })} 
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-8 h-12 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-blue-500/20"
+          >
+            + Add New Role
+          </Button>
         </div>
         
-        <div className="grid gap-4">
-          {(proposal.solution.userRoles || []).map((roleStr, rIdx) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {(proposal.solution.userRoles?.length > 0 ? proposal.solution.userRoles : ["Master Administrator|Complete system control & strategic management", "Operator Node|Routine operational workflows & task execution"]).map((roleStr, rIdx) => {
             const [title, desc] = (roleStr || "|").split("|");
             return (
-              <div key={rIdx} className="p-6 bg-slate-50 border border-slate-100 rounded-3xl space-y-4 relative group">
-                <div className="flex gap-4">
-                  <div className="flex-1 space-y-3">
+              <div key={rIdx} className="group relative bg-white border-2 border-slate-100 hover:border-blue-200 rounded-[2.5rem] p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/5">
+                <div className="absolute -top-3 -left-3 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-[10px] font-black italic shadow-lg border-2 border-white">
+                  0{rIdx + 1}
+                </div>
+                
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <LabelPremium>Authority Title</LabelPremium>
                     <Input 
-                      className="bg-transparent border-none font-black uppercase text-slate-900 focus-visible:ring-0 p-0 h-auto" 
-                      placeholder="Role Title (e.g. Master Admin)" 
+                      className="h-14 bg-slate-50/50 border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-2xl font-black uppercase tracking-tight text-slate-900" 
+                      placeholder="e.g. System Admin" 
                       value={title} 
                       onChange={(e) => {
-                        const next = [...proposal.solution.userRoles];
+                        const next = [...(proposal.solution.userRoles?.length > 0 ? proposal.solution.userRoles : ["Master Administrator|Complete system control & strategic management", "Operator Node|Routine operational workflows & task execution"])];
                         next[rIdx] = `${e.target.value}|${desc}`;
                         updateSolution({ userRoles: next });
                       }}
                     />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <LabelPremium>Access Protocol / Responsibilities</LabelPremium>
                     <Textarea 
-                      className="bg-white/50 border-slate-200 rounded-xl text-[10px] font-bold text-slate-500 min-h-[60px]" 
-                      placeholder="Define access level and key responsibilities..." 
+                      className="bg-slate-50/50 border-slate-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-2xl text-[11px] font-bold text-slate-500 min-h-[80px] leading-relaxed" 
+                      placeholder="Define what this user can do in the system..." 
                       value={desc} 
                       onChange={(e) => {
-                        const next = [...proposal.solution.userRoles];
+                        const next = [...(proposal.solution.userRoles?.length > 0 ? proposal.solution.userRoles : ["Master Administrator|Complete system control & strategic management", "Operator Node|Routine operational workflows & task execution"])];
                         next[rIdx] = `${title}|${e.target.value}`;
                         updateSolution({ userRoles: next });
                       }}
                     />
                   </div>
-                  <button 
-                    onClick={() => updateSolution({ userRoles: proposal.solution.userRoles.filter((_: string, i: number) => i !== rIdx) })} 
-                    className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all p-2"
-                  >
-                    <Trash2 size={18} />
-                  </button>
                 </div>
+
+                <button 
+                  onClick={() => updateSolution({ userRoles: (proposal.solution.userRoles?.length > 0 ? proposal.solution.userRoles : ["Master Administrator|Complete system control & strategic management", "Operator Node|Routine operational workflows & task execution"]).filter((_: string, i: number) => i !== rIdx) })} 
+                  className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all p-2"
+                >
+                  <Trash2 size={20} />
+                </button>
               </div>
             );
           })}
