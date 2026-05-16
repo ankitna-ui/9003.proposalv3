@@ -29,8 +29,14 @@ export default function CorporateLegacyPanel({ proposal, currentStep, updateExpe
       </div>
 
       <div className="space-y-1">
-        <LabelPremium>Industries Served (Pointers)</LabelPremium>
-        <Input className="h-14 bg-white border-slate-200 rounded-2xl" placeholder="E-commerce, SaaS, Logistics" value={Array.isArray(proposal.experience.industriesServed) ? proposal.experience.industriesServed.join(", ") : ""} onChange={(e) => updateExperience({ industriesServed: e.target.value.split(",").map((s: string) => s.trim()) })} />
+        <LabelPremium>Industries Served (Authority Count)</LabelPremium>
+        <Input 
+          className="h-14 bg-white border-slate-200 rounded-2xl font-black" 
+          placeholder="e.g. 15+ Industry" 
+          value={typeof proposal.experience.industriesServed === 'string' ? proposal.experience.industriesServed : (Array.isArray(proposal.experience.industriesServed) ? proposal.experience.industriesServed[0] || "15+ Industry" : "15+ Industry")} 
+          onChange={(e) => updateExperience({ industriesServed: e.target.value as any })} 
+        />
+        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest ml-2 italic">This value highlights your market reach in the success metrics.</p>
       </div>
     </div>
   );
