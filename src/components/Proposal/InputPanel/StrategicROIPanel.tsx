@@ -129,18 +129,86 @@ export default function StrategicROIPanel({ proposal, currentStep, updateROI }: 
         </div>
       </div>
 
+      {/* ──── REAL-WORLD OPERATIONAL DATA ──── */}
+      <div className="p-10 bg-slate-50 border-2 border-slate-100 rounded-[3rem] space-y-8">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-[2px] bg-[#99CB48]" />
+          <span className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">Operational Reality Check</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <LabelPremium>Current Manual Inefficiency</LabelPremium>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <p className="text-[9px] font-black uppercase text-slate-400 pl-1">Manual Hrs / Mo</p>
+                <Input 
+                  type="number" 
+                  className="h-14 bg-white border-slate-200 rounded-2xl font-black text-slate-900" 
+                  placeholder="e.g. 160" 
+                  value={proposal.roi.manualHoursPerMonth || ""} 
+                  onChange={(e) => updateROI({ manualHoursPerMonth: e.target.value })} 
+                />
+              </div>
+              <div className="space-y-2">
+                <p className="text-[9px] font-black uppercase text-slate-400 pl-1">Avg Hourly Rate (₹)</p>
+                <Input 
+                  type="number" 
+                  className="h-14 bg-white border-slate-200 rounded-2xl font-black text-[#99CB48]" 
+                  placeholder="e.g. 500" 
+                  value={proposal.roi.hourlyRate || ""} 
+                  onChange={(e) => updateROI({ hourlyRate: e.target.value })} 
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <LabelPremium>Financial Overheads</LabelPremium>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <p className="text-[9px] font-black uppercase text-slate-400 pl-1">Current Monthly Ops Cost</p>
+                <Input 
+                  type="number" 
+                  className="h-14 bg-white border-slate-200 rounded-2xl font-black text-slate-900" 
+                  placeholder="₹ 50,000" 
+                  value={proposal.roi.currentOpsCost || ""} 
+                  onChange={(e) => updateROI({ currentOpsCost: e.target.value })} 
+                />
+              </div>
+              <div className="space-y-2">
+                <p className="text-[9px] font-black uppercase text-slate-400 pl-1">Revenue Leakage (%)</p>
+                <Input 
+                  type="number" 
+                  className="h-14 bg-white border-slate-200 rounded-2xl font-black text-red-400" 
+                  placeholder="e.g. 10" 
+                  value={proposal.roi.revenueIncrease || ""} 
+                  onChange={(e) => updateROI({ revenueIncrease: e.target.value })} 
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-6 border-t border-slate-200">
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+             * These numbers will automatically drive the **Strategic Comparison Matrix** in the final PDF output, providing the client with a mathematically sound justification for the investment.
+           </p>
+        </div>
+      </div>
+
       {/* ──── STRATEGIC NARRATIVE ──── */}
       <div className="space-y-3">
-        <LabelPremium>Impact Narrative</LabelPremium>
+        <div className="flex justify-between items-center px-4">
+           <LabelPremium>Impact Summary & Growth Strategy</LabelPremium>
+           <div className="text-[9px] font-black uppercase text-[#99CB48] bg-[#99CB48]/10 px-3 py-1 rounded-full">Executive Vision</div>
+        </div>
         <Textarea 
-          className="min-h-[120px] bg-slate-50 border-slate-200 rounded-[2rem] p-6 text-sm font-medium leading-relaxed" 
-          placeholder="Describe the long-term strategic impact on the business..." 
+          className="min-h-[140px] bg-slate-50 border-slate-200 rounded-[2.5rem] p-8 text-sm font-medium leading-relaxed shadow-inner" 
+          placeholder="Summarize the tangible business transformation. E.g., 'This implementation will recover 2,400 manual hours annually, redirecting focus to high-value strategic growth...'" 
           value={proposal.roi.impactSummary} 
           onChange={(e) => updateROI({ impactSummary: e.target.value })} 
         />
-        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-4">
-          Tip: Focus on scalability and operational excellence.
-        </p>
       </div>
     </div>
   );
