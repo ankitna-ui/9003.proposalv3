@@ -6,26 +6,36 @@ import { InputPanelProps, LabelPremium, SectionHeader } from "./shared";
 
 export default function StrategicROIPanel({ proposal, currentStep, updateROI }: InputPanelProps) {
 
-  // Simple auto-calculation logic for rapid data entry
+  // 🧠 NEURAL ROI ENGINE: Minimizing user input via smart estimation
   useEffect(() => {
     const rev = parseFloat(proposal.roi.revenueIncrease) || 0;
-    const cost = parseFloat(proposal.roi.costReduction) || 0;
-    const prod = parseFloat(proposal.roi.productivityIncrease) || 0;
+    const manualHrs = parseFloat(proposal.roi.manualHoursPerMonth) || 160;
+    const hourlyRate = parseFloat(proposal.roi.hourlyRate) || 500;
     
-    if (rev > 0 || cost > 0 || prod > 0) {
-      const simpleROI = Math.round((rev + cost + (prod * 0.5)) * 1.5);
-      
-      if (proposal.roi.expectedROI !== String(simpleROI)) {
-        updateROI({ 
-          expectedROI: String(simpleROI),
-          profitImpact: `₹${((rev + cost) * 500).toLocaleString("en-IN")}`, // Estimated impact
-          timeSaving: String(Math.round(prod * 1.2)), // Estimated hours
-          breakEven: "4-6 Months",
-          growthFactor: "Exponential"
-        });
-      }
+    // Auto-calculate dependencies
+    const estimatedCostSaving = Math.round((manualHrs * hourlyRate * 0.7) / 1000); // K-INR
+    const estimatedProfitImpact = Math.round((rev * 5000) + (estimatedCostSaving * 12)); 
+    const estimatedProductivity = Math.round(30 + (manualHrs / 20));
+    
+    // Update ROI Object if values are missing or need syncing
+    const updates: Partial<typeof proposal.roi> = {};
+    
+    if (!proposal.roi.costReduction) updates.costReduction = "25";
+    if (!proposal.roi.productivityIncrease) updates.productivityIncrease = String(estimatedProductivity);
+    if (!proposal.roi.timeSaving) updates.timeSaving = String(Math.round(manualHrs * 0.85));
+    if (!proposal.roi.expectedROI || proposal.roi.expectedROI === "0") {
+      updates.expectedROI = String(Math.round(35 + (rev * 1.5) + (manualHrs / 10)));
     }
-  }, [proposal.roi.revenueIncrease, proposal.roi.costReduction, proposal.roi.productivityIncrease]);
+    if (!proposal.roi.profitImpact || proposal.roi.profitImpact.includes("12,500")) {
+      updates.profitImpact = `₹${(estimatedProfitImpact * 100).toLocaleString("en-IN")}`;
+    }
+    if (!proposal.roi.breakEven) updates.breakEven = "4-6 Months";
+    if (!proposal.roi.growthFactor) updates.growthFactor = "Exponential";
+
+    if (Object.keys(updates).length > 0) {
+      updateROI(updates);
+    }
+  }, [proposal.roi.revenueIncrease, proposal.roi.manualHoursPerMonth, proposal.roi.hourlyRate]);
 
   return (
     <div className="space-y-8 pb-10">
