@@ -5,11 +5,17 @@ export default function CoverIdentityPanel({ proposal, currentStep, updateClient
     <div className="space-y-10">
       <SectionHeader title="Brand Identity" subtitle="Configure the high-level strategic markers for this document" stepNumber={currentStep + 1} />
       
-      <div className="space-y-2">
-        <LabelPremium>Proposal Reference ID</LabelPremium>
-        <div className="relative group">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black group-focus-within:text-primary transition-colors">#</span>
-          <ModernInput className="pl-10" placeholder="2024-001" value={proposal.client.referenceId} onChange={(e) => updateClient({ referenceId: e.target.value })} />
+      <div className="grid grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <LabelPremium>Proposal Reference ID</LabelPremium>
+          <div className="relative group">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black group-focus-within:text-primary transition-colors">#</span>
+            <ModernInput className="pl-10" placeholder="2024-001" value={proposal.client.referenceId} onChange={(e) => updateClient({ referenceId: e.target.value })} />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <LabelPremium>Client / Company Name</LabelPremium>
+          <ModernInput placeholder="e.g. Weblozy" value={proposal.client.companyName} onChange={(e) => updateClient({ companyName: e.target.value, clientName: e.target.value })} />
         </div>
       </div>
 

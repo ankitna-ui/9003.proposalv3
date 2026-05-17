@@ -4,7 +4,7 @@ import { Proposal, ClientDetails, BusinessSituation, SolutionDetails, ROIMetrics
 const initialProposal: Proposal = {
   userId: "",
   client: {
-    companyName: "",
+    companyName: "VALUED CLIENT",
     contactPerson: "",
     clientName: "VALUED CLIENT",
     industry: "",
