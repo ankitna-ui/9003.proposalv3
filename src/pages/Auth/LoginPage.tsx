@@ -8,7 +8,9 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   sendPasswordResetEmail,
-  confirmPasswordReset
+  confirmPasswordReset,
+  sendEmailVerification,
+  signOut
 } from "firebase/auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ShieldCheck, Zap, ChevronRight, ArrowLeft, Mail, Lock, CheckCircle2, Cpu, Globe, Database } from "lucide-react";
@@ -120,14 +122,44 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      const isDomainAuthorized = (emailAddr: string) => {
+        const normalized = emailAddr.trim().toLowerCase();
+        return normalized.endsWith("@weblozy.com") || normalized.endsWith("@weblozy.in");
+      };
+
       if (authMode === "login") {
-        await signInWithEmailAndPassword(auth, email, password);
+        if (!isDomainAuthorized(email)) {
+          setError("Security Access Alert: Unauthorized Domain. Only official @weblozy.com and @weblozy.in accounts are permitted.");
+          setLoading(false);
+          return;
+        }
+
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        if (!user.emailVerified) {
+          await sendEmailVerification(user);
+          await signOut(auth);
+          setError("Activation Pending: A secure verification link was sent to your official inbox. Please verify your email before terminal access is granted.");
+          setLoading(false);
+          return;
+        }
+
         toast.success("Identity Verified. Accessing Strategic Dashboard.");
         setAuthMode("loading");
       } else if (authMode === "signup") {
-        await createUserWithEmailAndPassword(auth, email, password);
-        toast.success("Identity Established. Initializing Node.");
-        setAuthMode("loading");
+        if (!isDomainAuthorized(email)) {
+          setError("Security Access Alert: Unauthorized Domain. Only official @weblozy.com and @weblozy.in accounts can establish credentials.");
+          setLoading(false);
+          return;
+        }
+
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        await sendEmailVerification(userCredential.user);
+        await signOut(auth);
+        
+        toast.success("Identity Setup Initiated. Activation link dispatched.");
+        setAuthMode("success");
       } else if (authMode === "forgot-password") {
         await sendPasswordResetEmail(auth, email);
         toast.success("Recovery Protocol Dispatched to your inbox.");
@@ -141,9 +173,9 @@ export default function LoginPage() {
       }
     } catch (error: any) {
       console.error(error);
-      const friendlyMessage = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' 
+      const friendlyMessage = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'
         ? "Invalid credentials for this terminal ID." 
-        : "Authentication protocol failed. Please verify credentials.";
+        : error.message || "Authentication protocol failed. Please verify credentials.";
       setError(friendlyMessage);
       setLoading(false);
     }
@@ -307,72 +339,92 @@ export default function LoginPage() {
                   </div>
     
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    {(authMode === "login" || authMode === "signup" || authMode === "forgot-password") && (
-                      <div className="space-y-2">
-                        <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Terminal ID</Label>
-                        <div className="relative group">
-                          <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                          <Input 
-                            type="email" 
-                            placeholder="OPERATOR@WEBLOZY.COM" 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
-                          />
+                    {authMode === "success" ? (
+                      <div className="text-center space-y-8 py-6">
+                        <div className="mx-auto w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center relative">
+                          <div className="absolute inset-0 rounded-full bg-primary/5 animate-pulse" />
+                          <CheckCircle2 className="w-10 h-10 text-primary relative z-10" />
                         </div>
+                        <div className="space-y-3">
+                          <h3 className="text-lg font-black uppercase tracking-[0.2em] text-white leading-none">Identity Dispatch Complete</h3>
+                          <p className="text-gray-400 text-xs leading-relaxed max-w-sm mx-auto">
+                            A secure activation protocol has been successfully transmitted to your inbox <span className="text-primary font-black uppercase">{email}</span>. Please click the validation link inside your email to unlock your Proposal OS terminal.
+                          </p>
+                        </div>
+                        <Button 
+                          type="button" 
+                          onClick={() => { setAuthMode("login"); setError(null); }} 
+                          className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-primary text-black hover:bg-primary/90 rounded-[1.2rem] shadow-lg shadow-primary/10 transition-all active:scale-[0.98]"
+                        >
+                          Return to Login Hub
+                        </Button>
                       </div>
-                    )}
-    
-                    {(authMode === "login" || authMode === "signup") && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center px-2">
-                          <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key</Label>
-                          {authMode === "login" && (
-                            <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover?</button>
-                          )}
-                        </div>
-                        <div className="relative group">
-                          <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                          <Input 
-                            type="password" 
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
-                          />
-                        </div>
-                      </div>
-                    )}
-    
-                    {error && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="p-4 rounded-[1rem] bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest text-center shadow-lg shadow-red-500/5"
-                      >
-                        {error}
-                      </motion.div>
-                    )}
-
-                    {authMode !== "success" ? (
-                      <Button type="submit" className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-primary text-black hover:bg-primary/90 rounded-[1.2rem] shadow-lg shadow-primary/10 transition-all active:scale-[0.98] group overflow-hidden relative">
-                        {loading ? "Authorizing..." : (
-                          <div className="flex items-center gap-2">
-                            {authMode === "login" ? "Initialize" : authMode === "signup" ? "Deploy" : "Dispatch"}
-                            <ChevronRight className="w-5 h-5" />
+                    ) : (
+                      <>
+                        {(authMode === "login" || authMode === "signup" || authMode === "forgot-password") && (
+                          <div className="space-y-2">
+                            <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Terminal ID</Label>
+                            <div className="relative group">
+                              <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                              <Input 
+                                type="email" 
+                                placeholder="OPERATOR@WEBLOZY.COM" 
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
+                              />
+                            </div>
                           </div>
                         )}
-                      </Button>
-                    ) : (
-                      <Button type="button" onClick={() => { setAuthMode("login"); }} className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-white/5 border border-white/10 text-white rounded-[1.2rem]">Return Hub</Button>
-                    )}
-    
-                    {(authMode === "login" || authMode === "signup") && (
-                      <div className="text-center pt-4">
-                        <button type="button" onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")} className="text-[9px] font-black text-gray-600 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto uppercase tracking-[0.3em]">
-                          {authMode === "login" ? "Establish Identity" : "Authorize Session"}
-                        </button>
-                      </div>
+        
+                        {(authMode === "login" || authMode === "signup") && (
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center px-2">
+                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key</Label>
+                              {authMode === "login" && (
+                                <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover?</button>
+                              )}
+                            </div>
+                            <div className="relative group">
+                              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                              <Input 
+                                type="password" 
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
+                              />
+                            </div>
+                          </div>
+                        )}
+        
+                        {error && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-4 rounded-[1rem] bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest text-center shadow-lg shadow-red-500/5"
+                          >
+                            {error}
+                          </motion.div>
+                        )}
+        
+                        <Button type="submit" className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-primary text-black hover:bg-primary/90 rounded-[1.2rem] shadow-lg shadow-primary/10 transition-all active:scale-[0.98] group overflow-hidden relative">
+                          {loading ? "Authorizing..." : (
+                            <div className="flex items-center gap-2">
+                              {authMode === "login" ? "Initialize" : authMode === "signup" ? "Deploy" : "Dispatch"}
+                              <ChevronRight className="w-5 h-5" />
+                            </div>
+                          )}
+                        </Button>
+        
+                        {(authMode === "login" || authMode === "signup") && (
+                          <div className="text-center pt-4">
+                            <button type="button" onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")} className="text-[9px] font-black text-gray-600 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto uppercase tracking-[0.3em]">
+                              {authMode === "login" ? "Establish Identity" : "Authorize Session"}
+                            </button>
+                          </div>
+                        )}
+                      </>
                     )}
                   </form>
                 </motion.div>

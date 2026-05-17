@@ -22,7 +22,18 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+      if (user) {
+        const email = user.email || "";
+        const isDomainAuthorized = email.endsWith("@weblozy.com") || email.endsWith("@weblozy.in");
+        
+        if (user.emailVerified && isDomainAuthorized) {
+          setUser(user);
+        } else {
+          setUser(null);
+        }
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
     return () => unsubscribe();
