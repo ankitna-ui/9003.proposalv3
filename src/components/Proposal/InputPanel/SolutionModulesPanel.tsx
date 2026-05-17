@@ -153,37 +153,83 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
           </div>
           <Button onClick={handleAddManualModule} variant="outline" className="h-10 rounded-xl px-6 border-slate-200 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">+ Add Manual Node</Button>
         </div>
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-6">
           {proposal.solution.selectedModules.map((module: Module, mIdx: number) => (
-            <Card key={module.id} className="border-slate-100 overflow-hidden rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500 group">
-              <div className="p-8 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between group-hover:bg-white transition-colors">
-                <div className="flex items-center gap-4 flex-1">
-                   <div className="w-10 h-10 rounded-xl bg-[#0B0E14] flex items-center justify-center text-white font-black italic shadow-lg rotate-3 group-hover:rotate-0 transition-all duration-500">
+            <Card key={module.id} className="border-slate-100 overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
+              <div className="p-4 sm:p-5 bg-slate-50/50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 group-hover:bg-white transition-colors">
+                <div className="flex items-center gap-3.5 flex-1 min-w-[200px]">
+                   <div className="w-9 h-9 rounded-xl bg-[#0B0E14] flex items-center justify-center text-white font-black italic shadow-md rotate-3 group-hover:rotate-0 transition-all duration-500 shrink-0">
                       M{mIdx + 1}
                    </div>
-                   <ModernInput className="flex-1 bg-transparent border-none shadow-none focus-visible:ring-0 text-2xl font-black uppercase tracking-tighter text-[#0B0E14] h-auto p-0" value={module.name} onChange={(e) => {
+                   <ModernInput className="flex-1 bg-transparent border-none shadow-none focus-visible:ring-0 text-xl font-black uppercase tracking-tighter text-[#0B0E14] h-auto p-0" value={module.name} onChange={(e) => {
                      const next = [...proposal.solution.selectedModules];
                      next[mIdx].name = e.target.value;
                      updateSolution({ selectedModules: next });
                    }} />
                 </div>
-                <button onClick={() => updateSolution({ selectedModules: proposal.solution.selectedModules.filter((_: Module, i: number) => i !== mIdx) })} className="p-3 bg-red-50 text-red-400 hover:text-red-600 rounded-xl transition-all opacity-0 group-hover:opacity-100"><Trash2 size={20} /></button>
+                
+                {/* Module Price Field */}
+                <div className="flex items-center gap-2 shrink-0">
+                   <div className="text-[8px] font-black uppercase text-slate-400 tracking-wider">Est. Price:</div>
+                   <div className="relative w-28">
+                      <input 
+                         type="text" 
+                         placeholder="e.g. 25,000" 
+                         className="w-full h-8 pl-5 pr-2 bg-white border border-slate-200/80 rounded-lg text-xs font-bold text-[#0B0E14] focus:outline-none focus:border-primary/50 text-right"
+                         value={module.price || ""} 
+                         onChange={(e) => {
+                            const next = [...proposal.solution.selectedModules];
+                            next[mIdx].price = e.target.value;
+                            updateSolution({ selectedModules: next });
+                         }} 
+                      />
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[9px]">₹</span>
+                   </div>
+                </div>
+
+                <button onClick={() => updateSolution({ selectedModules: proposal.solution.selectedModules.filter((_: Module, i: number) => i !== mIdx) })} className="p-2 bg-red-50 text-red-400 hover:text-red-600 rounded-lg transition-all opacity-0 group-hover:opacity-100 shrink-0"><Trash2 size={16} /></button>
               </div>
-              <CardContent className="p-10 space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+              <CardContent className="p-5 sm:p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {module.features.map((feature: any, fIdx: number) => (
-                    <div key={fIdx} className="flex items-center gap-4 group/item relative">
-                      <div className="w-2 h-2 rounded-full bg-primary shrink-0 shadow-[0_0_10px_#99CB48]" />
-                      <ModernInput className="flex-1 h-10 bg-white border-none shadow-none text-xs font-bold text-slate-600 p-0" value={typeof feature === 'string' ? feature : feature.name} onChange={(e) => {
-                        const next = [...proposal.solution.selectedModules];
-                        next[mIdx].features[fIdx] = { name: e.target.value, price: "" };
-                        updateSolution({ selectedModules: next });
-                      }} />
-                      <button onClick={() => {
-                        const next = [...proposal.solution.selectedModules];
-                        next[mIdx].features = next[mIdx].features.filter((_: any, i: number) => i !== fIdx);
-                        updateSolution({ selectedModules: next });
-                      }} className="opacity-0 group-hover/item:opacity-100 text-slate-300 hover:text-red-500 transition-all"><X size={16} /></button>
+                    <div key={fIdx} className="flex items-center gap-2.5 group/item relative bg-slate-50/50 hover:bg-slate-50 p-2.5 rounded-xl border border-slate-100/50 transition-all w-full min-w-0">
+                       <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_#99CB48]" />
+                       
+                       {/* Feature Name Input */}
+                       <input 
+                          type="text"
+                          className="flex-1 bg-transparent border-none text-xs font-semibold text-slate-700 focus:outline-none focus:ring-0 min-w-0 p-0" 
+                          value={typeof feature === 'string' ? feature : feature.name} 
+                          onChange={(e) => {
+                             const next = [...proposal.solution.selectedModules];
+                             const currentPrice = typeof feature === 'string' ? "" : (feature.price || "");
+                             next[mIdx].features[fIdx] = { name: e.target.value, price: currentPrice };
+                             updateSolution({ selectedModules: next });
+                          }} 
+                       />
+                       
+                       {/* Feature Price Input */}
+                       <div className="relative w-20 shrink-0">
+                          <input 
+                             type="text" 
+                             placeholder="Price" 
+                             className="w-full h-6 pl-4 pr-1.5 bg-white border border-slate-200/60 rounded-md text-[10px] font-bold text-slate-800 focus:outline-none focus:border-primary/40 text-right p-0"
+                             value={typeof feature === 'string' ? "" : (feature.price || "")} 
+                             onChange={(e) => {
+                                const next = [...proposal.solution.selectedModules];
+                                const currentName = typeof feature === 'string' ? feature : feature.name;
+                                next[mIdx].features[fIdx] = { name: currentName, price: e.target.value };
+                                updateSolution({ selectedModules: next });
+                             }} 
+                          />
+                          <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[8px]">₹</span>
+                       </div>
+
+                       <button onClick={() => {
+                         const next = [...proposal.solution.selectedModules];
+                         next[mIdx].features = next[mIdx].features.filter((_: any, i: number) => i !== fIdx);
+                         updateSolution({ selectedModules: next });
+                       }} className="opacity-0 group-hover/item:opacity-100 text-slate-300 hover:text-red-500 transition-all shrink-0"><X size={14} /></button>
                     </div>
                   ))}
                 </div>
@@ -191,8 +237,8 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
                   const next = [...proposal.solution.selectedModules];
                   next[mIdx].features.push({ name: "New Feature Protocol", price: "" });
                   updateSolution({ selectedModules: next });
-                }} className="flex items-center gap-2 text-[10px] font-black uppercase text-primary hover:text-primary/80 transition-all pl-6 border-l border-slate-100 py-2">
-                   <Plus size={14} /> Add System Feature
+                }} className="flex items-center gap-1.5 text-[9px] font-bold uppercase text-primary hover:text-primary/80 transition-all pl-4 border-l border-slate-200 py-1">
+                   <Plus size={12} /> Add System Feature
                 </button>
               </CardContent>
             </Card>
