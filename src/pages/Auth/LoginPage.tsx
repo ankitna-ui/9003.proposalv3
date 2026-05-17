@@ -80,6 +80,30 @@ export default function LoginPage() {
     }
   }, [authMode, navigate]);
 
+  const getBrandedErrorMessage = (error: any): string => {
+    if (!error) return "Authentication protocol failed. Please verify credentials.";
+    
+    switch (error.code) {
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        return "Weblozy System Alert: Invalid credentials for this corporate terminal.";
+      case "auth/email-already-in-use":
+        return "Weblozy System Alert: This official email is already registered in the system database. Please login or reset your credentials.";
+      case "auth/invalid-email":
+        return "Weblozy System Alert: Invalid email address format. Only official @weblozy.com and @weblozy.in accounts are accepted.";
+      case "auth/weak-password":
+        return "Weblozy System Alert: Access Key does not meet security protocols. Minimum 6 characters required.";
+      case "auth/too-many-requests":
+        return "Weblozy System Alert: Access temporarily suspended due to multiple failed attempts. Try again later.";
+      case "auth/network-request-failed":
+        return "Weblozy System Alert: Network communication failure. Please verify corporate gateway connectivity.";
+      default:
+        const message = error.message || "Authentication protocol failed. Please verify credentials.";
+        return message.replace(/Firebase/gi, "Weblozy System");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -198,9 +222,7 @@ export default function LoginPage() {
       }
     } catch (error: any) {
       console.error(error);
-      const friendlyMessage = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential'
-        ? "Invalid credentials for this terminal ID." 
-        : error.message || "Authentication protocol failed. Please verify credentials.";
+      const friendlyMessage = getBrandedErrorMessage(error);
       setError(friendlyMessage);
       setLoading(false);
     }
