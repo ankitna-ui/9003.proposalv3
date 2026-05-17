@@ -5,13 +5,23 @@ service cloud.firestore {
     
     // Proposal Security Rules
     match /proposals/{proposalId} {
-      // Allow creation if the user is authenticated
-      allow create: if request.auth != null;
+      // Allow creation if the user is authenticated and belongs to an authorized company domain
+      allow create: if request.auth != null && 
+        (request.auth.token.email.endsWith('@weblozy.com') || request.auth.token.email.endsWith('@weblozy.in'));
       
       // BOLA Protection: Allow read/update/delete only if the user owns the document
-      // We check if the 'userId' field in the document matches the authenticated user's UID
       allow read, update, delete: if request.auth != null && 
         (resource.data.userId == request.auth.uid || proposalId == 'sample-1' || proposalId == 'sample-2');
+    }
+
+    // User Profile Security Rules
+    match /users/{userId} {
+      // Allow profile creation if the user is authenticated, writing to their own UID, and using an authorized company domain
+      allow create: if request.auth != null && request.auth.uid == userId && 
+        (request.auth.token.email.endsWith('@weblozy.com') || request.auth.token.email.endsWith('@weblozy.in'));
+      
+      // Allow read/update only if the user owns the document
+      allow read, update: if request.auth != null && request.auth.uid == userId;
     }
     
     // Default deny for everything else
