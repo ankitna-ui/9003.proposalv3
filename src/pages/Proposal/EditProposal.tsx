@@ -65,6 +65,7 @@ export default function EditProposal() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [employeeProfile, setEmployeeProfile] = useState<{ fullName: string, employeeId: string } | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {

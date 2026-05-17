@@ -64,6 +64,7 @@ export default function CreateProposal() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [employeeProfile, setEmployeeProfile] = useState<{ fullName: string, employeeId: string } | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
