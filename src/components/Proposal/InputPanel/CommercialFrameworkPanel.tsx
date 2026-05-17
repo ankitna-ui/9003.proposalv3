@@ -88,7 +88,7 @@ export default function CommercialFrameworkPanel({ proposal, currentStep, update
             <Calculator size={160} className="text-primary" />
          </div>
          
-         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12">
+         <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="space-y-8">
                <div className="flex items-center gap-3 text-primary">
                   <div className="w-10 h-[2px] bg-primary" />
@@ -122,12 +122,12 @@ export default function CommercialFrameworkPanel({ proposal, currentStep, update
                </div>
             </div>
 
-            <div className="flex flex-col justify-end">
-               <div className="p-8 bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-xl">
+            <div className="flex flex-col justify-end min-w-0">
+               <div className="p-6 md:p-8 bg-white/5 border border-white/10 rounded-[2.5rem] backdrop-blur-xl min-w-0">
                   <div className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-3">Net Capital Commitment</div>
-                  <div className="flex items-baseline gap-3">
-                     <div className="text-5xl font-black tracking-tighter text-white">{formatINR(stats.total)}</div>
-                     <div className="text-xs font-black text-white/30 uppercase tracking-widest">+ GST Extra</div>
+                  <div className="flex flex-wrap items-baseline gap-2 min-w-0">
+                     <div className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-none break-all select-all">{formatINR(stats.total)}</div>
+                     <div className="text-[10px] font-black text-white/30 uppercase tracking-widest">+ GST Extra</div>
                   </div>
                   <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em] mt-6 leading-relaxed">
                      * Final valuation subject to milestone alignment and service level specifications.

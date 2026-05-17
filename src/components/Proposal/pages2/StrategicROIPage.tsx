@@ -10,7 +10,13 @@ interface PageProps {
 
 const StrategicROIPage: React.FC<PageProps> = ({ proposal, pageNum }) => {
   // Ensure we append units correctly if they aren't provided by the user
-  const formatPercent = (val: string) => val ? (val.includes('%') ? val : `${val}%`) : "0%";
+  const formatPercent = (val: string) => {
+    if (!val) return "0%";
+    if (val.includes('%')) return val;
+    // If it contains currency symbols or alphabetical text, don't append %
+    if (/[₹A-Za-z/]/.test(val)) return val;
+    return `${val}%`;
+  };
   const formatValue = (val: string) => val ? (val.includes('₹') ? val : `₹${val}`) : "₹0";
   const formatHours = (val: string) => val ? (val.includes('Hrs') ? val : `${val} Hrs/Mo`) : "0 Hrs/Mo";
 

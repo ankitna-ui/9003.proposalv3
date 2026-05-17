@@ -44,110 +44,128 @@ export default function StrategicROIPanel({ proposal, currentStep, updateROI }: 
       />
 
       {/* ──── IMPACT MATRIX ──── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="p-8 bg-emerald-50/50 rounded-[2.5rem] border border-emerald-100/50 space-y-4 hover:shadow-xl transition-all duration-500 group">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-6 bg-emerald-50/50 rounded-[2rem] border border-emerald-100/50 space-y-3 hover:shadow-xl transition-all duration-500 group">
           <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-emerald-500">
-               <TrendingUp size={20} />
+            <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-emerald-500">
+               <TrendingUp size={18} />
             </div>
-            <BarChart3 size={16} className="text-emerald-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <BarChart3 size={14} className="text-emerald-300 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <div className="space-y-2">
-            <LabelPremium className="mb-0 text-emerald-900">Revenue Growth</LabelPremium>
+          <div className="space-y-1.5">
+            <LabelPremium className="mb-0 text-emerald-900 text-[8px]">Revenue Growth</LabelPremium>
             <div className="relative">
               <ModernInput 
                 type="number"
-                className="pr-12 text-emerald-700 font-black border-emerald-100 focus-visible:ring-emerald-500" 
+                className="h-12 pl-4 pr-10 text-sm font-bold text-emerald-700 border-emerald-100 focus-visible:ring-emerald-500 rounded-xl" 
                 placeholder="0"
                 value={proposal.roi.revenueIncrease} 
                 onChange={(e) => updateROI({ revenueIncrease: e.target.value })} 
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-300 font-black">%</span>
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-400 font-bold text-sm">%</span>
             </div>
           </div>
         </div>
 
-        <div className="p-8 bg-blue-50/50 rounded-[2.5rem] border border-blue-100/50 space-y-4 hover:shadow-xl transition-all duration-500 group">
+        <div className="p-6 bg-blue-50/50 rounded-[2rem] border border-blue-100/50 space-y-3 hover:shadow-xl transition-all duration-500 group">
           <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-500">
-               <Target size={20} />
+            <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-blue-500">
+               <Target size={18} />
             </div>
-            <PieChart size={16} className="text-blue-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <PieChart size={14} className="text-blue-300 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <div className="space-y-2">
-            <LabelPremium className="mb-0 text-blue-900">Cost Reduction</LabelPremium>
+          <div className="space-y-1.5">
+            <LabelPremium className="mb-0 text-blue-900 text-[8px]">Cost Reduction</LabelPremium>
             <div className="relative">
               <ModernInput 
                 type="number"
-                className="pr-12 text-blue-700 font-black border-blue-100 focus-visible:ring-blue-500" 
+                className="h-12 pl-4 pr-10 text-sm font-bold text-blue-700 border-blue-100 focus-visible:ring-blue-500 rounded-xl" 
                 placeholder="0"
                 value={proposal.roi.costReduction} 
                 onChange={(e) => updateROI({ costReduction: e.target.value })} 
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-300 font-black">%</span>
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-blue-400 font-bold text-sm">%</span>
             </div>
           </div>
         </div>
 
-        <div className="p-8 bg-amber-50/50 rounded-[2.5rem] border border-amber-100/50 space-y-4 hover:shadow-xl transition-all duration-500 group">
+        <div className="p-6 bg-amber-50/50 rounded-[2rem] border border-amber-100/50 space-y-3 hover:shadow-xl transition-all duration-500 group">
           <div className="flex items-center justify-between">
-            <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-amber-500">
-               <Zap size={20} />
+            <div className="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-amber-500">
+               <Zap size={18} />
             </div>
-            <Zap size={16} className="text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity fill-amber-300" />
+            <Zap size={14} className="text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity fill-amber-300" />
           </div>
-          <div className="space-y-2">
-            <LabelPremium className="mb-0 text-amber-900">Productivity Delta</LabelPremium>
+          <div className="space-y-1.5">
+            <LabelPremium className="mb-0 text-amber-900 text-[8px]">Productivity Delta</LabelPremium>
             <div className="relative">
               <ModernInput 
                 type="number"
-                className="pr-12 text-amber-700 font-black border-amber-100 focus-visible:ring-amber-500" 
+                className="h-12 pl-4 pr-10 text-sm font-bold text-amber-700 border-amber-100 focus-visible:ring-amber-500 rounded-xl" 
                 placeholder="0"
                 value={proposal.roi.productivityIncrease} 
                 onChange={(e) => updateROI({ productivityIncrease: e.target.value })} 
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-300 font-black">%</span>
+              <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-amber-400 font-bold text-sm">%</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* ──── RESULT DASHBOARD (PREMIUM DARK) ──── */}
-      <div className="p-12 bg-[#0B0E14] rounded-[3.5rem] text-white relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)]">
-        <div className="absolute top-0 right-0 p-12 opacity-5 rotate-12 scale-150">
+      <div className="p-10 bg-[#0B0E14] rounded-[3rem] text-white relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.4)]">
+        <div className="absolute top-0 right-0 p-12 opacity-5 rotate-12 scale-150 pointer-events-none">
           <BarChart3 size={200} className="text-primary" />
         </div>
         
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-6">
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="space-y-4 min-w-0">
              <div className="flex items-center gap-3 text-primary">
                 <div className="w-8 h-[2px] bg-primary" />
-                <span className="text-[11px] font-black uppercase tracking-[0.4em]">Projected Yield Profile</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.4em]">Projected Yield Profile</span>
              </div>
-             <div className="flex items-baseline gap-4">
-                <span className="text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">{proposal.roi.expectedROI || "0"}</span>
-                <span className="text-3xl font-black text-primary">%</span>
+             <div className="min-h-[80px] flex items-center">
+               {(() => {
+                  const expectedVal = proposal.roi.expectedROI || "0";
+                  const isNumeric = /^\d+$/.test(expectedVal.trim());
+                  if (isNumeric) {
+                     return (
+                        <div className="flex items-baseline gap-2">
+                           <span className="text-7xl md:text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50 leading-none">{expectedVal}</span>
+                           <span className="text-3xl font-black text-primary leading-none">%</span>
+                        </div>
+                     );
+                  } else {
+                     return (
+                        <div className="flex items-baseline py-2">
+                           <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 leading-tight pr-2">
+                              {expectedVal}
+                           </span>
+                        </div>
+                     );
+                  }
+               })()}
              </div>
-             <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Aggregated Strategic Return on Investment</p>
+             <p className="text-[9px] font-bold text-white/40 uppercase tracking-widest leading-normal">Aggregated Strategic Return on Investment</p>
           </div>
           
-          <div className="flex flex-col justify-center space-y-8">
-             <div className="flex items-center gap-6 group">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-[#0B0E14] transition-all duration-500 shadow-lg group-hover:shadow-primary/20">
-                   <Clock size={24} />
+          <div className="flex flex-col justify-center space-y-6 md:border-l md:border-white/5 md:pl-8">
+             <div className="flex items-center gap-4 group">
+                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-[#0B0E14] transition-all duration-500 shadow-lg shrink-0">
+                   <Clock size={20} />
                 </div>
-                <div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-1">Amortization Period</div>
-                   <div className="text-xl font-black tracking-tight text-white/90">{proposal.roi.breakEven}</div>
+                <div className="min-w-0">
+                   <div className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Amortization Period</div>
+                   <div className="text-lg font-black tracking-tight text-white/90 truncate">{proposal.roi.breakEven}</div>
                 </div>
              </div>
-             <div className="flex items-center gap-6 group">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-[#0B0E14] transition-all duration-500 shadow-lg group-hover:shadow-emerald-400/20">
-                   <TrendingUp size={24} />
+             <div className="flex items-center gap-4 group">
+                <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-[#0B0E14] transition-all duration-500 shadow-lg shrink-0">
+                   <TrendingUp size={20} />
                 </div>
-                <div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-1">Growth Trajectory</div>
-                   <div className="text-xl font-black tracking-tight text-white/90">{proposal.roi.growthFactor}</div>
+                <div className="min-w-0">
+                   <div className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 mb-0.5">Growth Trajectory</div>
+                   <div className="text-lg font-black tracking-tight text-white/90 truncate">{proposal.roi.growthFactor}</div>
                 </div>
              </div>
           </div>
