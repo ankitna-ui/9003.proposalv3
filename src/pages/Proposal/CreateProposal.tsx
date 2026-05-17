@@ -26,7 +26,8 @@ import { useProposalForm } from "@/hooks/useProposalForm";
 import { useTokens } from "@/hooks/useTokens";
 import { generateProposalContent } from "@/lib/gemini";
 import { saveProposal } from "@/lib/firestore";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 import ProposalPDF from "@/components/Proposal/pages2";
 import {
@@ -62,7 +63,24 @@ export default function CreateProposal() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
+  const [employeeProfile, setEmployeeProfile] = useState<{ fullName: string, employeeId: string } | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            setEmployeeProfile(userDoc.data() as { fullName: string, employeeId: string });
+          }
+        } catch (err) {
+          console.error("Error loading user profile:", err);
+        }
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const { consumeTokens } = useTokens();
 
@@ -153,11 +171,16 @@ export default function CreateProposal() {
     }
 
     setValidationError(null);
-
     setIsSaving(true);
     const savePromise = saveProposal({
       ...proposal,
+      client: {
+        ...proposal.client,
+        preparedBy: employeeProfile ? `${employeeProfile.fullName} (${employeeProfile.employeeId})` : (proposal.client.preparedBy || "Weblozy Labs")
+      },
       userId: user.uid,
+      creatorName: employeeProfile?.fullName || "Strategic Operator",
+      creatorEmployeeId: employeeProfile?.employeeId || "UNKNOWN",
       createdAt: Date.now(),
       updatedAt: Date.now()
     });
@@ -170,7 +193,18 @@ export default function CreateProposal() {
 
     try {
       const id = await savePromise;
-      navigate(`/preview/${id}`, { state: { proposal: { ...proposal, id, userId: user.uid } } });
+      const finalProposal = {
+        ...proposal,
+        id,
+        userId: user.uid,
+        client: {
+          ...proposal.client,
+          preparedBy: employeeProfile ? `${employeeProfile.fullName} (${employeeProfile.employeeId})` : (proposal.client.preparedBy || "Weblozy Labs")
+        },
+        creatorName: employeeProfile?.fullName || "Strategic Operator",
+        creatorEmployeeId: employeeProfile?.employeeId || "UNKNOWN"
+      };
+      navigate(`/preview/${id}`, { state: { proposal: finalProposal } });
     } catch (error) {
       console.error(error);
     } finally {

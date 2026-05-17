@@ -15,7 +15,8 @@ import {
   Loader2,
   Search,
   Filter,
-  AlertOctagon
+  AlertOctagon,
+  Users
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { getProposals, deleteProposal } from "@/lib/firestore";
@@ -154,6 +155,10 @@ export default function SavedProposals() {
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           <Building2 className="w-4 h-4 text-primary" />
                           <span className="font-bold text-foreground">{p.client.companyName}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <Users className="w-4 h-4 text-primary" />
+                          <span>Prepared by: <strong className="text-foreground">{p.client.preparedBy || p.creatorName || "Weblozy Labs"}</strong></span>
                         </div>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
                           <Calendar className="w-4 h-4 text-primary" />

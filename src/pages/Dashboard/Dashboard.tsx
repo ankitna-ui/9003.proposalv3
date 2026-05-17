@@ -4,7 +4,8 @@ import { Plus, FileText, Download, TrendingUp, Users, Clock, Eye, Trash2, LogOut
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getProposals, deleteProposal } from "@/lib/firestore";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 import { Proposal } from "@/types/proposal";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,11 +55,13 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [employeeProfile, setEmployeeProfile] = useState<{ fullName: string, employeeId: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        fetchUserProfile(user.uid);
         fetchProposals(user.uid);
       } else {
         navigate("/login");
@@ -66,6 +69,17 @@ export default function Dashboard() {
     });
     return () => unsubscribe();
   }, []);
+
+  const fetchUserProfile = async (uid: string) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        setEmployeeProfile(userDoc.data() as { fullName: string, employeeId: string });
+      }
+    } catch (err) {
+      console.error("Error loading user profile:", err);
+    }
+  };
 
   const fetchProposals = async (uid: string) => {
     try {
@@ -167,7 +181,7 @@ export default function Dashboard() {
       </header>
 
       <main className="max-w-[1600px] mx-auto px-8 py-10 space-y-12 relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -177,6 +191,24 @@ export default function Dashboard() {
               Strategic <span className="text-primary italic">Dashboard</span>
             </h1>
           </div>
+
+          {employeeProfile && (
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-6 bg-white/[0.02] border border-white/5 px-8 py-4 rounded-[1.8rem] backdrop-blur-md shadow-lg shadow-black/10"
+            >
+              <div className="flex flex-col">
+                <span className="text-[8px] text-gray-600 font-black uppercase tracking-[0.3em] mb-1">Corporate Operator</span>
+                <span className="text-sm font-black uppercase tracking-wider text-white">{employeeProfile.fullName}</span>
+              </div>
+              <div className="h-8 w-[1px] bg-white/10" />
+              <div className="flex flex-col">
+                <span className="text-[8px] text-gray-600 font-black uppercase tracking-[0.3em] mb-1">Employee ID</span>
+                <span className="text-sm font-black uppercase tracking-wider text-primary">{employeeProfile.employeeId}</span>
+              </div>
+            </motion.div>
+          )}
         </div>
 
         <div className="grid md:grid-cols-4 gap-6">
@@ -219,6 +251,7 @@ export default function Dashboard() {
                   <tr className="border-b border-white/5 bg-white/[0.02]">
                     <th className="p-6 pl-10 text-[10px] font-black uppercase tracking-widest text-gray-500">Client Profile</th>
                     <th className="p-6 text-[10px] font-black uppercase tracking-widest text-gray-500">Strategic Title</th>
+                    <th className="p-6 text-[10px] font-black uppercase tracking-widest text-gray-500">Prepared By</th>
                     <th className="p-6 text-[10px] font-black uppercase tracking-widest text-gray-500">Status</th>
                     <th className="p-6 text-[10px] font-black uppercase tracking-widest text-gray-500 text-right">Actions</th>
                   </tr>
@@ -245,6 +278,9 @@ export default function Dashboard() {
                       </td>
                       <td className="p-6">
                         <div className="text-gray-400 text-xs font-bold uppercase tracking-tight">{p.client?.proposalTitle || "Bespoke Solution"}</div>
+                      </td>
+                      <td className="p-6">
+                        <div className="text-gray-500 text-xs font-black uppercase tracking-wider">{p.client?.preparedBy || p.creatorName || "Weblozy Labs"}</div>
                       </td>
                       <td className="p-6">
                         <Badge variant="outline" className={`rounded-full px-4 py-1 text-[8px] font-black uppercase tracking-[0.2em] border-none ${p.client?.status === 'Draft' ? 'bg-orange-500/10 text-orange-400' : 'bg-primary/10 text-primary'}`}>
