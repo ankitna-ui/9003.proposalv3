@@ -367,14 +367,14 @@ export default function LoginPage() {
                   key={authMode}
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="space-y-8"
+                  className="space-y-6"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <h2 className="text-4xl font-black text-white tracking-tighter uppercase leading-none">
                         {getTitle()}
                       </h2>
-                      {authMode !== "login" && authMode !== "success" && (
+                      {authMode !== "login" && authMode !== "signup" && authMode !== "success" && (
                         <button onClick={() => setAuthMode("login")} className="text-primary hover:text-white transition-colors">
                           <ArrowLeft className="w-4 h-4" />
                         </button>
@@ -384,6 +384,34 @@ export default function LoginPage() {
                       {getSubtitle()}
                     </p>
                   </div>
+
+                  {/* Interactive Premium Tab Switcher */}
+                  {(authMode === "login" || authMode === "signup") && (
+                    <div className="grid grid-cols-2 p-1 bg-white/[0.02] border border-white/5 rounded-2xl relative">
+                      <button 
+                        type="button" 
+                        onClick={() => { setAuthMode("login"); setError(null); }}
+                        className={`py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative z-10 ${
+                          authMode === "login" 
+                            ? "text-black bg-primary shadow-lg shadow-primary/20" 
+                            : "text-gray-500 hover:text-white"
+                        }`}
+                      >
+                        Sign In (Authorized)
+                      </button>
+                      <button 
+                        type="button" 
+                        onClick={() => { setAuthMode("signup"); setError(null); }}
+                        className={`py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 relative z-10 ${
+                          authMode === "signup" 
+                            ? "text-black bg-primary shadow-lg shadow-primary/20" 
+                            : "text-gray-500 hover:text-white"
+                        }`}
+                      >
+                        Sign Up (New Employee)
+                      </button>
+                    </div>
+                  )}
     
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {authMode === "success" ? (
@@ -410,7 +438,7 @@ export default function LoginPage() {
                       <>
                          {(authMode === "login" || authMode === "signup" || authMode === "forgot-password") && (
                           <div className="space-y-2">
-                            <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Terminal ID</Label>
+                            <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Terminal ID (Company Email)</Label>
                             <div className="relative group">
                               <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
                               <Input 
@@ -423,7 +451,7 @@ export default function LoginPage() {
                             </div>
                           </div>
                         )}
-
+ 
                         {authMode === "signup" && (
                           <>
                             <div className="space-y-2">
@@ -439,7 +467,7 @@ export default function LoginPage() {
                                 />
                               </div>
                             </div>
-
+ 
                             <div className="space-y-2">
                               <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee ID</Label>
                               <div className="relative group">
@@ -455,13 +483,13 @@ export default function LoginPage() {
                             </div>
                           </>
                         )}
-        
+         
                         {(authMode === "login" || authMode === "signup") && (
                           <div className="space-y-2">
                             <div className="flex justify-between items-center px-2">
-                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key</Label>
+                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key (Password)</Label>
                               {authMode === "login" && (
-                                <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover?</button>
+                                <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover Password?</button>
                               )}
                             </div>
                             <div className="relative group">
@@ -476,7 +504,7 @@ export default function LoginPage() {
                             </div>
                           </div>
                         )}
-        
+         
                         {error && (
                           <motion.div 
                             initial={{ opacity: 0, y: -5 }}
@@ -486,21 +514,23 @@ export default function LoginPage() {
                             {error}
                           </motion.div>
                         )}
-        
+         
                         <Button type="submit" className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-primary text-black hover:bg-primary/90 rounded-[1.2rem] shadow-lg shadow-primary/10 transition-all active:scale-[0.98] group overflow-hidden relative">
-                          {loading ? "Authorizing..." : (
+                          {loading ? "Authorizing Terminal..." : (
                             <div className="flex items-center gap-2">
-                              {authMode === "login" ? "Initialize" : authMode === "signup" ? "Deploy" : "Dispatch"}
+                              {authMode === "login" ? "Authorize & Sign In" : authMode === "signup" ? "Register & Onboard" : "Send Reset Link"}
                               <ChevronRight className="w-5 h-5" />
                             </div>
                           )}
                         </Button>
         
                         {(authMode === "login" || authMode === "signup") && (
-                          <div className="text-center pt-4">
-                            <button type="button" onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")} className="text-[9px] font-black text-gray-600 hover:text-white transition-colors flex items-center justify-center gap-2 mx-auto uppercase tracking-[0.3em]">
-                              {authMode === "login" ? "Establish Identity" : "Authorize Session"}
-                            </button>
+                          <div className="text-center pt-2">
+                            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">
+                              {authMode === "login" 
+                                ? "New team member? Switch to Sign Up tab above to onboard." 
+                                : "Already registered? Switch to Sign In tab above."}
+                            </p>
                           </div>
                         )}
                       </>
