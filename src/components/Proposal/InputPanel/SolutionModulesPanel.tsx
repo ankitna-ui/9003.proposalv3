@@ -79,55 +79,68 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
   };
 
   return (
-    <div className="space-y-10 pb-20">
+    <div className="space-y-8 pb-10">
       <TokenAnalyticsBar />
-      <SectionHeader title="Functional Blueprint" subtitle="Engineer the core system modules via Neural AI or precision manual definition" stepNumber={currentStep + 1} />
+      <SectionHeader 
+        title="Functional Blueprint" 
+        subtitle="Engineer the core system modules via Neural AI or precision manual definition" 
+        stepNumber={currentStep + 1} 
+      />
       
       {/* AI Generator - Premium Glassmorphism Card */}
-      <div className="p-10 bg-gradient-to-br from-primary/5 to-primary/10 rounded-[2.5rem] border border-primary/20 space-y-6 shadow-sm hover:shadow-lg transition-all duration-500">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary shadow-[0_0_15px_#99CB48]">
-             <Sparkles size={18} />
+      <div className="p-5 sm:p-6 bg-gradient-to-br from-primary/5 via-primary/[0.08] to-primary/10 rounded-2xl border border-primary/20 space-y-4 shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary shadow-[0_0_12px_rgba(153,203,72,0.3)] shrink-0">
+             <Sparkles size={14} />
           </div>
-          <span className="text-[12px] font-black uppercase tracking-[0.4em] text-[#0B0E14]/80">Neural Module Protocol</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0B0E14]/80">Neural Module Protocol</span>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-3">
           <ModernInput 
-            className="flex-1" 
+            className="flex-1 h-11 px-3.5 text-xs font-semibold bg-white border-slate-200/80 rounded-xl" 
             placeholder="System Domain (e.g. Smart Logistics Engine)" 
             value={singleModuleName}
             onChange={(e) => setSingleModuleName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAddSingleModule()}
           />
-          <Button onClick={handleAddSingleModule} disabled={isAiLoading} className="h-14 bg-[#0B0E14] hover:bg-black text-white rounded-xl px-12 text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl transition-all hover:scale-105 active:scale-95">
-            {isAiLoading ? <Loader2 size={18} className="animate-spin" /> : "Initiate Gen"}
+          <Button 
+            onClick={handleAddSingleModule} 
+            disabled={isAiLoading} 
+            className="h-11 bg-[#0B0E14] hover:bg-black text-white rounded-xl px-5 text-xs font-bold tracking-wider shadow-sm transition-all hover:scale-102 active:scale-98 shrink-0"
+          >
+            {isAiLoading ? <Loader2 size={14} className="animate-spin" /> : "Generate"}
           </Button>
         </div>
       </div>
 
       <AnimatePresence>
         {previewModule && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="p-10 bg-[#0B0E14] rounded-[3rem] border border-primary/30 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] space-y-8">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            exit={{ opacity: 0, scale: 0.98 }} 
+            className="p-5 sm:p-6 bg-[#0B0E14] rounded-2xl border border-primary/30 shadow-xl space-y-5"
+          >
             <div className="flex justify-between items-start">
-               <div className="space-y-2">
-                  <div className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Preview Node: AI Synthesized</div>
-                  <h4 className="text-3xl font-black uppercase text-white tracking-tighter">{previewModule.name}</h4>
+               <div className="space-y-1">
+                  <div className="text-[8px] font-black uppercase tracking-[0.4em] text-primary">Preview Node: AI Synthesized</div>
+                  <h4 className="text-xl font-black uppercase text-white tracking-tighter">{previewModule.name}</h4>
                </div>
-               <button onClick={() => setPreviewModule(null)} className="p-3 bg-white/5 rounded-2xl text-white/40 hover:text-white transition-colors border border-white/5"><X size={24} /></button>
+               <button onClick={() => setPreviewModule(null)} className="p-1.5 bg-white/5 rounded-lg text-white/40 hover:text-white transition-colors border border-white/5"><X size={16} /></button>
             </div>
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-2.5">
                {previewModule.features.map((f: any, i: number) => (
-                  <div key={i} className="flex items-center gap-5 bg-white/5 border border-white/5 p-5 rounded-2xl hover:bg-white/[0.08] transition-all group">
-                     <div className="w-6 h-6 rounded-lg bg-primary/20 flex items-center justify-center">
-                        <CheckCircle size={14} className="text-primary" />
+                  <div key={i} className="flex items-center gap-3 bg-white/5 border border-white/5 p-3 rounded-xl hover:bg-white/[0.08] transition-all">
+                     <div className="w-5 h-5 rounded bg-primary/20 flex items-center justify-center">
+                        <CheckCircle size={12} className="text-primary" />
                      </div>
-                     <span className="text-sm font-bold text-white/70 uppercase tracking-widest">{f.name}</span>
+                     <span className="text-xs font-semibold text-white/70 uppercase tracking-widest leading-none">{f.name}</span>
                   </div>
                ))}
             </div>
-            <div className="pt-4">
-              <Button onClick={confirmPreviewModule} className="w-full h-16 bg-primary hover:bg-primary/90 text-[#0B0E14] font-black uppercase tracking-[0.4em] rounded-2xl shadow-[0_20px_40px_-10px_rgba(153,203,72,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98]">
-                Finalize Architectural Integration
+            <div className="pt-2">
+              <Button onClick={confirmPreviewModule} className="w-full h-11 bg-primary hover:bg-primary/90 text-[#0B0E14] font-black uppercase tracking-[0.2em] text-xs rounded-xl shadow-[0_12px_24px_rgba(153,203,72,0.2)] transition-all hover:scale-101 active:scale-99">
+                Integrate Module Architecture
               </Button>
             </div>
           </motion.div>
@@ -135,37 +148,61 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
       </AnimatePresence>
 
       {/* Bulk Extraction Panel */}
-      <div className="p-10 bg-slate-50 border border-slate-100 rounded-[2.5rem] space-y-6">
-        <div className="flex items-center gap-3 text-slate-400">
-           <Wand2 size={18} />
-           <span className="text-[11px] font-black uppercase tracking-[0.3em]">Bulk Tactical Extraction</span>
+      <div className="p-5 sm:p-6 bg-slate-50 border border-slate-100 rounded-2xl space-y-4">
+        <div className="flex items-center gap-2 text-slate-400">
+           <Wand2 size={14} className="shrink-0" />
+           <span className="text-[9px] font-black uppercase tracking-[0.3em]">Bulk Tactical Extraction</span>
         </div>
-        <ModernTextArea className="min-h-[140px]" placeholder="Paste entire system requirements or legacy audit notes here for neural parsing..." value={bulkContext} onChange={(e) => setBulkContext(e.target.value)} />
-        <Button onClick={handleBulkExtract} disabled={isAiLoading || !bulkContext} className="w-full h-14 bg-white border border-slate-200 text-[#0B0E14] hover:bg-[#0B0E14] hover:text-white rounded-xl text-[10px] font-black uppercase tracking-[0.3em] transition-all shadow-sm">Extract All Protocol Nodes</Button>
+        <ModernTextArea 
+          className="min-h-[100px] p-3.5 text-xs font-medium text-slate-700 bg-white border border-slate-200/80 rounded-xl focus:bg-white" 
+          placeholder="Paste entire system requirements or legacy audit notes here for neural parsing..." 
+          value={bulkContext} 
+          onChange={(e) => setBulkContext(e.target.value)} 
+        />
+        <Button 
+          onClick={handleBulkExtract} 
+          disabled={isAiLoading || !bulkContext} 
+          className="w-full h-11 bg-white border border-slate-200 text-[#0B0E14] hover:bg-[#0B0E14] hover:text-white rounded-xl text-xs font-bold tracking-wider transition-all shadow-sm"
+        >
+          Extract All Protocol Nodes
+        </Button>
       </div>
 
       {/* Active Module List */}
-      <div className="space-y-8 pt-6">
-        <div className="flex justify-between items-center px-4">
-          <div className="space-y-1">
-             <LabelPremium className="mb-0 text-slate-900">Blueprint Registry</LabelPremium>
-             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Active operational modules</p>
+      <div className="space-y-6 pt-4">
+        <div className="flex justify-between items-center px-1">
+          <div className="space-y-0.5">
+             <LabelPremium className="mb-0 text-slate-800 text-[10px]">Blueprint Registry</LabelPremium>
+             <p className="text-[8px] font-bold text-slate-400 uppercase tracking-[0.2em]">Active operational modules</p>
           </div>
-          <Button onClick={handleAddManualModule} variant="outline" className="h-10 rounded-xl px-6 border-slate-200 text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all">+ Add Manual Node</Button>
+          <Button 
+            onClick={handleAddManualModule} 
+            variant="outline" 
+            className="h-9 rounded-xl px-4 border-slate-200 text-[9px] font-black uppercase tracking-widest hover:bg-slate-50 transition-all bg-white"
+          >
+            + Add Manual Node
+          </Button>
         </div>
+
         <div className="grid grid-cols-1 gap-6">
           {proposal.solution.selectedModules.map((module: Module, mIdx: number) => (
-            <Card key={module.id} className="border-slate-100 overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 group">
+            <Card key={module.id} className="border-slate-100 overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 group bg-white">
+              {/* Card Header (Sleek and Packed) */}
               <div className="p-4 sm:p-5 bg-slate-50/50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 group-hover:bg-white transition-colors">
-                <div className="flex items-center gap-3.5 flex-1 min-w-[200px]">
-                   <div className="w-9 h-9 rounded-xl bg-[#0B0E14] flex items-center justify-center text-white font-black italic shadow-md rotate-3 group-hover:rotate-0 transition-all duration-500 shrink-0">
+                <div className="flex items-center gap-3 flex-1 min-w-[200px]">
+                   <div className="w-8 h-8 rounded-lg bg-[#0B0E14] flex items-center justify-center text-white font-black italic shadow-sm rotate-3 group-hover:rotate-0 transition-all duration-500 shrink-0 text-xs">
                       M{mIdx + 1}
                    </div>
-                   <ModernInput className="flex-1 bg-transparent border-none shadow-none focus-visible:ring-0 text-xl font-black uppercase tracking-tighter text-[#0B0E14] h-auto p-0" value={module.name} onChange={(e) => {
-                     const next = [...proposal.solution.selectedModules];
-                     next[mIdx].name = e.target.value;
-                     updateSolution({ selectedModules: next });
-                   }} />
+                   <input 
+                      type="text" 
+                      className="flex-1 bg-transparent border-none text-base font-black uppercase tracking-tighter text-[#0B0E14] h-auto p-0 focus:outline-none focus:ring-0 min-w-0" 
+                      value={module.name} 
+                      onChange={(e) => {
+                         const next = [...proposal.solution.selectedModules];
+                         next[mIdx].name = e.target.value;
+                         updateSolution({ selectedModules: next });
+                      }} 
+                   />
                 </div>
                 
                 {/* Module Price Field */}
@@ -187,18 +224,28 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
                    </div>
                 </div>
 
-                <button onClick={() => updateSolution({ selectedModules: proposal.solution.selectedModules.filter((_: Module, i: number) => i !== mIdx) })} className="p-2 bg-red-50 text-red-400 hover:text-red-600 rounded-lg transition-all opacity-0 group-hover:opacity-100 shrink-0"><Trash2 size={16} /></button>
+                <button 
+                  onClick={() => updateSolution({ selectedModules: proposal.solution.selectedModules.filter((_: Module, i: number) => i !== mIdx) })} 
+                  className="p-1.5 bg-red-50 text-red-400 hover:text-red-600 rounded-lg transition-all opacity-0 group-hover:opacity-100 shrink-0"
+                >
+                  <Trash2 size={14} />
+                </button>
               </div>
-              <CardContent className="p-5 sm:p-6 space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              {/* Card Content (Sleek Features Grid) */}
+              <CardContent className="p-4 sm:p-5 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {module.features.map((feature: any, fIdx: number) => (
-                    <div key={fIdx} className="flex items-center gap-2.5 group/item relative bg-slate-50/50 hover:bg-slate-50 p-2.5 rounded-xl border border-slate-100/50 transition-all w-full min-w-0">
+                    <div 
+                      key={fIdx} 
+                      className="flex items-center gap-2 group/item relative bg-slate-50/20 hover:bg-slate-50/60 p-2 border border-slate-100/80 rounded-xl transition-all duration-300 w-full min-w-0 shadow-sm hover:shadow"
+                    >
                        <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0 shadow-[0_0_8px_#99CB48]" />
                        
                        {/* Feature Name Input */}
                        <input 
                           type="text"
-                          className="flex-1 bg-transparent border-none text-xs font-semibold text-slate-700 focus:outline-none focus:ring-0 min-w-0 p-0" 
+                          className="flex-1 bg-transparent border-none text-xs font-semibold text-slate-600 focus:outline-none focus:ring-0 min-w-0 p-0" 
                           value={typeof feature === 'string' ? feature : feature.name} 
                           onChange={(e) => {
                              const next = [...proposal.solution.selectedModules];
@@ -209,11 +256,11 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
                        />
                        
                        {/* Feature Price Input */}
-                       <div className="relative w-20 shrink-0">
+                       <div className="relative w-16 shrink-0">
                           <input 
                              type="text" 
                              placeholder="Price" 
-                             className="w-full h-6 pl-4 pr-1.5 bg-white border border-slate-200/60 rounded-md text-[10px] font-bold text-slate-800 focus:outline-none focus:border-primary/40 text-right p-0"
+                             className="w-full h-6 pl-3.5 pr-1.5 bg-white border border-slate-200/60 rounded-md text-[9px] font-bold text-slate-700 focus:outline-none focus:border-primary/40 text-right p-0"
                              value={typeof feature === 'string' ? "" : (feature.price || "")} 
                              onChange={(e) => {
                                 const next = [...proposal.solution.selectedModules];
@@ -222,30 +269,39 @@ export default function SolutionModulesPanel({ proposal, currentStep, updateSolu
                                 updateSolution({ selectedModules: next });
                              }} 
                           />
-                          <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[8px]">₹</span>
+                          <span className="absolute left-1 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-[7px]">₹</span>
                        </div>
 
-                       <button onClick={() => {
-                         const next = [...proposal.solution.selectedModules];
-                         next[mIdx].features = next[mIdx].features.filter((_: any, i: number) => i !== fIdx);
-                         updateSolution({ selectedModules: next });
-                       }} className="opacity-0 group-hover/item:opacity-100 text-slate-300 hover:text-red-500 transition-all shrink-0"><X size={14} /></button>
+                       <button 
+                         onClick={() => {
+                           const next = [...proposal.solution.selectedModules];
+                           next[mIdx].features = next[mIdx].features.filter((_: any, i: number) => i !== fIdx);
+                           updateSolution({ selectedModules: next });
+                         }} 
+                         className="opacity-0 group-hover/item:opacity-100 text-slate-300 hover:text-red-500 transition-all shrink-0"
+                       >
+                         <X size={12} />
+                       </button>
                     </div>
                   ))}
                 </div>
-                <button onClick={() => {
-                  const next = [...proposal.solution.selectedModules];
-                  next[mIdx].features.push({ name: "New Feature Protocol", price: "" });
-                  updateSolution({ selectedModules: next });
-                }} className="flex items-center gap-1.5 text-[9px] font-bold uppercase text-primary hover:text-primary/80 transition-all pl-4 border-l border-slate-200 py-1">
-                   <Plus size={12} /> Add System Feature
+                
+                {/* Add Feature Button */}
+                <button 
+                  onClick={() => {
+                    const next = [...proposal.solution.selectedModules];
+                    next[mIdx].features.push({ name: "New Feature Protocol", price: "" });
+                    updateSolution({ selectedModules: next });
+                  }} 
+                  className="flex items-center gap-1.5 text-[8px] font-bold uppercase text-primary hover:text-primary/80 transition-all pl-3 border-l border-slate-200 py-0.5 mt-2"
+                >
+                   <Plus size={10} /> Add System Feature
                 </button>
               </CardContent>
             </Card>
           ))}
         </div>
       </div>
-
     </div>
   );
 }
