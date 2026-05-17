@@ -1,16 +1,19 @@
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, getDoc, query, where, doc, updateDoc, deleteDoc, orderBy } from "firebase/firestore";
+import { collection, addDoc, getDocs, getDoc, query, where, doc, updateDoc, deleteDoc, orderBy, setDoc } from "firebase/firestore";
 import { Proposal } from "@/types/proposal";
 
 const PROPOSALS_COLLECTION = "proposals";
 
 export async function saveProposal(proposal: Proposal) {
   try {
-    const docRef = await addDoc(collection(db, PROPOSALS_COLLECTION), {
+    const customId = proposal.client?.referenceId?.trim()?.replace(/[\s/]+/g, '-') || `WBZ-${Date.now()}`;
+    const docRef = doc(db, PROPOSALS_COLLECTION, customId);
+    await setDoc(docRef, {
       ...proposal,
+      id: customId,
       updatedAt: Date.now()
     });
-    return docRef.id;
+    return customId;
   } catch (error) {
     console.error("Error saving proposal:", error);
     throw error;

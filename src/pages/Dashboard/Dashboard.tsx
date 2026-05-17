@@ -234,10 +234,13 @@ export default function Dashboard() {
                     >
                       <td className="p-6 pl-10">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center text-primary font-black text-xs uppercase">
-                            {p.client?.companyName?.charAt(0) || "W"}
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center text-primary border border-primary/10 shadow-sm shadow-primary/5">
+                            <FileText className="w-5 h-5" />
                           </div>
-                          <div className="font-black text-white uppercase tracking-tight">{p.client?.companyName || "N/A"}</div>
+                          <div className="flex flex-col">
+                            <span className="font-black text-white uppercase tracking-wider text-xs">{p.client?.referenceId || "WBL-000"}</span>
+                            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">{p.client?.companyName || "VALUED CLIENT"}</span>
+                          </div>
                         </div>
                       </td>
                       <td className="p-6">
