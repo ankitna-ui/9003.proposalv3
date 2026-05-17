@@ -290,19 +290,24 @@ export default function CreateProposal() {
           </div>
         </div>
 
-        {/* Cleaned Preview Panel (Removed background as requested) */}
-        <div className="hidden md:flex flex-1 bg-slate-50 items-start justify-center overflow-y-auto p-12 custom-scrollbar relative">
-           <div className="w-full max-w-5xl py-2 relative z-10 flex justify-center h-fit">
-              <div className="origin-top shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 transform scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-[0.95] h-fit">
-                 <ProposalPDF proposal={proposal} />
+        {/* Cleaned Preview Panel (Dedicated Header & Soft Shadows) */}
+        <div className="hidden md:flex flex-col flex-1 bg-slate-50/50 border-l border-slate-100 overflow-hidden h-full relative">
+           {/* Sticky Top Status Header */}
+           <div className="sticky top-0 z-20 w-full bg-white/85 backdrop-blur-md border-b border-slate-100/80 px-6 py-4 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-[#99CB48] animate-pulse" />
+                 <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">Real-time Visualization</span>
+              </div>
+              <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 border border-slate-100 px-2.5 py-1 rounded-full">
+                 Live Render
               </div>
            </div>
-           
-           <div className="absolute top-8 left-8 flex items-center gap-4">
-              <div className="px-6 py-3 bg-white border border-slate-100 rounded-[2rem] shadow-xl">
-                 <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Real-time Visualization</span>
+
+           {/* Scrollable Document Area */}
+           <div className="flex-1 overflow-y-auto p-12 custom-scrollbar flex justify-center items-start bg-slate-50/20">
+              <div className="w-full max-w-5xl py-2 relative z-10 flex justify-center h-fit">
+                 <div className="origin-top shadow-[0_15px_50px_rgba(0,0,0,0.06)] border border-slate-100 rounded-lg transition-all duration-700 transform scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-[0.95] h-fit">
+                    <ProposalPDF proposal={proposal} />
                  </div>
               </div>
            </div>
