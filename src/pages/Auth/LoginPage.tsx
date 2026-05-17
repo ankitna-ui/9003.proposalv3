@@ -72,6 +72,46 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Advanced Local Validations
+    if (authMode === "login" || authMode === "signup" || authMode === "forgot-password") {
+      if (!email.trim()) {
+        toast.error("Operator Validation Failure: Terminal ID (Email) cannot be empty.");
+        return;
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Security Alert: Invalid Terminal ID (Email) format.");
+        return;
+      }
+    }
+
+    if (authMode === "login" || authMode === "signup") {
+      if (!password) {
+        toast.error("Security Alert: Access Key (Password) cannot be empty.");
+        return;
+      }
+      if (password.length < 6) {
+        toast.error("Security Alert: Access Key must contain at least 6 characters.");
+        return;
+      }
+    }
+
+    if (authMode === "reset-password") {
+      if (!newPassword || !confirmPassword) {
+        toast.error("Security Alert: Keys cannot be empty.");
+        return;
+      }
+      if (newPassword.length < 6) {
+        toast.error("Security Alert: New Access Key must contain at least 6 characters.");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        toast.error("Security Alert: Security keys do not match.");
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -88,10 +128,6 @@ export default function LoginPage() {
         toast.success("Recovery Protocol Dispatched to your inbox.");
         setAuthMode("success");
       } else if (authMode === "reset-password") {
-        if (newPassword !== confirmPassword) {
-          toast.error("Security keys do not match.");
-          return;
-        }
         if (oobCode) {
           await confirmPasswordReset(auth, oobCode, newPassword);
           toast.success("Security Key Re-established successfully.");

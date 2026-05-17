@@ -113,14 +113,18 @@ export default function CreateProposal() {
   const validateStep = () => {
     switch (currentStep) {
       case 0:
-        if (!proposal.client.proposalTitle) {
-          toast.error("Validation Error: Proposal Title is required.");
+        if (!proposal.client.proposalTitle?.trim()) {
+          toast.error("Validation Error: Main Proposal Title is required.");
+          return false;
+        }
+        if (!proposal.client.companyName?.trim()) {
+          toast.error("Validation Error: Client / Company Name is required.");
           return false;
         }
         break;
       case 5:
         if (proposal.solution.selectedModules.length === 0) {
-          toast.error("Validation Error: Add at least one module to continue.");
+          toast.error("Validation Error: Add at least one module node to continue.");
           return false;
         }
         break;
@@ -138,6 +142,15 @@ export default function CreateProposal() {
     const user = auth.currentUser;
     if (!user) {
       toast.error("Authentication Required: Please login to initiate your protocol.");
+      return;
+    }
+
+    if (!proposal.client.proposalTitle?.trim()) {
+      toast.error("Pre-Flight Check Failed: Proposal Title is required.");
+      return;
+    }
+    if (!proposal.client.companyName?.trim()) {
+      toast.error("Pre-Flight Check Failed: Client / Company Name is required.");
       return;
     }
 

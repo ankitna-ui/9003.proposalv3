@@ -131,8 +131,46 @@ export default function EditProposal() {
     }
   };
 
+  const validateStep = () => {
+    switch (currentStep) {
+      case 0:
+        if (!proposal.client.proposalTitle?.trim()) {
+          toast.error("Validation Error: Main Proposal Title is required.");
+          return false;
+        }
+        if (!proposal.client.companyName?.trim()) {
+          toast.error("Validation Error: Client / Company Name is required.");
+          return false;
+        }
+        break;
+      case 5:
+        if (proposal.solution.selectedModules.length === 0) {
+          toast.error("Validation Error: Add at least one module node to continue.");
+          return false;
+        }
+        break;
+    }
+    return true;
+  };
+
+  const nextStep = () => {
+    if (validateStep()) {
+      setCurrentStep(prev => Math.min(steps.length - 1, prev + 1));
+    }
+  };
+
   const handleSave = async () => {
     if (!id) return;
+
+    if (!proposal.client.proposalTitle?.trim()) {
+      toast.error("Pre-Flight Check Failed: Proposal Title is required.");
+      return;
+    }
+    if (!proposal.client.companyName?.trim()) {
+      toast.error("Pre-Flight Check Failed: Client / Company Name is required.");
+      return;
+    }
+
     setIsSaving(true);
     
     const updatePromise = updateProposal(id, {
@@ -281,7 +319,7 @@ export default function EditProposal() {
                     <span className="text-[12px] font-black text-[#0B0E14] tabular-nums tracking-tighter">{Math.round(((currentStep + 1) / steps.length) * 100)}% Synchronized</span>
                  </div>
                  {currentStep < steps.length - 1 ? (
-                    <Button onClick={() => setCurrentStep(prev => prev + 1)} className="h-16 px-12 rounded-[1.25rem] bg-[#0B0E14] hover:bg-primary hover:text-white shadow-2xl shadow-black/20 text-[11px] font-black uppercase tracking-[0.3em] group transition-all duration-500">
+                    <Button onClick={nextStep} className="h-16 px-12 rounded-[1.25rem] bg-[#0B0E14] hover:bg-primary hover:text-white shadow-2xl shadow-black/20 text-[11px] font-black uppercase tracking-[0.3em] group transition-all duration-500">
                        Proceed <ChevronRight size={20} className="text-primary group-hover:text-white ml-3 group-hover:translate-x-2 transition-all" />
                     </Button>
                  ) : (
