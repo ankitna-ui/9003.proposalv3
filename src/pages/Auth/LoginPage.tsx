@@ -675,15 +675,15 @@ export default function LoginPage() {
                            )}
                          </div>
          
-                        {(authMode === "login" || authMode === "signup") && (
-                          <label className="flex items-center gap-2.5 px-2 cursor-pointer group select-none">
+                         {(authMode === "login" || authMode === "signup") && (
+                          <label className="flex items-center gap-2 px-1 cursor-pointer group select-none pt-1">
                             <input 
                               type="checkbox" 
                               required 
-                              className="w-4 h-4 rounded bg-white/[0.02] border-white/10 text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer accent-primary" 
+                              className="w-3.5 h-3.5 rounded bg-white/[0.02] border-white/10 text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer accent-primary" 
                             />
-                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider group-hover:text-gray-400 transition-colors">
-                              I authorize terminal security protocols and guidelines
+                            <span className="text-[8.5px] text-gray-500 font-bold uppercase tracking-wider group-hover:text-gray-400 transition-colors">
+                              I authorize secure workstation security protocol
                             </span>
                           </label>
                         )}
@@ -692,34 +692,34 @@ export default function LoginPage() {
                           <motion.div 
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="p-4 rounded-[1rem] bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest text-center shadow-lg shadow-red-500/5"
+                            className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-[9px] font-black uppercase tracking-widest text-center shadow-lg shadow-red-500/5"
                           >
                             {error}
                           </motion.div>
                         )}
          
-                        <Button type="submit" className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-primary text-black hover:bg-primary/90 rounded-[1.2rem] shadow-lg shadow-primary/10 transition-all active:scale-[0.98] group overflow-hidden relative">
-                          {loading ? "Authorizing Terminal..." : (
-                            <div className="flex items-center gap-2">
+                        <Button type="submit" className="w-full h-11 text-xs font-black uppercase tracking-[0.3em] bg-primary text-black hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/10 transition-all active:scale-[0.98] group overflow-hidden relative mt-1">
+                          {loading ? "Authorizing..." : (
+                            <div className="flex items-center gap-1.5">
                               {authMode === "login" ? "Authorize & Sign In" : authMode === "signup" ? "Register & Onboard" : "Send Reset Link"}
-                              <ChevronRight className="w-5 h-5" />
+                              <ChevronRight className="w-4 h-4" />
                             </div>
                           )}
                         </Button>
         
                         {(authMode === "login" || authMode === "signup") && (
                           <>
-                            <div className="text-center pt-2">
-                              <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">
+                            <div className="text-center">
+                              <p className="text-[8.5px] text-gray-600 font-bold uppercase tracking-widest leading-none">
                                 {authMode === "login" 
-                                  ? "New team member? Switch to Sign Up tab above to onboard." 
+                                  ? "New member? Switch to Sign Up tab above to onboard." 
                                   : "Already registered? Switch to Sign In tab above."}
                               </p>
                             </div>
 
-                            <div className="flex items-center gap-2.5 p-3.5 bg-white/[0.01] border border-white/5 rounded-xl text-[8px] text-gray-600 font-black uppercase tracking-widest mt-2 select-none">
-                              <LockKeyhole className="w-3.5 h-3.5 text-primary animate-pulse" />
-                              <span>SECURE GATEWAY: AUTHENTICATION ENFORCED VIA END-TO-END AES-256 TUNNEL</span>
+                            <div className="flex items-center justify-center gap-1.5 text-[8px] text-white/30 uppercase tracking-[0.2em] pt-1">
+                              <LockKeyhole className="w-3 h-3 text-primary/60" />
+                              <span>AES-256 SECURED GATEWAY</span>
                             </div>
                           </>
                         )}
