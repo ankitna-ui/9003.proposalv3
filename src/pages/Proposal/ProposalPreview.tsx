@@ -90,7 +90,7 @@ export default function ProposalPreview() {
       }
 
       setExportProgress(100);
-      const fileName = `${(proposal.client?.companyName || "Client")}_${(proposal.client?.proposalTitle || "Proposal")}_Weblozy.pdf`.replace(/\s+/g, '_');
+      const fileName = `${(proposal.client?.referenceId || "ID")}_${(proposal.client?.proposalTitle || "Proposal")}_Weblozy.pdf`.replace(/\s+/g, '_');
       pdf.save(fileName);
     } catch (err) {
       console.error("PDF generation failed:", err);
