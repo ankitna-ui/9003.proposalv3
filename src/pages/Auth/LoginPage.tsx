@@ -341,7 +341,7 @@ export default function LoginPage() {
             key="auth"
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-4xl grid md:grid-cols-2 bg-[#0E1217]/90 backdrop-blur-3xl rounded-[3rem] shadow-[0_0_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5 relative z-10"
+            className="w-full max-w-4xl min-h-[660px] md:h-[680px] grid md:grid-cols-2 bg-[#0E1217]/90 backdrop-blur-3xl rounded-[3rem] shadow-[0_0_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/5 relative z-10"
           >
             {/* Left Side: Institutional Cybernetic Telemetry Deck */}
             <div className="hidden md:flex flex-col justify-between p-12 bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent relative border-r border-white/5 overflow-hidden">
@@ -476,7 +476,7 @@ export default function LoginPage() {
             </div>
     
             {/* Right Side: Authentication Interface */}
-            <div className="p-12 flex flex-col justify-center bg-black/20">
+            <div className="p-10 md:p-12 flex flex-col justify-center bg-black/20 h-full overflow-y-auto custom-scrollbar relative">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={authMode === "login" || authMode === "signup" ? "login-signup" : authMode}
@@ -484,7 +484,7 @@ export default function LoginPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="space-y-6"
+                  className="space-y-5"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -553,160 +553,178 @@ export default function LoginPage() {
                       </div>
                     ) : (
                       <>
-                         {(authMode === "login" || authMode === "signup" || authMode === "forgot-password") && (
-                          <div className="space-y-2">
-                            <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Terminal ID (Company Email)</Label>
-                            <div className="relative group">
-                              <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                              <Input 
-                                type="email" 
-                                placeholder="OPERATOR@WEBLOZY.COM" 
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
-                              />
-                            </div>
-                          </div>
-                        )}
- 
-                        <AnimatePresence initial={false}>
-                          {authMode === "signup" && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                              animate={{ height: "auto", opacity: 1, marginTop: 16 }}
-                              exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                              transition={{ duration: 0.35, ease: "easeInOut" }}
-                              className="overflow-hidden space-y-4"
-                            >
-                              <div className="space-y-2">
-                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee Full Name</Label>
-                                <div className="relative group">
-                                  <UserCheck className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                  <Input 
-                                    type="text" 
-                                    placeholder="ANKIT NISHAD" 
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                    className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
-                                  />
-                                </div>
-                              </div>
- 
-                              <div className="space-y-2">
-                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee ID</Label>
-                                <div className="relative group">
-                                  <IdCard className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                  <Input 
-                                    type="text" 
-                                    placeholder="EMP-1192501" 
-                                    value={employeeId}
-                                    onChange={(e) => setEmployeeId(e.target.value)}
-                                    className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
-                                  />
-                                </div>
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-         
-                        {(authMode === "login" || authMode === "signup") && (
-                          <>
-                            <div className="space-y-2 pt-2">
-                              <div className="flex justify-between items-center px-2">
-                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key (Password)</Label>
-                                {authMode === "login" && (
-                                  <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover Password?</button>
-                                )}
-                              </div>
-                              <div className="relative group">
-                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                <Input 
-                                  type={showPassword ? "text" : "password"} 
-                                  placeholder="••••••••"
-                                  value={password}
-                                  onChange={(e) => setPassword(e.target.value)}
-                                  className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowPassword(prev => !prev)}
-                                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
-                                >
-                                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                              </div>
-                            </div>
+                         <div className="grid grid-cols-2 gap-3.5">
+                           {/* Terminal ID (Company Email) - Spans both columns */}
+                           {(authMode === "login" || authMode === "signup" || authMode === "forgot-password") && (
+                             <div className="col-span-2 space-y-1.5">
+                               <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-1">Terminal ID (Company Email)</Label>
+                               <div className="relative group">
+                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                 <Input 
+                                   type="email" 
+                                   placeholder="OPERATOR@WEBLOZY.COM" 
+                                   value={email}
+                                   onChange={(e) => setEmail(e.target.value)}
+                                   className="h-11 pl-11 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-xs focus:border-primary/30"
+                                 />
+                               </div>
+                             </div>
+                           )}
 
-                            {authMode === "signup" && (
-                              <div className="space-y-2 pt-2">
-                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Confirm Access Key</Label>
-                                <div className="relative group">
-                                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                  <Input 
-                                    type={showConfirmPassword ? "text" : "password"} 
-                                    placeholder="••••••••"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => setShowConfirmPassword(prev => !prev)}
-                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
-                                  >
-                                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </>
-                        )}
+                           {/* Sign Up Fields: Employee Name & Employee ID side-by-side */}
+                           {authMode === "signup" && (
+                             <>
+                               <div className="col-span-1 space-y-1.5">
+                                 <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-1">Employee Full Name</Label>
+                                 <div className="relative group">
+                                   <UserCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                   <Input 
+                                     type="text" 
+                                     placeholder="ANKIT NISHAD" 
+                                     value={fullName}
+                                     onChange={(e) => setFullName(e.target.value)}
+                                     className="h-11 pl-11 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-xs focus:border-primary/30"
+                                   />
+                                 </div>
+                               </div>
 
-                        {authMode === "reset-password" && (
-                          <>
-                            <div className="space-y-2">
-                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">New Access Key</Label>
-                              <div className="relative group">
-                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                <Input 
-                                  type={showNewPassword ? "text" : "password"} 
-                                  placeholder="••••••••"
-                                  value={newPassword}
-                                  onChange={(e) => setNewPassword(e.target.value)}
-                                  className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowNewPassword(prev => !prev)}
-                                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
-                                >
-                                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                              </div>
-                            </div>
+                               <div className="col-span-1 space-y-1.5">
+                                 <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-1">Employee ID</Label>
+                                 <div className="relative group">
+                                   <IdCard className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                   <Input 
+                                     type="text" 
+                                     placeholder="EMP-1192501" 
+                                     value={employeeId}
+                                     onChange={(e) => setEmployeeId(e.target.value)}
+                                     className="h-11 pl-11 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-xs focus:border-primary/30"
+                                   />
+                                 </div>
+                               </div>
+                             </>
+                           )}
 
-                            <div className="space-y-2">
-                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Confirm Access Key</Label>
-                              <div className="relative group">
-                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                <Input 
-                                  type={showConfirmPassword ? "text" : "password"} 
-                                  placeholder="••••••••"
-                                  value={confirmPassword}
-                                  onChange={(e) => setConfirmPassword(e.target.value)}
-                                  className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowConfirmPassword(prev => !prev)}
-                                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
-                                >
-                                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                </button>
-                              </div>
-                            </div>
-                          </>
-                        )}
+                           {/* Passwords for Login - spans full column */}
+                           {authMode === "login" && (
+                             <div className="col-span-2 space-y-1.5">
+                               <div className="flex justify-between items-center px-1">
+                                 <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key (Password)</Label>
+                                 <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover Password?</button>
+                               </div>
+                               <div className="relative group">
+                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                 <Input 
+                                   type={showPassword ? "text" : "password"} 
+                                   placeholder="••••••••"
+                                   value={password}
+                                   onChange={(e) => setPassword(e.target.value)}
+                                   className="h-11 pl-11 pr-10 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-xs focus:border-primary/30"
+                                 />
+                                 <button
+                                   type="button"
+                                   onClick={() => setShowPassword(prev => !prev)}
+                                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                 >
+                                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                 </button>
+                               </div>
+                             </div>
+                           )}
+
+                           {/* Passwords for Signup - side-by-side */}
+                           {authMode === "signup" && (
+                             <>
+                               <div className="col-span-1 space-y-1.5">
+                                 <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-1">Access Key</Label>
+                                 <div className="relative group">
+                                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                   <Input 
+                                     type={showPassword ? "text" : "password"} 
+                                     placeholder="••••••••"
+                                     value={password}
+                                     onChange={(e) => setPassword(e.target.value)}
+                                     className="h-11 pl-11 pr-10 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-xs focus:border-primary/30"
+                                   />
+                                   <button
+                                     type="button"
+                                     onClick={() => setShowPassword(prev => !prev)}
+                                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                   >
+                                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                   </button>
+                                 </div>
+                               </div>
+
+                               <div className="col-span-1 space-y-1.5">
+                                 <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-1">Confirm Access Key</Label>
+                                 <div className="relative group">
+                                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                   <Input 
+                                     type={showConfirmPassword ? "text" : "password"} 
+                                     placeholder="••••••••"
+                                     value={confirmPassword}
+                                     onChange={(e) => setConfirmPassword(e.target.value)}
+                                     className="h-11 pl-11 pr-10 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-xs focus:border-primary/30"
+                                   />
+                                   <button
+                                     type="button"
+                                     onClick={() => setShowConfirmPassword(prev => !prev)}
+                                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                   >
+                                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                   </button>
+                                 </div>
+                               </div>
+                             </>
+                           )}
+
+                           {/* Reset Password fields - side-by-side */}
+                           {authMode === "reset-password" && (
+                             <>
+                               <div className="col-span-1 space-y-1.5">
+                                 <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-1">New Access Key</Label>
+                                 <div className="relative group">
+                                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                   <Input 
+                                     type={showNewPassword ? "text" : "password"} 
+                                     placeholder="••••••••"
+                                     value={newPassword}
+                                     onChange={(e) => setNewPassword(e.target.value)}
+                                     className="h-11 pl-11 pr-10 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-xs focus:border-primary/30"
+                                   />
+                                   <button
+                                     type="button"
+                                     onClick={() => setShowNewPassword(prev => !prev)}
+                                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                   >
+                                     {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                   </button>
+                                 </div>
+                               </div>
+
+                               <div className="col-span-1 space-y-1.5">
+                                 <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-1">Confirm Access Key</Label>
+                                 <div className="relative group">
+                                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                   <Input 
+                                     type={showConfirmPassword ? "text" : "password"} 
+                                     placeholder="••••••••"
+                                     value={confirmPassword}
+                                     onChange={(e) => setConfirmPassword(e.target.value)}
+                                     className="h-11 pl-11 pr-10 bg-white/[0.02] border-white/10 rounded-xl focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-xs focus:border-primary/30"
+                                   />
+                                   <button
+                                     type="button"
+                                     onClick={() => setShowConfirmPassword(prev => !prev)}
+                                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                   >
+                                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                   </button>
+                                 </div>
+                               </div>
+                             </>
+                           )}
+                         </div>
          
                         {(authMode === "login" || authMode === "signup") && (
                           <label className="flex items-center gap-2.5 px-2 cursor-pointer group select-none">
