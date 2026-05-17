@@ -306,3 +306,28 @@
   margin-bottom: 2rem;
   box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.1);
 }
+
+/* Premium Responsive Zoom Preview for A4 Documents without Layout Flow Gaps */
+.pdf-preview-scale {
+  transform-origin: top center;
+  zoom: 0.55;
+  width: 210mm;
+}
+
+@media (min-width: 1024px) {
+  .pdf-preview-scale {
+    zoom: 0.72;
+  }
+}
+
+@media (min-width: 1280px) {
+  .pdf-preview-scale {
+    zoom: 0.82;
+  }
+}
+
+@media (min-width: 1536px) {
+  .pdf-preview-scale {
+    zoom: 0.92;
+  }
+}

@@ -308,8 +308,8 @@ export default function EditProposal() {
 
            {/* Scrollable Document Area */}
            <div className="flex-1 overflow-y-auto p-12 custom-scrollbar flex justify-center items-start bg-slate-50/20">
-              <div className="w-full max-w-5xl py-2 relative z-10 flex justify-center h-fit">
-                 <div className="origin-top shadow-[0_15px_50px_rgba(0,0,0,0.06)] border border-slate-100 rounded-lg transition-all duration-700 transform scale-[0.6] lg:scale-[0.75] xl:scale-[0.85] 2xl:scale-[0.95] h-fit">
+              <div className="relative z-10 flex justify-center h-fit w-full">
+                 <div className="pdf-preview-scale transition-all duration-500 h-fit rounded-lg overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-slate-100/80 bg-white">
                     <ProposalPDF proposal={proposal} />
                  </div>
               </div>
