@@ -150,4 +150,6 @@ export interface Proposal {
   };
   createdAt: number;
   updatedAt: number;
+  creatorName?: string;
+  creatorEmployeeId?: string;
 }
