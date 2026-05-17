@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, FileText, Download, TrendingUp, Users, Clock, Eye, Trash2, LogOut, Pencil, LayoutGrid, Search, Bell, Settings } from "lucide-react";
+import { Plus, FileText, Download, TrendingUp, Users, Clock, Eye, Trash2, LogOut, Pencil, LayoutGrid, Search, Bell, Settings, AlertOctagon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getProposals, deleteProposal } from "@/lib/firestore";
 import { auth } from "@/lib/firebase";
 import { Proposal } from "@/types/proposal";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import banner2Logo from "@/assets/banner2_logo.png";
 import LoadingScreen from '@/components/ui/LoadingScreen';
 
@@ -53,6 +53,7 @@ export default function Dashboard() {
   const [proposals, setProposals] = useState<(Proposal & { id: string })[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,16 +86,21 @@ export default function Dashboard() {
     navigate("/login");
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this strategic asset?")) {
-      try {
-        await deleteProposal(id);
-        setProposals(prev => prev.filter(p => p.id !== id));
-        toast.success("Strategic asset successfully decommissioned.");
-      } catch (error) {
-        console.error(error);
-        toast.error("Permission denied: You can only delete your own protocols.");
-      }
+  const handleDeleteClick = (id: string) => {
+    setDeleteTargetId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTargetId) return;
+    const id = deleteTargetId;
+    setDeleteTargetId(null);
+    try {
+      await deleteProposal(id);
+      setProposals(prev => prev.filter(p => p.id !== id));
+      toast.success("Strategic asset successfully decommissioned.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Permission denied: You can only delete your own protocols.");
     }
   };
 
@@ -250,7 +256,7 @@ export default function Dashboard() {
                           <Button variant="ghost" size="icon" onClick={() => navigate(`/edit/${p.id}`)} className="w-10 h-10 rounded-xl hover:bg-orange-500/10 text-orange-500 transition-all active:scale-90">
                             <Pencil className="w-5 h-5" />
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)} disabled={p.userId === 'system'} className="w-10 h-10 rounded-xl hover:bg-red-500/10 text-red-500 transition-all active:scale-90 disabled:opacity-20">
+                          <Button variant="ghost" size="icon" onClick={() => handleDeleteClick(p.id)} disabled={p.userId === 'system'} className="w-10 h-10 rounded-xl hover:bg-red-500/10 text-red-500 transition-all active:scale-90 disabled:opacity-20">
                             <Trash2 className="w-5 h-5" />
                           </Button>
                         </div>
@@ -273,6 +279,58 @@ export default function Dashboard() {
           Secure Terminal Access • Version 2.8.5 • © 2026 Weblozy Labs
         </div>
       </footer>
+
+      {/* Stunning Custom Confirmation Modal */}
+      <AnimatePresence>
+         {deleteTargetId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+               {/* Backdrop */}
+               <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setDeleteTargetId(null)}
+                  className="absolute inset-0 bg-black/75 backdrop-blur-md"
+               />
+               
+               {/* Modal Card */}
+               <motion.div 
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  className="bg-[#11151D] border border-red-500/20 rounded-[2.5rem] p-8 max-w-md w-full relative z-10 overflow-hidden shadow-2xl shadow-red-950/20 flex flex-col items-center text-center space-y-6"
+               >
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
+                  
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20 shadow-lg shadow-red-500/5">
+                     <AlertOctagon className="w-8 h-8" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                     <h3 className="text-xl font-black uppercase tracking-tight text-white">Decommission Protocol?</h3>
+                     <p className="text-[11px] font-bold text-gray-500 leading-relaxed uppercase tracking-wider">
+                        This action is irreversible. The selected proposal will be permanently purged from the strategic index.
+                     </p>
+                  </div>
+                  
+                  <div className="flex gap-4 w-full pt-2">
+                     <Button 
+                        onClick={() => setDeleteTargetId(null)}
+                        className="flex-1 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[9px] font-black uppercase tracking-widest transition-all"
+                     >
+                        Abort Protocol
+                     </Button>
+                     <Button 
+                        onClick={handleConfirmDelete}
+                        className="flex-1 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-red-500/25 transition-all"
+                     >
+                        Confirm Purge
+                     </Button>
+                  </div>
+               </motion.div>
+            </div>
+         )}
+      </AnimatePresence>
     </div>
   );
 }

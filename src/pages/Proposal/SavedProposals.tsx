@@ -14,7 +14,8 @@ import {
   Building2, 
   Loader2,
   Search,
-  Filter
+  Filter,
+  AlertOctagon
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { getProposals, deleteProposal } from "@/lib/firestore";
@@ -27,6 +28,7 @@ export default function SavedProposals() {
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,16 +46,21 @@ export default function SavedProposals() {
     loadProposals();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Permanently delete this proposal protocol?")) {
-      try {
-        await deleteProposal(id);
-        setProposals(prev => prev.filter(p => p.id !== id));
-        toast.success("Proposal protocol successfully purged from archives.");
-      } catch (error) {
-        console.error(error);
-        toast.error("Deletion protocol failed. Access denied.");
-      }
+  const handleDeleteClick = (id: string) => {
+    setDeleteTargetId(id);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTargetId) return;
+    const id = deleteTargetId;
+    setDeleteTargetId(null);
+    try {
+      await deleteProposal(id);
+      setProposals(prev => prev.filter(p => p.id !== id));
+      toast.success("Proposal protocol successfully purged from archives.");
+    } catch (error) {
+      console.error(error);
+      toast.error("Deletion protocol failed. Access denied.");
     }
   };
 
@@ -172,7 +179,7 @@ export default function SavedProposals() {
                         <Button 
                           variant="ghost" 
                           size="icon"
-                          onClick={() => handleDelete(p.id!)}
+                          onClick={() => handleDeleteClick(p.id!)}
                           className="rounded-xl h-12 w-12 hover:bg-red-500/10 text-red-500 border border-red-500/10"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -186,6 +193,58 @@ export default function SavedProposals() {
           </div>
         )}
       </div>
+
+      {/* Stunning Custom Confirmation Modal */}
+      <AnimatePresence>
+         {deleteTargetId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+               {/* Backdrop */}
+               <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setDeleteTargetId(null)}
+                  className="absolute inset-0 bg-black/75 backdrop-blur-md"
+               />
+               
+               {/* Modal Card */}
+               <motion.div 
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  className="bg-[#11151D] border border-red-500/20 rounded-[2.5rem] p-8 max-w-md w-full relative z-10 overflow-hidden shadow-2xl shadow-red-950/20 flex flex-col items-center text-center space-y-6"
+               >
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
+                  
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-red-500/10 flex items-center justify-center text-red-500 border border-red-500/20 shadow-lg shadow-red-500/5">
+                     <AlertOctagon className="w-8 h-8" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                     <h3 className="text-xl font-black uppercase tracking-tight text-white">Decommission Protocol?</h3>
+                     <p className="text-[11px] font-bold text-gray-500 leading-relaxed uppercase tracking-wider">
+                        This action is irreversible. The selected proposal will be permanently purged from the strategic index.
+                     </p>
+                  </div>
+                  
+                  <div className="flex gap-4 w-full pt-2">
+                     <Button 
+                        onClick={() => setDeleteTargetId(null)}
+                        className="flex-1 h-12 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white text-[9px] font-black uppercase tracking-widest transition-all"
+                     >
+                        Abort Protocol
+                     </Button>
+                     <Button 
+                        onClick={handleConfirmDelete}
+                        className="flex-1 h-12 rounded-xl bg-red-500 hover:bg-red-600 text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-red-500/25 transition-all"
+                      >
+                         Confirm Purge
+                      </Button>
+                   </div>
+                </motion.div>
+             </div>
+          )}
+       </AnimatePresence>
     </div>
   );
 }
