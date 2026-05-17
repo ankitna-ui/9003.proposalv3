@@ -65,10 +65,6 @@ export default function EditProposal() {
   const [isLoading, setIsLoading] = useState(true);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setValidationError(null);
-  }, [currentStep, proposal.client.proposalTitle, proposal.solution.selectedModules]);
-
   const {
     proposal,
     updateClient,
@@ -82,6 +78,10 @@ export default function EditProposal() {
     setAIContent,
     setProposal
   } = useProposalForm();
+
+  useEffect(() => {
+    setValidationError(null);
+  }, [currentStep, proposal.client.proposalTitle, proposal.solution.selectedModules]);
 
   const { consumeTokens } = useTokens();
 

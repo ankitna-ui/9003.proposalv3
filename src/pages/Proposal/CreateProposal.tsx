@@ -64,10 +64,6 @@ export default function CreateProposal() {
   const [isSaving, setIsSaving] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setValidationError(null);
-  }, [currentStep, proposal.client.proposalTitle, proposal.solution.selectedModules]);
-  
   const { consumeTokens } = useTokens();
 
   const { 
@@ -82,6 +78,10 @@ export default function CreateProposal() {
     updateClosing,
     setAIContent
   } = useProposalForm();
+
+  useEffect(() => {
+    setValidationError(null);
+  }, [currentStep, proposal.client.proposalTitle, proposal.solution.selectedModules]);
 
 
 
