@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from "framer-motion";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
@@ -13,7 +14,7 @@ import {
   signOut
 } from "firebase/auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ShieldCheck, Zap, ChevronRight, ArrowLeft, Mail, Lock, CheckCircle2, Cpu, Globe, Database } from "lucide-react";
+import { ShieldCheck, Zap, ChevronRight, ArrowLeft, Mail, Lock, CheckCircle2, Cpu, Globe, Database, UserCheck, IdCard } from "lucide-react";
 import { toast } from "react-toastify";
 import banner2Logo from "@/assets/banner2_logo.png";
 
@@ -22,6 +23,8 @@ type AuthMode = "login" | "signup" | "forgot-password" | "reset-password" | "suc
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,7 +46,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     setError(null);
-  }, [email, password, newPassword, confirmPassword, authMode]);
+  }, [email, password, newPassword, confirmPassword, fullName, employeeId, authMode]);
 
   useEffect(() => {
     if (authMode === "loading") {
@@ -89,6 +92,17 @@ export default function LoginPage() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         setError("Security Alert: Invalid Terminal ID (Email) format.");
+        return;
+      }
+    }
+
+    if (authMode === "signup") {
+      if (!fullName.trim()) {
+        setError("Operator Validation Failure: Employee Full Name is required.");
+        return;
+      }
+      if (!employeeId.trim()) {
+        setError("Operator Validation Failure: Employee ID is required.");
         return;
       }
     }
@@ -155,6 +169,17 @@ export default function LoginPage() {
         }
 
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Persist complete employee profile details into Firestore database under users collection
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          uid: userCredential.user.uid,
+          email: email.trim().toLowerCase(),
+          fullName: fullName.trim(),
+          employeeId: employeeId.trim(),
+          role: "operator",
+          createdAt: new Date().toISOString()
+        });
+
         await sendEmailVerification(userCredential.user);
         await signOut(auth);
         
@@ -361,7 +386,7 @@ export default function LoginPage() {
                       </div>
                     ) : (
                       <>
-                        {(authMode === "login" || authMode === "signup" || authMode === "forgot-password") && (
+                         {(authMode === "login" || authMode === "signup" || authMode === "forgot-password") && (
                           <div className="space-y-2">
                             <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Terminal ID</Label>
                             <div className="relative group">
@@ -375,6 +400,38 @@ export default function LoginPage() {
                               />
                             </div>
                           </div>
+                        )}
+
+                        {authMode === "signup" && (
+                          <>
+                            <div className="space-y-2">
+                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee Full Name</Label>
+                              <div className="relative group">
+                                <UserCheck className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                <Input 
+                                  type="text" 
+                                  placeholder="ANKIT NA" 
+                                  value={fullName}
+                                  onChange={(e) => setFullName(e.target.value)}
+                                  className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee ID</Label>
+                              <div className="relative group">
+                                <IdCard className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                <Input 
+                                  type="text" 
+                                  placeholder="EMP-8291" 
+                                  value={employeeId}
+                                  onChange={(e) => setEmployeeId(e.target.value)}
+                                  className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
+                                />
+                              </div>
+                            </div>
+                          </>
                         )}
         
                         {(authMode === "login" || authMode === "signup") && (
