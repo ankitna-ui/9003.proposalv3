@@ -14,7 +14,7 @@ import {
   signOut
 } from "firebase/auth";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ShieldCheck, Zap, ChevronRight, ArrowLeft, Mail, Lock, CheckCircle2, Cpu, Globe, Database, UserCheck, IdCard } from "lucide-react";
+import { ShieldCheck, Zap, ChevronRight, ArrowLeft, Mail, Lock, CheckCircle2, Cpu, Globe, Database, UserCheck, IdCard, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
 import banner2Logo from "@/assets/banner2_logo.png";
 
@@ -32,6 +32,9 @@ export default function LoginPage() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingText, setLoadingText] = useState("Initializing System...");
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -230,21 +233,21 @@ export default function LoginPage() {
 
   const getTitle = () => {
     switch (authMode) {
-      case "signup": return "Onboarding";
-      case "forgot-password": return "Recovery";
-      case "reset-password": return "Re-Initialize";
-      case "success": return "Status";
-      default: return "Authentication";
+      case "signup": return "Operator Onboarding";
+      case "forgot-password": return "Account Recovery";
+      case "reset-password": return "Re-establish Keys";
+      case "success": return "System Dispatch";
+      default: return "Workstation Login";
     }
   };
 
   const getSubtitle = () => {
     switch (authMode) {
-      case "signup": return "Initialize your enterprise workstation.";
-      case "forgot-password": return "Recover access to your secure environment.";
-      case "reset-password": return "Establish a new high-security access key.";
-      case "success": return "Action completed successfully.";
-      default: return "Access your secure automation dashboard.";
+      case "signup": return "Establish your secure credentials inside the corporate index.";
+      case "forgot-password": return "Request a security link to recover your terminal access keys.";
+      case "reset-password": return "Set a new high-strength password to authorize your session.";
+      case "success": return "Your secure request was successfully dispatched to the server.";
+      default: return "Welcome back. Initialize your workspace terminal to access Proposals.";
     }
   };
 
@@ -364,9 +367,11 @@ export default function LoginPage() {
             <div className="p-12 flex flex-col justify-center bg-black/20">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={authMode}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  key={authMode === "login" || authMode === "signup" ? "login-signup" : authMode}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
                   className="space-y-6"
                 >
                   <div className="space-y-2">
@@ -452,40 +457,48 @@ export default function LoginPage() {
                           </div>
                         )}
  
-                        {authMode === "signup" && (
-                          <>
-                            <div className="space-y-2">
-                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee Full Name</Label>
-                              <div className="relative group">
-                                <UserCheck className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                <Input 
-                                  type="text" 
-                                  placeholder="ANKIT NA" 
-                                  value={fullName}
-                                  onChange={(e) => setFullName(e.target.value)}
-                                  className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
-                                />
+                        <AnimatePresence initial={false}>
+                          {authMode === "signup" && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                              animate={{ height: "auto", opacity: 1, marginTop: 16 }}
+                              exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                              transition={{ duration: 0.35, ease: "easeInOut" }}
+                              className="overflow-hidden space-y-4"
+                            >
+                              <div className="space-y-2">
+                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee Full Name</Label>
+                                <div className="relative group">
+                                  <UserCheck className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                  <Input 
+                                    type="text" 
+                                    placeholder="ANKIT NISHAD" 
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
+                                  />
+                                </div>
                               </div>
-                            </div>
  
-                            <div className="space-y-2">
-                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee ID</Label>
-                              <div className="relative group">
-                                <IdCard className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                                <Input 
-                                  type="text" 
-                                  placeholder="EMP-8291" 
-                                  value={employeeId}
-                                  onChange={(e) => setEmployeeId(e.target.value)}
-                                  className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
-                                />
+                              <div className="space-y-2">
+                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Employee ID</Label>
+                                <div className="relative group">
+                                  <IdCard className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                  <Input 
+                                    type="text" 
+                                    placeholder="EMP-1192501" 
+                                    value={employeeId}
+                                    onChange={(e) => setEmployeeId(e.target.value)}
+                                    className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold tracking-tight uppercase transition-all text-sm"
+                                  />
+                                </div>
                               </div>
-                            </div>
-                          </>
-                        )}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
          
                         {(authMode === "login" || authMode === "signup") && (
-                          <div className="space-y-2">
+                          <div className="space-y-2 pt-2">
                             <div className="flex justify-between items-center px-2">
                               <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key (Password)</Label>
                               {authMode === "login" && (
@@ -495,14 +508,67 @@ export default function LoginPage() {
                             <div className="relative group">
                               <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
                               <Input 
-                                type="password" 
+                                type={showPassword ? "text" : "password"} 
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="h-14 pl-14 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
+                                className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
                               />
+                              <button
+                                type="button"
+                                onClick={() => setShowPassword(prev => !prev)}
+                                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                              >
+                                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                              </button>
                             </div>
                           </div>
+                        )}
+
+                        {authMode === "reset-password" && (
+                          <>
+                            <div className="space-y-2">
+                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">New Access Key</Label>
+                              <div className="relative group">
+                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                <Input 
+                                  type={showNewPassword ? "text" : "password"} 
+                                  placeholder="••••••••"
+                                  value={newPassword}
+                                  onChange={(e) => setNewPassword(e.target.value)}
+                                  className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowNewPassword(prev => !prev)}
+                                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                >
+                                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Confirm Access Key</Label>
+                              <div className="relative group">
+                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                <Input 
+                                  type={showConfirmPassword ? "text" : "password"} 
+                                  placeholder="••••••••"
+                                  value={confirmPassword}
+                                  onChange={(e) => setConfirmPassword(e.target.value)}
+                                  className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowConfirmPassword(prev => !prev)}
+                                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                >
+                                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                              </div>
+                            </div>
+                          </>
                         )}
          
                         {error && (
