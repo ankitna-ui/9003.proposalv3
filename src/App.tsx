@@ -1,18 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-import LoginPage from '@/pages/Auth/LoginPage';
-import Dashboard from '@/pages/Dashboard/Dashboard';
-import CreateProposal from '@/pages/Proposal/CreateProposal';
-import EditProposal from '@/pages/Proposal/EditProposal';
-import SavedProposals from '@/pages/Proposal/SavedProposals';
-import ProposalPreview from '@/pages/Proposal/ProposalPreview';
 import GlobalHomeButton from '@/components/Navigation/GlobalHomeButton';
 import LoadingScreen from '@/components/ui/LoadingScreen';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+// Lazy load route pages for maximum initial load performance
+const LoginPage = lazy(() => import('@/pages/Auth/LoginPage'));
+const Dashboard = lazy(() => import('@/pages/Dashboard/Dashboard'));
+const CreateProposal = lazy(() => import('@/pages/Proposal/CreateProposal'));
+const EditProposal = lazy(() => import('@/pages/Proposal/EditProposal'));
+const SavedProposals = lazy(() => import('@/pages/Proposal/SavedProposals'));
+const ProposalPreview = lazy(() => import('@/pages/Proposal/ProposalPreview'));
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -33,8 +35,9 @@ function App() {
   return (
     <Router>
       <GlobalHomeButton />
-      <Routes>
-        <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes>
+          <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
         
         <Route 
           path="/" 
@@ -63,6 +66,7 @@ function App() {
         
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      </Suspense>
       <ToastContainer 
         position="top-right"
         autoClose={3000}
