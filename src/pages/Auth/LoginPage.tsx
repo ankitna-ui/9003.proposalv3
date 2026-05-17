@@ -143,6 +143,14 @@ export default function LoginPage() {
         setError("Operator Validation Failure: Employee ID is required.");
         return;
       }
+      if (!confirmPassword) {
+        setError("Security Alert: Please confirm your Access Key.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError("Security Alert: Access keys do not match.");
+        return;
+      }
     }
 
     if (authMode === "login" || authMode === "signup") {
@@ -263,26 +271,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#06080B] p-6 relative overflow-hidden font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#06080C] via-[#0D1117] to-[#040507] p-6 relative overflow-hidden font-sans">
       {/* Cinematic Background Layer */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div 
-          className="absolute inset-0 opacity-[0.1]" 
+          className="absolute inset-0 opacity-[0.06]" 
           style={{ 
-            backgroundImage: `linear-gradient(#1668B2 1px, transparent 1px), linear-gradient(90deg, #1668B2 1px, transparent 1px)`,
-            backgroundSize: '30px 30px',
-            maskImage: 'radial-gradient(circle at 50% 50%, black, transparent 80%)'
+            backgroundImage: `linear-gradient(#A3E635 1px, transparent 1px), linear-gradient(90deg, #A3E635 1px, transparent 1px)`,
+            backgroundSize: '40px 40px',
+            maskImage: 'radial-gradient(circle at 50% 50%, black, transparent 75%)'
           }} 
         />
+        {/* Soft neon green top-right glow */}
         <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.1, 0.05], x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 10, repeat: Infinity }}
-          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#1668B2] blur-[120px] rounded-full" 
+          animate={{ scale: [1, 1.15, 1], opacity: [0.12, 0.2, 0.12], x: [0, 20, 0], y: [0, -20, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-[#A3E635] blur-[150px] rounded-full" 
         />
+        {/* Deep navy bottom-left glow */}
         <motion.div 
-          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.1, 0.05], x: [0, -20, 0], y: [0, 30, 0] }}
-          transition={{ duration: 12, repeat: Infinity, delay: 1 }}
-          className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#99CB48] blur-[120px] rounded-full" 
+          animate={{ scale: [1, 1.25, 1], opacity: [0.08, 0.15, 0.08], x: [0, -30, 0], y: [0, 30, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-[-20%] left-[-10%] w-[550px] h-[550px] bg-[#1668B2] blur-[140px] rounded-full" 
         />
       </div>
 
@@ -369,13 +379,34 @@ export default function LoginPage() {
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">Strategic Core OS v3.2</span>
                   </div>
-                  <h1 className="text-5xl font-black text-white leading-[0.95] tracking-tighter uppercase">
-                    Absolute <br />
-                    <span className="text-primary italic relative">
-                      Authority.
-                      <span className="absolute bottom-1 left-0 w-full h-[3px] bg-primary/20 rounded" />
-                    </span>
-                  </h1>
+                  <AnimatePresence mode="wait">
+                    <motion.h1 
+                      key={authMode}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="text-5xl font-black text-white leading-[0.95] tracking-tight uppercase"
+                    >
+                      {authMode === "signup" ? (
+                        <>
+                          Absolute <br />
+                          <span className="text-primary italic relative">
+                            Authority.
+                            <span className="absolute bottom-1 left-0 w-full h-[3.5px] bg-primary/20 rounded shadow-[0_0_12px_rgba(163,230,53,0.3)]" />
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          Welcome Back <br />
+                          <span className="text-primary italic relative">
+                            Commander.
+                            <span className="absolute bottom-1 left-0 w-full h-[3.5px] bg-primary/20 rounded shadow-[0_0_12px_rgba(163,230,53,0.3)]" />
+                          </span>
+                        </>
+                      )}
+                    </motion.h1>
+                  </AnimatePresence>
                   <p className="text-gray-500 text-sm leading-relaxed max-w-[300px] font-medium tracking-tight">
                     High-impact enterprise documentation pipeline & multi-operator strategic automation ecosystem.
                   </p>
@@ -579,31 +610,56 @@ export default function LoginPage() {
                         </AnimatePresence>
          
                         {(authMode === "login" || authMode === "signup") && (
-                          <div className="space-y-2 pt-2">
-                            <div className="flex justify-between items-center px-2">
-                              <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key (Password)</Label>
-                              {authMode === "login" && (
-                                <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover Password?</button>
-                              )}
+                          <>
+                            <div className="space-y-2 pt-2">
+                              <div className="flex justify-between items-center px-2">
+                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px]">Access Key (Password)</Label>
+                                {authMode === "login" && (
+                                  <button type="button" onClick={() => setAuthMode("forgot-password")} className="text-[8px] font-black text-primary hover:text-white uppercase tracking-widest transition-colors">Recover Password?</button>
+                                )}
+                              </div>
+                              <div className="relative group">
+                                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                <Input 
+                                  type={showPassword ? "text" : "password"} 
+                                  placeholder="••••••••"
+                                  value={password}
+                                  onChange={(e) => setPassword(e.target.value)}
+                                  className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => setShowPassword(prev => !prev)}
+                                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                >
+                                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                              </div>
                             </div>
-                            <div className="relative group">
-                              <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
-                              <Input 
-                                type={showPassword ? "text" : "password"} 
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => setShowPassword(prev => !prev)}
-                                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
-                              >
-                                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                              </button>
-                            </div>
-                          </div>
+
+                            {authMode === "signup" && (
+                              <div className="space-y-2 pt-2">
+                                <Label className="text-gray-600 font-black uppercase tracking-[0.3em] text-[8px] ml-2">Confirm Access Key</Label>
+                                <div className="relative group">
+                                  <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-700 group-focus-within:text-primary transition-colors" />
+                                  <Input 
+                                    type={showConfirmPassword ? "text" : "password"} 
+                                    placeholder="••••••••"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="h-14 pl-14 pr-12 bg-white/[0.02] border-white/10 rounded-[1.2rem] focus:ring-1 focus:ring-primary text-white placeholder:text-gray-800 font-bold transition-all text-sm"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowConfirmPassword(prev => !prev)}
+                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-700 hover:text-primary transition-colors z-20"
+                                  >
+                                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </>
                         )}
 
                         {authMode === "reset-password" && (
@@ -652,6 +708,19 @@ export default function LoginPage() {
                           </>
                         )}
          
+                        {(authMode === "login" || authMode === "signup") && (
+                          <label className="flex items-center gap-2.5 px-2 cursor-pointer group select-none">
+                            <input 
+                              type="checkbox" 
+                              required 
+                              className="w-4 h-4 rounded bg-white/[0.02] border-white/10 text-primary focus:ring-primary focus:ring-offset-0 transition-colors cursor-pointer accent-primary" 
+                            />
+                            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider group-hover:text-gray-400 transition-colors">
+                              I authorize terminal security protocols and guidelines
+                            </span>
+                          </label>
+                        )}
+
                         {error && (
                           <motion.div 
                             initial={{ opacity: 0, y: -5 }}
@@ -672,13 +741,20 @@ export default function LoginPage() {
                         </Button>
         
                         {(authMode === "login" || authMode === "signup") && (
-                          <div className="text-center pt-2">
-                            <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">
-                              {authMode === "login" 
-                                ? "New team member? Switch to Sign Up tab above to onboard." 
-                                : "Already registered? Switch to Sign In tab above."}
-                            </p>
-                          </div>
+                          <>
+                            <div className="text-center pt-2">
+                              <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">
+                                {authMode === "login" 
+                                  ? "New team member? Switch to Sign Up tab above to onboard." 
+                                  : "Already registered? Switch to Sign In tab above."}
+                              </p>
+                            </div>
+
+                            <div className="flex items-center gap-2.5 p-3.5 bg-white/[0.01] border border-white/5 rounded-xl text-[8px] text-gray-600 font-black uppercase tracking-widest mt-2 select-none">
+                              <LockKeyhole className="w-3.5 h-3.5 text-primary animate-pulse" />
+                              <span>SECURE GATEWAY: AUTHENTICATION ENFORCED VIA END-TO-END AES-256 TUNNEL</span>
+                            </div>
+                          </>
                         )}
                       </>
                     )}
