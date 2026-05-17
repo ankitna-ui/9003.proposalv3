@@ -63,6 +63,11 @@ export default function EditProposal() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setValidationError(null);
+  }, [currentStep, proposal.client.proposalTitle, proposal.solution.selectedModules]);
 
   const {
     proposal,
@@ -135,21 +140,18 @@ export default function EditProposal() {
     switch (currentStep) {
       case 0:
         if (!proposal.client.proposalTitle?.trim()) {
-          toast.error("Validation Error: Main Proposal Title is required.");
-          return false;
-        }
-        if (!proposal.client.companyName?.trim()) {
-          toast.error("Validation Error: Client / Company Name is required.");
+          setValidationError("Validation Error: Main Proposal Title is required.");
           return false;
         }
         break;
       case 5:
         if (proposal.solution.selectedModules.length === 0) {
-          toast.error("Validation Error: Add at least one module node to continue.");
+          setValidationError("Validation Error: Add at least one module node to continue.");
           return false;
         }
         break;
     }
+    setValidationError(null);
     return true;
   };
 
@@ -163,13 +165,11 @@ export default function EditProposal() {
     if (!id) return;
 
     if (!proposal.client.proposalTitle?.trim()) {
-      toast.error("Pre-Flight Check Failed: Proposal Title is required.");
+      setValidationError("Pre-Flight Check Failed: Proposal Title is required.");
       return;
     }
-    if (!proposal.client.companyName?.trim()) {
-      toast.error("Pre-Flight Check Failed: Client / Company Name is required.");
-      return;
-    }
+
+    setValidationError(null);
 
     setIsSaving(true);
     
@@ -295,8 +295,17 @@ export default function EditProposal() {
                 animate={{ opacity: 1, x: 0 }} 
                 exit={{ opacity: 0, x: 10 }} 
                 transition={{ duration: 0.3 }}
-                className="max-w-2xl mx-auto"
+                className="max-w-2xl mx-auto space-y-6"
               >
+                {validationError && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest text-center shadow-lg shadow-red-500/5"
+                  >
+                    {validationError}
+                  </motion.div>
+                )}
                 {renderStep()}
               </motion.div>
             </AnimatePresence>

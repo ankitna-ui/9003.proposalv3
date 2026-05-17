@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [authMode, setAuthMode] = useState<AuthMode>("login");
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingText, setLoadingText] = useState("Initializing System...");
+  const [error, setError] = useState<string | null>(null);
   
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -37,6 +38,10 @@ export default function LoginPage() {
       setAuthMode("reset-password");
     }
   }, [mode, oobCode]);
+
+  useEffect(() => {
+    setError(null);
+  }, [email, password, newPassword, confirmPassword, authMode]);
 
   useEffect(() => {
     if (authMode === "loading") {
@@ -76,38 +81,38 @@ export default function LoginPage() {
     // Advanced Local Validations
     if (authMode === "login" || authMode === "signup" || authMode === "forgot-password") {
       if (!email.trim()) {
-        toast.error("Operator Validation Failure: Terminal ID (Email) cannot be empty.");
+        setError("Operator Validation Failure: Terminal ID (Email) cannot be empty.");
         return;
       }
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
-        toast.error("Security Alert: Invalid Terminal ID (Email) format.");
+        setError("Security Alert: Invalid Terminal ID (Email) format.");
         return;
       }
     }
 
     if (authMode === "login" || authMode === "signup") {
       if (!password) {
-        toast.error("Security Alert: Access Key (Password) cannot be empty.");
+        setError("Security Alert: Access Key (Password) cannot be empty.");
         return;
       }
       if (password.length < 6) {
-        toast.error("Security Alert: Access Key must contain at least 6 characters.");
+        setError("Security Alert: Access Key must contain at least 6 characters.");
         return;
       }
     }
 
     if (authMode === "reset-password") {
       if (!newPassword || !confirmPassword) {
-        toast.error("Security Alert: Keys cannot be empty.");
+        setError("Security Alert: Keys cannot be empty.");
         return;
       }
       if (newPassword.length < 6) {
-        toast.error("Security Alert: New Access Key must contain at least 6 characters.");
+        setError("Security Alert: New Access Key must contain at least 6 characters.");
         return;
       }
       if (newPassword !== confirmPassword) {
-        toast.error("Security Alert: Security keys do not match.");
+        setError("Security Alert: Security keys do not match.");
         return;
       }
     }
@@ -139,7 +144,7 @@ export default function LoginPage() {
       const friendlyMessage = error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' 
         ? "Invalid credentials for this terminal ID." 
         : "Authentication protocol failed. Please verify credentials.";
-      toast.error(friendlyMessage);
+      setError(friendlyMessage);
       setLoading(false);
     }
   };
@@ -339,6 +344,16 @@ export default function LoginPage() {
                       </div>
                     )}
     
+                    {error && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 rounded-[1rem] bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest text-center shadow-lg shadow-red-500/5"
+                      >
+                        {error}
+                      </motion.div>
+                    )}
+
                     {authMode !== "success" ? (
                       <Button type="submit" className="w-full h-14 text-sm font-black uppercase tracking-[0.4em] bg-primary text-black hover:bg-primary/90 rounded-[1.2rem] shadow-lg shadow-primary/10 transition-all active:scale-[0.98] group overflow-hidden relative">
                         {loading ? "Authorizing..." : (
