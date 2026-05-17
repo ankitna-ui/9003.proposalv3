@@ -104,7 +104,7 @@ export interface ProblemStatement {
 export interface ExperiencePortfolio {
   yearsOfExperience: string;
   projectsCompleted: string;
-  industriesServed: string[];
+  industriesServed: string | string[];
   testimonials: { client: string; text: string }[];
   portfolioLinks: string[];
   strategicSummary?: string;

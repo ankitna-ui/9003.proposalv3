@@ -75,7 +75,7 @@ const initialProposal: Proposal = {
   experience: {
     yearsOfExperience: "15+",
     projectsCompleted: "250+",
-    industriesServed: ["E-commerce", "Fintech", "Manufacturing", "Logistics"],
+    industriesServed: "15+",
     testimonials: [],
     portfolioLinks: [
       "Enterprise Ecosystem|https://weblozyenterprisedemo.netlify.app/",

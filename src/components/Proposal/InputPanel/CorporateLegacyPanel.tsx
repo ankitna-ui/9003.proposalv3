@@ -31,8 +31,8 @@ export default function CorporateLegacyPanel({ proposal, currentStep, updateExpe
         <LabelPremium>Industries Served (Authority Count)</LabelPremium>
         <ModernInput 
           placeholder="e.g. 15+ Industry" 
-          value={typeof proposal.experience.industriesServed === 'string' ? proposal.experience.industriesServed : (Array.isArray(proposal.experience.industriesServed) ? proposal.experience.industriesServed[0] || "15+ Industry" : "15+ Industry")} 
-          onChange={(e) => updateExperience({ industriesServed: e.target.value as any })} 
+          value={typeof proposal.experience.industriesServed === 'string' ? proposal.experience.industriesServed : "15+"} 
+          onChange={(e) => updateExperience({ industriesServed: e.target.value })} 
         />
         <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest ml-4 italic opacity-60">This value highlights your market reach in the success metrics.</p>
       </div>
