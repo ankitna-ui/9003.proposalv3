@@ -113,59 +113,64 @@ export default function StrategicROIPanel({ proposal, currentStep, updateROI }: 
       </div>
 
       {/* ──── RESULT DASHBOARD (PREMIUM DARK) ──── */}
-      <div className="p-6 sm:p-8 bg-[#0B0E14] rounded-2xl text-white relative overflow-hidden shadow-xl">
-        <div className="absolute top-0 right-0 p-8 opacity-[0.03] rotate-12 scale-150 pointer-events-none">
+      <div className="p-6 bg-[#0B0E14] rounded-2xl text-white relative overflow-hidden shadow-xl border border-white/5">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.02] rotate-12 scale-150 pointer-events-none">
           <BarChart3 size={180} className="text-primary" />
         </div>
         
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-          <div className="space-y-3 min-w-0">
-             <div className="flex items-center gap-2 text-primary">
-                <div className="w-6 h-[2px] bg-primary" />
-                <span className="text-[9px] font-black uppercase tracking-[0.3em]">Projected Yield Profile</span>
+        <div className="relative z-10 space-y-5">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-white/5 pb-3">
+             <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Projected Yield Profile</span>
              </div>
-             <div className="min-h-[60px] flex items-center">
-               {(() => {
-                  const expectedVal = proposal.roi.expectedROI || "0";
-                  const isNumeric = /^\d+$/.test(expectedVal.trim());
-                  if (isNumeric) {
-                     return (
-                        <div className="flex items-baseline gap-1.5">
-                           <span className="text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 leading-none">{expectedVal}</span>
-                           <span className="text-2xl font-black text-primary leading-none">%</span>
-                        </div>
-                     );
-                  } else {
-                     return (
-                        <div className="flex items-baseline py-1">
-                           <span className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/75 leading-tight pr-2">
-                              {expectedVal}
-                           </span>
-                        </div>
-                     );
-                  }
-               })()}
+             <div className="text-[8px] font-black text-primary uppercase tracking-[0.2em] bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-md">
+                Active Protocol
              </div>
-             <p className="text-[8px] font-bold text-white/30 uppercase tracking-wider leading-normal">Aggregated Strategic Return on Investment</p>
           </div>
           
-          <div className="flex flex-col justify-center space-y-4 md:border-l md:border-white/5 md:pl-6">
+          {/* Yield Value Display */}
+          <div className="py-1">
+             {(() => {
+                const expectedVal = proposal.roi.expectedROI || "0";
+                const isNumeric = /^\d+$/.test(expectedVal.trim());
+                if (isNumeric) {
+                   return (
+                      <div className="flex items-baseline gap-1">
+                         <span className="text-4xl md:text-5xl font-black tracking-tight text-white leading-none">{expectedVal}</span>
+                         <span className="text-lg font-black text-primary leading-none">%</span>
+                      </div>
+                   );
+                } else {
+                   return (
+                      <div className="text-2xl sm:text-3xl font-black tracking-tight text-white leading-tight break-words max-w-full">
+                         {expectedVal}
+                      </div>
+                   );
+                }
+             })()}
+             <p className="text-[8px] font-bold text-white/30 uppercase tracking-widest mt-1.5">Aggregated Strategic Return on Investment</p>
+          </div>
+          
+          {/* Secondary Metrics horizontal layout */}
+          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
              <div className="flex items-center gap-3 group">
-                <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-[#0B0E14] transition-all duration-300 shadow-md shrink-0">
-                   <Clock size={16} />
+                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-[#0B0E14] transition-all duration-300 shadow-md shrink-0">
+                   <Clock size={14} />
                 </div>
                 <div className="min-w-0">
-                   <div className="text-[8px] font-black uppercase tracking-[0.25em] text-white/30 mb-0.5">Amortization Period</div>
-                   <div className="text-base font-bold tracking-tight text-white/90 truncate">{proposal.roi.breakEven}</div>
+                   <div className="text-[8px] font-black uppercase tracking-[0.2em] text-white/30 mb-0.5">Amortization Period</div>
+                   <div className="text-xs font-bold tracking-tight text-white/90 truncate">{proposal.roi.breakEven}</div>
                 </div>
              </div>
              <div className="flex items-center gap-3 group">
-                <div className="w-9 h-9 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-[#0B0E14] transition-all duration-300 shadow-md shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-[#0B0E14] transition-all duration-300 shadow-md shrink-0">
                    <TrendingUp size={16} />
                 </div>
                 <div className="min-w-0">
                    <div className="text-[8px] font-black uppercase tracking-[0.25em] text-white/30 mb-0.5">Growth Trajectory</div>
-                   <div className="text-base font-bold tracking-tight text-white/90 truncate">{proposal.roi.growthFactor}</div>
+                   <div className="text-xs font-bold tracking-tight text-white/90 truncate">{proposal.roi.growthFactor}</div>
                 </div>
              </div>
           </div>
