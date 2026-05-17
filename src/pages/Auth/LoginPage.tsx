@@ -355,7 +355,7 @@ export default function LoginPage() {
                 />
               </div>
 
-              <div className="space-y-10 relative z-10">
+              <div className="space-y-12 relative z-10">
                 <motion.div 
                   initial={{ y: -10, opacity: 0 }} 
                   animate={{ y: 0, opacity: 1 }} 
@@ -368,13 +368,12 @@ export default function LoginPage() {
                   </div>
                   
                   {/* Dynamic Real-time Workstation Clock */}
-                  <div className="flex flex-col items-end text-right bg-white/[0.02] border border-white/5 px-3.5 py-1.5 rounded-xl backdrop-blur-md">
-                    <span className="text-[12px] font-mono font-bold text-primary tracking-[0.2em] leading-none">{time || "12:00:00"}</span>
-                    <span className="text-[6px] font-black text-white/30 uppercase tracking-[0.3em] mt-1 leading-none">NODE TIME</span>
+                  <div className="flex flex-col items-end text-right bg-white/[0.02] border border-white/5 px-3 py-1.5 rounded-xl backdrop-blur-md">
+                    <span className="text-[11px] font-mono font-bold text-primary tracking-[0.15em] leading-none">{time || "12:00:00"}</span>
                   </div>
                 </motion.div>
     
-                <div className="space-y-6">
+                <div className="space-y-6 pt-6">
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/5 border border-primary/10 rounded-full">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                     <span className="text-[8px] font-black uppercase tracking-[0.3em] text-primary">Strategic Core OS v3.2</span>
@@ -407,71 +406,21 @@ export default function LoginPage() {
                       )}
                     </motion.h1>
                   </AnimatePresence>
-                  <p className="text-gray-500 text-sm leading-relaxed max-w-[300px] font-medium tracking-tight">
+                  <p className="text-gray-500 text-sm leading-relaxed max-w-[320px] font-medium tracking-tight">
                     High-impact enterprise documentation pipeline & multi-operator strategic automation ecosystem.
                   </p>
                 </div>
               </div>
 
-              {/* Dynamic Live Status Telemetry Widget */}
-              <motion.div 
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="p-5 rounded-[1.8rem] bg-white/[0.01] border border-white/5 space-y-4 relative z-10 overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.01] to-[#99CB48]/[0.01] pointer-events-none" />
-                <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-white/50">
-                  <span className="flex items-center gap-1.5"><Activity className="w-3.5 h-3.5 text-primary animate-pulse" /> Station Telemetry</span>
-                  <span className="text-[#99CB48] font-mono text-[9px] flex items-center gap-1"><span className="w-1 h-1 bg-[#99CB48] rounded-full animate-ping" /> SECURE GATEWAY</span>
+              {/* Minimal Luxury Footer */}
+              <div className="space-y-2.5 relative z-10 opacity-70 border-t border-white/5 pt-6">
+                <div className="text-[9px] font-black text-white uppercase tracking-[0.4em] flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-primary animate-pulse" />
+                  <span>SECURE ENTERPRISE LAYER</span>
                 </div>
-                <div className="space-y-3">
-                  {/* Secure Data Bridge */}
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-[7px] font-black uppercase tracking-widest text-white/40">
-                      <span>Secure Data Bridge</span>
-                      <span className="font-mono text-primary">98.4%</span>
-                    </div>
-                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        animate={{ width: ["60%", "98%", "85%", "98%"] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                        className="h-full bg-gradient-to-r from-primary to-blue-400" 
-                      />
-                    </div>
-                  </div>
-                  {/* Encryption Status */}
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-[7px] font-black uppercase tracking-widest text-white/40">
-                      <span>Security Tunnel Protocol</span>
-                      <span className="font-mono text-[#99CB48]">AES-256 TUNNEL</span>
-                    </div>
-                    <div className="h-1 bg-white/5 rounded-full overflow-hidden">
-                      <motion.div 
-                        animate={{ width: ["80%", "75%", "92%", "80%"] }}
-                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                        className="h-full bg-gradient-to-r from-[#99CB48] to-[#b3e65c]" 
-                      />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-    
-              <div className="space-y-6 relative z-10">
-                <div className="grid grid-cols-3 gap-3">
-                   {[
-                     { icon: ShieldCheck, label: "AES-256", desc: "Data Guard" },
-                     { icon: Zap, label: "Quantum", desc: "Insta-Gen" },
-                     { icon: Globe, label: "Global", desc: "CDN Sync" }
-                   ].map((item, idx) => (
-                     <div key={idx} className="p-4 rounded-[1.5rem] bg-white/[0.01] border border-white/5 group hover:border-primary/20 hover:bg-white/[0.02] transition-all duration-300">
-                        <item.icon className="w-5 h-5 text-primary/60 group-hover:text-primary mb-2 transition-colors" />
-                        <div className="text-[8px] font-black text-white/60 uppercase tracking-widest leading-none">{item.label}</div>
-                        <div className="text-[6px] font-black text-white/20 uppercase tracking-widest mt-1">{item.desc}</div>
-                     </div>
-                   ))}
-                </div>
-                <div className="text-[7px] font-black text-white/10 uppercase tracking-[0.6em] text-center italic">Institutional Standard OS</div>
+                <p className="text-[8px] text-gray-500 font-bold uppercase tracking-widest leading-relaxed">
+                  ENCRYPTED MULTI-OPERATOR WORKSTATION ACCESS APPROVED FOR OFFICIAL CORPORATE DEPLOYS.
+                </p>
               </div>
             </div>
     
